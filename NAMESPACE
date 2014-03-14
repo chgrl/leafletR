@@ -1,0 +1,14 @@
+## Export methods
+export(
+  leaflet,
+  leaf,
+  toGeoJSON,
+  tg,
+  styleSingle,
+  singles,
+  styleGrad,
+  grads,
+  styleCat,
+  cats,
+  changes
+)

@@ -1,0 +1,19 @@
+citHeader("To cite package 'leafletR' in publications use:")
+
+citEntry(entry="Manual",
+         title = "leafletR: Interactive Web-Maps Based on the Leaflet JavaScript Library",
+         author = personList(person(family="Graul", given="Christian")),
+         year = format(as.Date(packageDescription("leafletR", fields = c("Date"))), "%Y"),
+         url = "http://cran.r-project.org/package=leafletR",
+         note = paste("R package version ", packageDescription("leafletR", fields = c("Version"))[1], sep=""),
+
+         textVersion =
+         paste("Graul, Christian (",
+               format(as.Date(packageDescription("leafletR", fields = c("Date"))), "%Y"),
+               "): leafletR: Interactive Web-Maps Based on the Leaflet JavaScript Library. R package version ",
+               packageDescription("leafletR", fields = c("Version"))[1],
+               ", http://cran.r-project.org/package=leafletR",
+               ".", sep=""))
+
+citFooter("Please cite both 'leafletR' and R when using 'leafletR'.",
+          "For R citation, see ", sQuote("citation()"))
