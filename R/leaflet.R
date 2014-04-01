@@ -2,8 +2,9 @@ leaflet <-
 function(data, dest, title, size, base.map="osm", center, zoom, style, popup, incl.data=FALSE, overwrite=TRUE) {	
 	if(missing(data)) data <- NA
 	if(length(data)>1) for(n in 1:length(data)) {
-		if(!is.na(data[[n]])) if(tolower(strsplit(tail(strsplit(data[[n]], "/")[[1]], 1), "[.]")[[1]][2])!="geojson") stop("'data' requires GeoJSON files (file extension should be 'geojson')")
-	} else if(!is.na(data)) if(tolower(strsplit(tail(strsplit(data, "/")[[1]], 1), "[.]")[[1]][2])!="geojson") stop("'data' requires GeoJSON files (file extension should be 'geojson')")
+		if(!is.na(data[[n]])) if(tolower(strsplit(tail(strsplit(data[[n]], "/")[[1]], 1), "[.]")[[1]][2])!="geojson") stop("'data' requires GeoJSON files (file extension should be 'geojson')\n")
+	} else if(!is.na(data)) if(tolower(strsplit(tail(strsplit(data, "/")[[1]], 1), "[.]")[[1]][2])!="geojson") stop("'data' requires GeoJSON files (file extension should be 'geojson')\n")
+	suppressWarnings(if(require(RJSONIO, quietly=TRUE)) if(!isValidJSON(data)) stop("'data' is not a valid JSON file\n"))
 	if(missing(dest)) dest <- getwd()
 	dest <- gsub("\\\\", "/", dest)
 	if(missing(title)) {
@@ -15,13 +16,13 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 	if(missing(size)) size <- NA
 	bm <- c("osm", "tls", "cm", "mqosm", "mqsat", "water", "toner")
 	base.map <- bm[pmatch(base.map, bm)]
-	if(is.na(base.map)) stop("invalid base.map")
+	if(is.na(base.map)) stop("invalid base.map\n")
 	if(missing(center)) center <- NA
 	if(missing(zoom)) zoom <- NA
 	if(missing(style)) style <- NA
 	if(missing(popup)) popup <- NA
 	
-	if(length(data)>1 && !is.na(style)) if((length(style)<length(data) && is.list(style)) || !is.list(style)) stop("number of styles must correspond to number of data files")
+	if(length(data)>1 && !is.na(style)) if((length(style)<length(data) && is.list(style)) || !is.list(style)) stop("number of styles must correspond to number of data files\n")
 	if(file.exists(file.path(dest, gsub(" ", "_", title))) && !overwrite) stop("abort - file already exists\n")
 	
 	if(!any(is.na(popup))) {
