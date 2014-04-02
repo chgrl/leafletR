@@ -41,3 +41,7 @@ singles <- function(col, lwd, alpha, fill, fill.alpha, rad) {
 tg <- function(data, name, dest, lat.lon, overwrite=TRUE) {
 	toGeoJSON(data, name, dest, lat.lon, overwrite)
 }
+
+prop <- function(data, print=TRUE) {
+	getProperties(data, print)
+}
