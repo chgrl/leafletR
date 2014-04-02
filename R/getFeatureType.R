@@ -1,18 +1,18 @@
 getFeatureType <-
 function(dat) {
 	# check if file exists
-	if(!file.exists(dat)) stop("data file not found\n")
+	if(!file.exists(dat)) stop("data file not found")
 	
 	suppressWarnings(rjsonio <- require(RJSONIO, quietly=TRUE))
 	
 	if(rjsonio) {	# RJSONIO package available
 		fl <- fromJSON(dat)
 		ft <- fl$features[[1]]$geometry$type
-  		if(length(fl$features)>1) for(n in 2:length(fl$features)) if(fl$features[[n]]$geometry$type!=ft) stop("GeoJSON contains different geometry types\n")
+  		if(length(fl$features)>1) for(n in 2:length(fl$features)) if(fl$features[[n]]$geometry$type!=ft) stop("GeoJSON contains different geometry types")
   		if(ft=="Point" || ft=="MultiPoint") ft <- "point"
   		else if(ft=="LineString" || ft=="MultiLineString") ft <- "line"
   		else if(ft=="Polygon" || ft=="MultiPolygon") ft <- "polygon"
-  		else stop("geometry type not recognized\n")
+  		else stop("geometry type not recognized")
 	} else {	# fallback if RJSONIO package not available
 		con <- file(dat, "rt") 
 		
@@ -30,7 +30,7 @@ function(dat) {
 				ft <- "polygon"
 				break
 			}
-			else stop("geometry type not recognized\n")
+			else stop("geometry type not recognized")
 		}
 		
 		close(con)
