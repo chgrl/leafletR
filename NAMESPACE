@@ -4,6 +4,8 @@ export(
   leaf,
   toGeoJSON,
   tg,
+  getProperties,
+  prop,
   styleSingle,
   singles,
   styleGrad,

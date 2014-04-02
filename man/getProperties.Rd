@@ -1,14 +1,22 @@
 \encoding{UTF-8}
 \name{getProperties}
 \alias{getProperties}
-\title{Internal function}
-\description{Get the names of all properties of a GeoJSON file. Used by \code{\link{leaflet}}.}
-\usage{getProperties(dat)}
+\alias{prop}
+\title{Print property names of a GeoJSON file}
+\description{Prints the names of all available properties of a GeoJSON file.}
+\usage{getProperties(data, print=TRUE)}
+\usage{prop(data, print=TRUE)}
 \arguments{
-  \item{dat}{Name of data file as string.}
+  \item{data}{Name of data file as string.}
+  \item{print}{If \code{TRUE} (default), the property names are printed.}
 }
-\value{Properties as string vector.}
+\value{Property names as string vector.}
 \author{Christian Graul}
-\seealso{\code{\link{leaflet}}}
+\seealso{\code{\link{styleCat}}, \code{\link{styleGrad}}}
+\examples{
+\dontrun{
+data(quakes)
+qks <- toGeoJSON(data=quakes, dest=tempdir())
+getProperties(data=qks)
+}}
 \keyword{methods}
-\keyword{internal}
