@@ -15,6 +15,8 @@ function(data, name, dest, lat.lon, overwrite=TRUE) {
 		if(missing(name)) name <- strsplit(tail(strsplit(data, "/")[[1]], 1), "[.]")[[1]][1]
 		name <- gsub(" ", "_", name)
 		path <- fileToGeoJSON(data, name, dest, overwrite)
+	} else if(class(data)[1]=="SpatialPoints" || class(data)[1]=="SpatialPointsDataFrame") {#|| class(data)[1]=="SpatialLines" || class(data)[1]=="SpatialLinesDataFrame" || class(data)[1]=="SpatialPolygons" || class(data)[1]=="SpatialPolygonsDataFrame") {
+		path <- spToGeoJSON(data, class(data)[1], name, dest, overwrite)
 	} else {
 		stop("Type of data not supported")
 	}

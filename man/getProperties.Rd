@@ -4,8 +4,10 @@
 \alias{prop}
 \title{Print property names of a GeoJSON file}
 \description{Prints the names of all available properties of a GeoJSON file.}
-\usage{getProperties(data, print=TRUE)}
-\usage{prop(data, print=TRUE)}
+\usage{
+getProperties(data, print=TRUE)
+prop(data, print=TRUE)
+}
 \arguments{
   \item{data}{Name of data file as string.}
   \item{print}{If \code{TRUE} (default), the property names are printed.}
