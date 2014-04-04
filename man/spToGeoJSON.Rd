@@ -5,7 +5,7 @@
 \description{Create GeoJSON file from Spatial object}
 \usage{spToGeoJSON(data, class, name, dest, overwrite)}
 \arguments{
-  \item{data}{\code{\link{sp}} object.}
+  \item{data}{\code{Spatial} object.}
   \item{class}{Class of sp object.}
   \item{name}{Name of the resulting GeoJSON file, as string.}
   \item{dest}{Directory the file shall be saved to, as string.}

@@ -4,6 +4,10 @@ function(data, class, name, dest, overwrite) {
 	path <- paste0(file.path(dest, name), ".geojson")
 	if(file.exists(path) && !overwrite) stop("abort - file already exists\n")
 	
+	stopifnot(require(sp, quietly=TRUE))
+	suppressWarnings(rgdal <- require(rgdal, quietly=TRUE))
+    if(rgdal) data=spTransform(data, CRS("+proj=longlat +ellps=WGS84 +datum=WGS84"))
+	
 	dat <- data@data
 	coord <- data@coords
 	
@@ -31,7 +35,7 @@ function(data, class, name, dest, overwrite) {
 		# geometry
 		cat("      \"geometry\": {", file=path, append=TRUE, sep="\n")
 		cat("        \"type\": \"Point\",", file=path, append=TRUE, sep="\n")
-		cat(paste("        \"coordinates\": [", coord[f,2], ",", coord[f,1], "]", sep=""), file=path, append=TRUE, sep="\n")
+		cat(paste("        \"coordinates\": [", coord[f,1], ",", coord[f,2], "]", sep=""), file=path, append=TRUE, sep="\n")
 		cat("      }", file=path, append=TRUE, sep="\n")
 		
 		if(f==nrow(data)) cat("    }", file=path, append=TRUE, sep="\n")
