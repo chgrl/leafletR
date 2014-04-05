@@ -20,7 +20,7 @@ tg(data, name, dest, lat.lon, overwrite=TRUE)
 
 \emph{\code{Spatial} objects}
 
-\code{Spatial} objects (\code{sp} package) should have geographical coordinates (longlat, WGS84). If other projections are used, \code{toGeoJSON} can transform the coordinates on the fly, using the \code{rgdal} package. Only \code{SpatialPoints} and \code{SpatialPointsDataFrame} supported so far.
+\code{Spatial} objects (\code{sp} package) should have geographical coordinates (longlat, WGS84). If other projections are used, \code{toGeoJSON} can transform the coordinates on the fly, using the \code{rgdal} package. \code{SpatialPolygons} and \code{SpatialPolygonsDataFrame} as well as Multi-Points/Lines/Polygons are not supported so far.
 
 \emph{Conversion of external spatial data files}
 
@@ -44,12 +44,18 @@ path <- toGeoJSON(data=quakes)
 # preserve existing files from overwriting
 toGeoJSON(data=quakes, overwrite=FALSE)
 
-# convert Spatial object
+# convert Spatial objects
 library(sp)
 data(meuse)
 coordinates(meuse) <- ~x+y
 proj4string(meuse) <- CRS("+init=epsg:28992")
 toGeoJSON(data=meuse, dest=tempdir()) # rgdal package required
+
+crd <- coordinates(meuse)
+msl <- SpatialLines(list(Lines(list(Line(crd)), "line1")), 
+  CRS("+init=epsg:28992"))
+toGeoJSON(data=msl, dest=tempdir()) # rgdal package required
+
 
 # convert a shapefile (in zipped archive)
 toGeoJSON(data=system.file(package="leafletR", "files", "park_sk.zip"), 
