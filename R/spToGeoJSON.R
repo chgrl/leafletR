@@ -43,9 +43,10 @@ function(data, class, name, dest, overwrite) {
 			if(f==nrow(data)) cat("    }", file=path, append=TRUE, sep="\n")
 			else cat("    },", file=path, append=TRUE, sep="\n")
 		}
-	} else if(class(data)[1]=="SpatialLines" || class(data)[1]=="SpatialLinesDataFrame") {
+	} else if(class(data)[1]=="SpatialLines" || class(data)[1]=="SpatialLinesDataFrame") {	# Lines
 		# features
 		num.f <- length(data@lines)
+		f.len <- sapply(slot(data, "lines"), function(x) length(slot(x, "Lines")))
 		for(f in 1:num.f) {
 			cat("    {", file=path, append=TRUE, sep="\n")
 			cat("      \"type\": \"Feature\",", file=path, append=TRUE, sep="\n")
@@ -66,16 +67,30 @@ function(data, class, name, dest, overwrite) {
 			
 			# geometry
 			cat("      \"geometry\": {", file=path, append=TRUE, sep="\n")
-			cat("        \"type\": \"LineString\",", file=path, append=TRUE, sep="\n")
-			coord <- paste0("[", coordinates(data@lines[[f]])[[1]][1,1], ",", coordinates(data@lines[[f]])[[1]][1,2], "]")
-			for(i in 2:length(coordinates(data@lines[[f]])[[1]][,1])) coord <- append(coord, paste0("[", coordinates(data@lines[[f]])[[1]][i,1], ",", coordinates(data@lines[[f]])[[1]][i,2], "]"))
-			cat(paste("        \"coordinates\": [ ", paste(coord, collapse=", "), " ]", sep=""), file=path, append=TRUE, sep="\n")
+			if(f.len[f]==1) {
+				cat("        \"type\": \"LineString\",", file=path, append=TRUE, sep="\n")
+				coord <- paste0("[", coordinates(data@lines[[f]])[[1]][1,1], ",", coordinates(data@lines[[f]])[[1]][1,2], "]")
+				for(i in 2:length(coordinates(data@lines[[f]])[[1]][,1])) coord <- append(coord, paste0("[", coordinates(data@lines[[f]])[[1]][i,1], ",", coordinates(data@lines[[f]])[[1]][i,2], "]"))
+				coord <- paste(coord, collapse=", ")
+			} else {
+				cat("        \"type\": \"MultiLineString\",", file=path, append=TRUE, sep="\n")
+				coord <- NULL
+				for(l in 1:f.len[f]) {
+					ln <- paste0("[", coordinates(data@lines[[f]])[[l]][1,1], ",", coordinates(data@lines[[f]])[[l]][1,2], "]")
+					for(i in 2:length(coordinates(data@lines[[f]])[[l]][,1])) ln <- append(ln, paste0("[", coordinates(data@lines[[f]])[[l]][i,1], ",", coordinates(data@lines[[f]])[[l]][i,2], "]"))
+					ln <- paste0("[ ", paste(ln, collapse=", "), " ]")
+					if(is.null(coord)) coord <- ln
+					else coord <- append(coord, ln)
+				}
+				coord <- paste(coord, collapse=", \n          ")
+			}
+			cat(paste("        \"coordinates\": [ ", coord, " ]", sep=""), file=path, append=TRUE, sep="\n")
 			cat("      }", file=path, append=TRUE, sep="\n")
 			
 			if(f==num.f) cat("    }", file=path, append=TRUE, sep="\n")
 			else cat("    },", file=path, append=TRUE, sep="\n")
 		}	
-	} else if(class(data)[1]=="SpatialPolygons" || class(data)[1]=="SpatialPolygonsDataFrame") {
+	} else if(class(data)[1]=="SpatialPolygons" || class(data)[1]=="SpatialPolygonsDataFrame") {	# Polygons
 	
 	}
 	
