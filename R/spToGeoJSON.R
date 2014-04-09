@@ -51,7 +51,54 @@ function(data, class, name, dest, overwrite) {
 			cat("    {", file=path, append=TRUE, sep="\n")
 			cat("      \"type\": \"Feature\",", file=path, append=TRUE, sep="\n")
 			
+			# properties
+			cat("      \"properties\": {", file=path, append=TRUE, sep="\n")
 			if(class(data)[1]=="SpatialLinesDataFrame") {
+				dat <- data@data
+				if(!is.null(dat)) {	
+					for(p in 1:length(dat)) {
+						cat(paste("        \"", names(dat)[p], "\": \"", dat[f,p], "\"", sep=""), file=path, append=TRUE)
+						cat(",", file=path, append=TRUE, sep="\n")
+					}
+				}
+			}
+			cat(paste("        \"ID\": \"", slot(slot(data, "lines")[[f]], "ID"), "\"", sep=""), file=path, append=TRUE)
+			cat("\n      },", file=path, append=TRUE, sep="\n")
+			
+			# geometry
+			cat("      \"geometry\": {", file=path, append=TRUE, sep="\n")
+			if(f.len[f]==1) {	# SingleLines
+				cat("        \"type\": \"LineString\",", file=path, append=TRUE, sep="\n")
+				coord <- paste0("[", coordinates(data@lines[[f]])[[1]][1,1], ",", coordinates(data@lines[[f]])[[1]][1,2], "]")
+				for(i in 2:length(coordinates(data@lines[[f]])[[1]][,1])) coord <- append(coord, paste0("[", coordinates(data@lines[[f]])[[1]][i,1], ",", coordinates(data@lines[[f]])[[1]][i,2], "]"))
+				coord <- paste(coord, collapse=", ")
+			} else {	# MultiLines
+				cat("        \"type\": \"MultiLineString\",", file=path, append=TRUE, sep="\n")
+				coord <- NULL
+				for(l in 1:f.len[f]) {
+					ln <- paste0("[", coordinates(data@lines[[f]])[[l]][1,1], ",", coordinates(data@lines[[f]])[[l]][1,2], "]")
+					for(i in 2:length(coordinates(data@lines[[f]])[[l]][,1])) ln <- append(ln, paste0("[", coordinates(data@lines[[f]])[[l]][i,1], ",", coordinates(data@lines[[f]])[[l]][i,2], "]"))
+					ln <- paste("[", paste(ln, collapse=", "), "]")
+					if(is.null(coord)) coord <- ln
+					else coord <- append(coord, ln)
+				}
+				coord <- paste(coord, collapse=", \n          ")
+			}
+			cat(paste("        \"coordinates\": [", coord, "]"), file=path, append=TRUE, sep="\n")
+			cat("      }", file=path, append=TRUE, sep="\n")
+			
+			if(f==num.f) cat("    }", file=path, append=TRUE, sep="\n")
+			else cat("    },", file=path, append=TRUE, sep="\n")
+		}	
+	} else if(class(data)[1]=="SpatialPolygons" || class(data)[1]=="SpatialPolygonsDataFrame") {	# Polygons
+		# features
+		num.f <- length(data@polygons)
+		f.len <- sapply(slot(data, "polygons"), function(x) length(slot(x, "Polygons")))
+		for(f in 1:num.f) {
+			cat("    {", file=path, append=TRUE, sep="\n")
+			cat("      \"type\": \"Feature\",", file=path, append=TRUE, sep="\n")
+			
+			if(class(data)[1]=="SpatialPolygonsDataFrame") {
 				dat <- data@data
 				# properties
 				if(!is.null(dat)) {
@@ -67,31 +114,37 @@ function(data, class, name, dest, overwrite) {
 			
 			# geometry
 			cat("      \"geometry\": {", file=path, append=TRUE, sep="\n")
-			if(f.len[f]==1) {
-				cat("        \"type\": \"LineString\",", file=path, append=TRUE, sep="\n")
-				coord <- paste0("[", coordinates(data@lines[[f]])[[1]][1,1], ",", coordinates(data@lines[[f]])[[1]][1,2], "]")
-				for(i in 2:length(coordinates(data@lines[[f]])[[1]][,1])) coord <- append(coord, paste0("[", coordinates(data@lines[[f]])[[1]][i,1], ",", coordinates(data@lines[[f]])[[1]][i,2], "]"))
-				coord <- paste(coord, collapse=", ")
+			if(f.len[f]==1) {	# SinglePolygons without holes
+				cat("        \"type\": \"Polygon\",", file=path, append=TRUE, sep="\n")
+				coord.raw <- slot(slot(slot(data, "polygons")[[f]], "Polygons")[[1]], "coords")
+				coord <- paste0("[", coord.raw[1,1], ",", coord.raw[1,2], "]")
+				for(i in 2:length(coord.raw[,1])) coord <- append(coord, paste0("[", coord.raw[i,1], ",", coord.raw[i,2], "]"))
+				coord <- paste("[", paste(coord, collapse=", "), "]")
 			} else {
-				cat("        \"type\": \"MultiLineString\",", file=path, append=TRUE, sep="\n")
-				coord <- NULL
-				for(l in 1:f.len[f]) {
-					ln <- paste0("[", coordinates(data@lines[[f]])[[l]][1,1], ",", coordinates(data@lines[[f]])[[l]][1,2], "]")
-					for(i in 2:length(coordinates(data@lines[[f]])[[l]][,1])) ln <- append(ln, paste0("[", coordinates(data@lines[[f]])[[l]][i,1], ",", coordinates(data@lines[[f]])[[l]][i,2], "]"))
-					ln <- paste0("[ ", paste(ln, collapse=", "), " ]")
-					if(is.null(coord)) coord <- ln
-					else coord <- append(coord, ln)
+				hole <- sapply(slot(slot(data, "polygons")[[f]], "Polygons"), function(x) slot(x, "hole"))
+				if(length(hole[hole==TRUE])==0) {	# MultiPolygon without holes
+					cat("        \"type\": \"MultiPolygon\",", file=path, append=TRUE, sep="\n")
+					coord.raw <- lapply(slot(slot(data, "polygons")[[f]], "Polygons"), function(x) slot(x, "coords"))
+					coord <- NULL
+					for(p in 1:length(coord.raw)) {
+						coord.raw <- slot(slot(slot(data, "polygons")[[f]], "Polygons")[[p]], "coords")
+						coord.p <- paste0("[", coord.raw[1,1], ",", coord.raw[1,2], "]")
+						for(i in 2:length(coord.raw[,1])) coord.p <- append(coord.p, paste0("[", coord.raw[i,1], ",", coord.raw[i,2], "]"))
+						coord.p <- paste("[", paste(coord.p, collapse=", "), "]")
+						if(is.null(coord)) coord <- coord.p
+						else coord <- append(coord, coord.p)
+					}
+					coord <- paste("[", paste(coord, collapse=", \n          "), "]")
+				} else {	# 
+					#if(length(hole[hole==FALSE])>1) --> multipol / multipol mit hole(s)
 				}
-				coord <- paste(coord, collapse=", \n          ")
 			}
-			cat(paste("        \"coordinates\": [ ", coord, " ]", sep=""), file=path, append=TRUE, sep="\n")
+			cat(paste("        \"coordinates\": [", coord, "]"), file=path, append=TRUE, sep="\n")
 			cat("      }", file=path, append=TRUE, sep="\n")
 			
 			if(f==num.f) cat("    }", file=path, append=TRUE, sep="\n")
 			else cat("    },", file=path, append=TRUE, sep="\n")
-		}	
-	} else if(class(data)[1]=="SpatialPolygons" || class(data)[1]=="SpatialPolygonsDataFrame") {	# Polygons
-	
+		}
 	}
 	
 	# close
