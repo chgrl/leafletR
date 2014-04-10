@@ -98,23 +98,23 @@ function(data, class, name, dest, overwrite) {
 			cat("    {", file=path, append=TRUE, sep="\n")
 			cat("      \"type\": \"Feature\",", file=path, append=TRUE, sep="\n")
 			
+			# properties
+			cat("      \"properties\": {", file=path, append=TRUE, sep="\n")
 			if(class(data)[1]=="SpatialPolygonsDataFrame") {
 				dat <- data@data
-				# properties
-				if(!is.null(dat)) {
-					cat("      \"properties\": {", file=path, append=TRUE, sep="\n")
+				if(!is.null(dat)) {	
 					for(p in 1:length(dat)) {
 						cat(paste("        \"", names(dat)[p], "\": \"", dat[f,p], "\"", sep=""), file=path, append=TRUE)
-						if(p==length(dat)) cat("\n", file=path, append=TRUE)
-						else cat(",", file=path, append=TRUE, sep="\n")
+						cat(",", file=path, append=TRUE, sep="\n")
 					}
-					cat("      },", file=path, append=TRUE, sep="\n")
 				}
 			}
+			cat(paste("        \"ID\": \"", slot(slot(data, "polygons")[[f]], "ID"), "\"", sep=""), file=path, append=TRUE)
+			cat("\n      },", file=path, append=TRUE, sep="\n")
 			
 			# geometry
 			cat("      \"geometry\": {", file=path, append=TRUE, sep="\n")
-			if(f.len[f]==1) {	# SinglePolygons without holes
+			if(f.len[f]==1) {	# SinglePolygon without holes
 				cat("        \"type\": \"Polygon\",", file=path, append=TRUE, sep="\n")
 				coord.raw <- slot(slot(slot(data, "polygons")[[f]], "Polygons")[[1]], "coords")
 				coord <- paste0("[", coord.raw[1,1], ",", coord.raw[1,2], "]")
@@ -127,16 +127,33 @@ function(data, class, name, dest, overwrite) {
 					coord.raw <- lapply(slot(slot(data, "polygons")[[f]], "Polygons"), function(x) slot(x, "coords"))
 					coord <- NULL
 					for(p in 1:length(coord.raw)) {
-						coord.raw <- slot(slot(slot(data, "polygons")[[f]], "Polygons")[[p]], "coords")
-						coord.p <- paste0("[", coord.raw[1,1], ",", coord.raw[1,2], "]")
-						for(i in 2:length(coord.raw[,1])) coord.p <- append(coord.p, paste0("[", coord.raw[i,1], ",", coord.raw[i,2], "]"))
+						coord.p <- paste0("[", coord.raw[[p]][1,1], ",", coord.raw[[p]][1,2], "]")
+						for(i in 2:length(coord.raw[[p]][,1])) coord.p <- append(coord.p, paste0("[", coord.raw[[p]][i,1], ",", coord.raw[[p]][i,2], "]"))
 						coord.p <- paste("[", paste(coord.p, collapse=", "), "]")
 						if(is.null(coord)) coord <- coord.p
 						else coord <- append(coord, coord.p)
 					}
 					coord <- paste("[", paste(coord, collapse=", \n          "), "]")
-				} else {	# 
-					#if(length(hole[hole==FALSE])>1) --> multipol / multipol mit hole(s)
+				} else { 
+					if(length(hole[hole==FALSE])==1) {	# SinglePolygon with hole(s)
+						cat("        \"type\": \"Polygon\",", file=path, append=TRUE, sep="\n")
+						coord.raw <- lapply(slot(slot(data, "polygons")[[f]], "Polygons"), function(x) slot(x, "coords"))
+						pol <- which(hole==FALSE)
+						coord <- paste0("[", coord.raw[[pol]][1,1], ",", coord.raw[[pol]][1,2], "]")
+						for(i in 2:length(coord.raw[[pol]][,1])) coord <- append(coord, paste0("[", coord.raw[[pol]][i,1], ",", coord.raw[[pol]][i,2], "]"))
+						coord <- paste("[", paste(coord, collapse=", "), "]")
+						coord.raw[[pol]] <- NULL
+						for(p in 1:length(coord.raw)) {
+							coord.h <- paste0("[", coord.raw[[p]][1,1], ",", coord.raw[[p]][1,2], "]")
+							for(i in 2:length(coord.raw[[p]][,1])) coord.h <- append(coord.h, paste0("[", coord.raw[[p]][i,1], ",", coord.raw[[p]][i,2], "]"))
+							coord.h <- paste("[", paste(coord.h, collapse=", "), "]")
+							coord <- append(coord, coord.h)
+						}
+						coord <- paste(coord, collapse=", \n          ")
+					} else {	# MultiPolygon with hole(s)
+						cat("        \"type\": \"MultiPolygon\",", file=path, append=TRUE, sep="\n")
+						coord.raw <- lapply(slot(slot(data, "polygons")[[f]], "Polygons"), function(x) slot(x, "coords"))
+					}
 				}
 			}
 			cat(paste("        \"coordinates\": [", coord, "]"), file=path, append=TRUE, sep="\n")
