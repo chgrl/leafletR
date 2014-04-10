@@ -3,8 +3,13 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 	if(missing(data)) data <- NA
 	if(length(data)>1) for(n in 1:length(data)) {
 		if(!is.na(data[[n]])) if(tolower(strsplit(tail(strsplit(data[[n]], "/")[[1]], 1), "[.]")[[1]][2])!="geojson") stop("'data' requires GeoJSON files (file extension should be 'geojson')")
-	} else if(!is.na(data)) if(tolower(strsplit(tail(strsplit(data, "/")[[1]], 1), "[.]")[[1]][2])!="geojson") stop("'data' requires GeoJSON files (file extension should be 'geojson')")
-	suppressWarnings(if(require(RJSONIO, quietly=TRUE)) if(!isValidJSON(data)) stop("'data' is not a valid JSON file"))
+		suppressWarnings(if(require(RJSONIO, quietly=TRUE)) if(!isValidJSON(data[[n]])) stop("'data' is not a valid JSON file"))
+	} else {
+		if(!is.na(data)) {
+			if(tolower(strsplit(tail(strsplit(data, "/")[[1]], 1), "[.]")[[1]][2])!="geojson") stop("'data' requires GeoJSON files (file extension should be 'geojson')")
+			suppressWarnings(if(require(RJSONIO, quietly=TRUE)) if(!isValidJSON(data)) stop("'data' is not a valid JSON file"))
+		}
+	}
 	if(missing(dest)) dest <- getwd()
 	dest <- gsub("\\\\", "/", dest)
 	if(missing(title)) {
