@@ -18,7 +18,7 @@ function(prop, breaks, right=TRUE, out=0, style.par="col", style.val, leg, ...) 
 		for(n in 2:length(breaks)) grad.style <- append(grad.style, paste("       x ", op, breaks[n], " ? ", stl.val[n-1], " :", sep=""))
 		grad.style <- append(grad.style, paste("       ", def, ";", sep=""))
 	} else if(out==1) { # left closed right open
-		grad.style <- paste("return x ", op, breaks[1], " ? ", style.val[1], " :", sep="")
+		grad.style <- paste("return x ", op, breaks[1], " ? ", stl.val[1], " :", sep="")
 		for(n in 2:length(breaks)) grad.style <- append(grad.style, paste("       x ", op, breaks[n], " ? ", stl.val[n], " :", sep=""))
 		grad.style <- append(grad.style, paste("       ", def, ";", sep=""))
 	} else if(out==2) {
