@@ -20,7 +20,7 @@ tg(data, name, dest, lat.lon, overwrite=TRUE)
 
 \emph{\code{Spatial} objects}
 
-\code{Spatial} objects (\code{sp} package) should have geographical coordinates (longlat, WGS84). If other projections are used, \code{toGeoJSON} can transform the coordinates on the fly, using the \code{rgdal} package. MultiPoints and MultiPolygons with holes are not supported so far.
+\code{Spatial} objects (\code{sp} package) should have geographical coordinates (longlat, WGS84). If other projections are used, \code{toGeoJSON} can transform the coordinates on the fly, using the \code{rgdal} package.
 
 \emph{Conversion of external spatial data files}
 

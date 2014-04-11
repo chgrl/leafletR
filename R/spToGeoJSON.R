@@ -153,6 +153,41 @@ function(data, class, name, dest, overwrite) {
 					} else {	# MultiPolygon with hole(s)
 						cat("        \"type\": \"MultiPolygon\",", file=path, append=TRUE, sep="\n")
 						coord.raw <- lapply(slot(slot(data, "polygons")[[f]], "Polygons"), function(x) slot(x, "coords"))
+						pol <- which(hole==FALSE)
+						hol <- which(hole==TRUE)
+						hol.idx <- NULL
+						for(h in 1:length(hol)) {
+							for(p in 1:length(pol)) {
+								if(holeCheck(coord.raw[[pol[p]]], coord.raw[[hol[h]]])) {
+									hol.idx <- append(hol.idx, pol[p])
+									break
+								}
+							}
+						}
+						if(length(hol.idx)<length(hol)) cat("warning: one or more holes could not be assigned to polygon\n")
+						
+						coord <- NULL
+						for(p in 1:length(pol)) {
+							coord.p <- paste0("[", coord.raw[[pol[p]]][1,1], ",", coord.raw[[pol[p]]][1,2], "]")
+							for(i in 2:length(coord.raw[[pol[p]]][,1])) coord.p <- append(coord.p, paste0("[", coord.raw[[pol[p]]][i,1], ",", coord.raw[[pol[p]]][i,2], "]"))
+							coord.p <- paste("[", paste(coord.p, collapse=", "), "]")
+							
+							idx <- which(hol.idx==pol[p])
+							if(length(idx)>0) {
+								coord.hs <- NULL
+								for(i in 1:length(idx)) {
+									coord.h <- paste0("[", coord.raw[[hol[i]]][1,1], ",", coord.raw[[hol[i]]][1,2], "]")
+									for(j in 2:length(coord.raw[[hol[i]]][,1])) coord.h <- append(coord.h, paste0("[", coord.raw[[hol[i]]][j,1], ",", coord.raw[[hol[i]]][j,2], "]"))
+									coord.h <- paste("[", paste(coord.h, collapse=", "), "]")
+									if(is.null(coord.hs)) coord.hs <- coord.h
+									else coord.hs <- append(coord.hs, coord.h)
+								}
+								coord.p <- paste0(coord.p, ", \n          ", paste(coord.hs, collapse=", \n          "))
+							}
+							if(is.null(coord)) coord <- coord.p
+							else coord <- append(coord, coord.p)
+						}
+						coord <- paste("[", paste(coord, collapse=" ], \n          [ "), "]")
 					}
 				}
 			}
