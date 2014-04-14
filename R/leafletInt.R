@@ -6,7 +6,7 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 	cat("<head>", file=path, append=TRUE, sep="\n")
 	
 	# web site title
-	cat(paste("\t<title>", title, "</title>", sep=""), file=path, append=TRUE, sep="\n")
+	cat(paste0("\t<title>", title, "</title>"), file=path, append=TRUE, sep="\n")
 	
 	# meta
 	cat("\t<meta charset=\"utf-8\" />", file=path, append=TRUE, sep="\n")
@@ -21,7 +21,7 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 	# data
 	if(any(!is.na(dat)) && !incl.data) {
 		cat("\t<script src=\"http://code.jquery.com/jquery-1.10.2.min.js\"></script>", file=path, append=TRUE, sep="\n")
-		for(n in 1:length(dat)) cat(paste("\t<link rel=\"", paste("dat", n, sep=""), "\" type=\"application/json\" href=\"", tail(strsplit(dat[[n]], "/")[[1]], 1), "\" />", sep=""), file=path, append=TRUE, sep="\n")
+		for(n in 1:length(dat)) cat(paste0("\t<link rel=\"", paste0("dat", n), "\" type=\"application/json\" href=\"", tail(strsplit(dat[[n]], "/")[[1]], 1), "\" />"), file=path, append=TRUE, sep="\n")
 	}
 		
 	### extra style instructions start #########################################################
@@ -40,8 +40,8 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 	# manual size
 	} else {
 		cat("\t\t#map {", file=path, append=TRUE, sep="\n")
-		cat(paste("\t\t\twidth: ", size[1], "px;", sep=""), file=path, append=TRUE, sep="\n")
-		cat(paste("\t\t\theight: ", size[2], "px;", sep=""), file=path, append=TRUE, sep="\n")
+		cat(paste0("\t\t\twidth: ", size[1], "px;"), file=path, append=TRUE, sep="\n")
+		cat(paste0("\t\t\theight: ", size[2], "px;"), file=path, append=TRUE, sep="\n")
 		cat("\t\t}", file=path, append=TRUE, sep="\n")
 	}
 	
@@ -98,7 +98,7 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 				    cat("\t\t\tfloat: left;", file=path, append=TRUE, sep="\n")
 				    cat("\t\t\tmargin-right: 8px;", file=path, append=TRUE, sep="\n")
 				    opa <- style[[2]][grep("fillOpacity", style[[2]])]
-				    cat(paste("\t\t\topacity: ", as.numeric(gsub(".+\\s+", "", opa)), ";", sep=""), file=path, append=TRUE, sep="\n")
+				    cat(paste0("\t\t\topacity: ", as.numeric(gsub(".+\\s+", "", opa)), ";"), file=path, append=TRUE, sep="\n")
 					cat("\t\t}", file=path, append=TRUE, sep="\n")
 				} else if(attr(style, "style.par")=="rad") {
 					cat("\t\t.legend {", file=path, append=TRUE, sep="\n")
@@ -156,39 +156,39 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 	
 	# initialize the map
 	if(is.na(center) || is.na(zoom)) cat("\t\tvar map = L.map('map')", file=path, append=TRUE, sep="\n")
-	else cat(paste("\t\tvar map = L.map('map').setView([", center[1], ", ", center[2], "],", zoom, ");", sep=""), file=path, append=TRUE, sep="\n")
+	else cat(paste0("\t\tvar map = L.map('map').setView([", center[1], ", ", center[2], "],", zoom, ");"), file=path, append=TRUE, sep="\n")
 	
 	# base layer	
 	for(n in 1: length(base.map)) {
 		if(base.map[[n]]=="osm") { # OpenStreetMap default
-			cat(paste("\t\tvar baseMap", n, " = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {", sep=""), file=path, append=TRUE, sep="\n")
+			cat(paste0("\t\tvar baseMap", n, " = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {"), file=path, append=TRUE, sep="\n")
 			cat("\t\t\tattribution: '&copy; <a href=\"http://openstreetmap.org/copyright\", target=\"_blank\">OpenStreetMap contributors</a>'", file=path, append=TRUE, sep="\n")
 		} else if(base.map[[n]]=="tls") { # Thunderforest Landscape
-			cat(paste("\t\tvar baseMap", n, " = L.tileLayer('http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png', {", sep=""), file=path, append=TRUE, sep="\n")
+			cat(paste0("\t\tvar baseMap", n, " = L.tileLayer('http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png', {"), file=path, append=TRUE, sep="\n")
 			cat("\t\t\tattribution: 'Tiles &copy; <a href=\"http://thunderforest.com\", target=\"_blank\">Thunderforest</a>, Map data &copy; <a href=\"http://openstreetmap.org/copyright\", target=\"_blank\">OpenStreetMap contributors</a>'", file=path, append=TRUE, sep="\n")
 		} else if (base.map[[n]]=="cm") { # CloudMade
-			cat(paste("\t\tvar baseMap", n, " = L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {", sep=""), file=path, append=TRUE, sep="\n")
+			cat(paste0("\t\tvar baseMap", n, " = L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {"), file=path, append=TRUE, sep="\n")
 			cat("\t\t\tattribution: 'Tiles &copy; <a href=\"http://cloudmade.com\", target=\"_blank\">CloudMade</a>, Map data &copy; <a href=\"http://openstreetmap.org/copyright\", target=\"_blank\">OpenStreetMap contributors</a>'", file=path, append=TRUE, sep="\n")
 		} else if(base.map[[n]]=="mqosm") { # MapQuest OSM
-			cat(paste("\t\tvar baseMap", n, " = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/{type}/{z}/{x}/{y}.png', {", sep=""), file=path, append=TRUE, sep="\n")
+			cat(paste0("\t\tvar baseMap", n, " = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/{type}/{z}/{x}/{y}.png', {"), file=path, append=TRUE, sep="\n")
 			cat("\t\t\tsubdomains: '1234',", file=path, append=TRUE, sep="\n")
 			cat("\t\t\ttype: 'osm',", file=path, append=TRUE, sep="\n")
 			cat("\t\t\tattribution: 'Tiles &copy; <a href=\"http://www.mapquest.com\", target=\"_blank\">MapQuest</a>, Map data &copy; <a href=\"http://openstreetmap.org/copyright\", target=\"_blank\">OpenStreetMap contributors</a>'", file=path, append=TRUE, sep="\n")
 		} else if(base.map[[n]]=="mqsat") { # MapQuest Open Aerial
-			cat(paste("\t\tvar baseMap", n, " = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/{type}/{z}/{x}/{y}.png', {", sep=""), file=path, append=TRUE, sep="\n")
+			cat(paste0("\t\tvar baseMap", n, " = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/{type}/{z}/{x}/{y}.png', {"), file=path, append=TRUE, sep="\n")
 			cat("\t\t\tsubdomains: '1234',", file=path, append=TRUE, sep="\n")
 			cat("\t\t\ttype: 'sat',", file=path, append=TRUE, sep="\n")
 			cat("\t\t\tmaxZoom: 11,", file=path, append=TRUE, sep="\n")
 			cat("\t\t\tattribution: 'Tiles &copy; <a href=\"http://www.mapquest.com\", target=\"_blank\">MapQuest</a>, Imagery &copy; NASA/JPL-Caltech and USDA Farm Service Agency'", file=path, append=TRUE, sep="\n")
 		} else if(base.map[[n]]=="water") { # Stamen Watercolor
-			cat(paste("\t\tvar baseMap", n, " = L.tileLayer('http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.png', {", sep=""), file=path, append=TRUE, sep="\n")
+			cat(paste0("\t\tvar baseMap", n, " = L.tileLayer('http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.png', {"), file=path, append=TRUE, sep="\n")
 			cat("\t\t\tattribution: 'Tiles &copy; <a href=\"http://stamen.com\", target=\"_blank\">Stamen Design</a> (<a href=\"http://creativecommons.org/licenses/by/3.0\", target=\"_blank\">CC BY 3.0</a>), Map data &copy; <a href=\"http://openstreetmap.org\", target=\"_blank\">OpenStreetMap</a> under <a href=\"http://creativecommons.org/licenses/by-sa/3.0\", target=\"_blank\">CC BY SA</a>'", file=path, append=TRUE, sep="\n")
 		} else if(base.map[[n]]=="toner") { # Stamen Toner
-			cat(paste("\t\tvar baseMap", n, " = L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {", sep=""), file=path, append=TRUE, sep="\n")
+			cat(paste0("\t\tvar baseMap", n, " = L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {"), file=path, append=TRUE, sep="\n")
 			cat("\t\t\tattribution: 'Tiles &copy; <a href=\"http://stamen.com\", target=\"_blank\">Stamen Design</a> (<a href=\"http://creativecommons.org/licenses/by/3.0\", target=\"_blank\">CC BY 3.0</a>), Map data &copy; <a href=\"http://openstreetmap.org\", target=\"_blank\">OpenStreetMap</a> (<a href=\"http://creativecommons.org/licenses/by-sa/3.0\", target=\"_blank\">CC BY SA</a>)'", file=path, append=TRUE, sep="\n")
 		}
 		cat("\t\t});", file=path, append=TRUE, sep="\n")
-		cat(paste("\t\tbaseMap", n, ".addTo(map);", sep=""), file=path, append=TRUE, sep="\n") # add base layer
+		cat(paste0("\t\tbaseMap", n, ".addTo(map);"), file=path, append=TRUE, sep="\n") # add base layer
 	}	
 	
 	# data layer
@@ -235,44 +235,42 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 			if(is.list(style) && is.null(attr(style, "style.type"))) {
 				for(n in 1:length(style)) {
 					if(any(!is.na(style[[n]]))) {	
-						#if(attr(style[[n]], "style.type")=="single") {
-						cat(paste("\t\tvar style", n, " = {", sep=""), file=path, append=TRUE, sep="\n")
-						if(length(style[[n]])==1) cat(paste("\t\t\t", style[[n]], sep=""), file=path, append=TRUE, sep="\n")
+						cat(paste0("\t\tvar style", n, " = {"), file=path, append=TRUE, sep="\n")
+						if(length(style[[n]])==1) cat(paste0("\t\t\t", style[[n]]), file=path, append=TRUE)
 						else {
-							for(i in 1:(length(style[[n]])-1)) cat(paste("\t\t\t", style[[n]][i], ",", sep=""), file=path, append=TRUE, sep="\n")
-							cat(paste("\t\t\t", style[[n]][length(style[[n]])], sep=""), file=path, append=TRUE, sep="\n")
+							for(i in 1:(length(style[[n]])-1)) cat(paste0("\t\t\t", style[[n]][i], ","), file=path, append=TRUE, sep="\n")
+							cat(paste0("\t\t\t", style[[n]][length(style[[n]])]), file=path, append=TRUE, sep="\n")
 						}
 						cat("\t\t};", file=path, append=TRUE, sep="\n")
-						#}
 					}
 				}
 			} else {
 				if(attr(style, "style.type")=="single") {
-					cat(paste("\t\tvar style", n, "= {", sep=""), file=path, append=TRUE, sep="\n")
-					if(length(style)==1) cat(paste("\t\t\t", style, sep=""), file=path, append=TRUE, sep="\n")
+					cat(paste0("\t\tvar style", n, "= {"), file=path, append=TRUE, sep="\n")
+					if(length(style)==1) cat(paste0("\t\t\t", style), file=path, append=TRUE, sep="\n")
 					else {
-						for(i in 1:(length(style)-1)) cat(paste("\t\t\t", style[i], ",", sep=""), file=path, append=TRUE, sep="\n")
-						cat(paste("\t\t\t", style[length(style)], sep=""), file=path, append=TRUE, sep="\n")
+						for(i in 1:(length(style)-1)) cat(paste0("\t\t\t", style[i], ","), file=path, append=TRUE, sep="\n")
+						cat(paste0("\t\t\t", style[length(style)]), file=path, append=TRUE, sep="\n")
 					}
 					cat("\t\t};", file=path, append=TRUE, sep="\n")
 				}
 				if(attr(style, "style.type")=="graduated") {
 					cat("\t\tfunction getValue(x) {", file=path, append=TRUE, sep="\n")
-					for(n in 1:length(style[[1]])) cat(paste("\t\t\t", style[[1]][n], sep=""), file=path, append=TRUE, sep="\n")
+					for(n in 1:length(style[[1]])) cat(paste0("\t\t\t", style[[1]][n]), file=path, append=TRUE, sep="\n")
 					cat("\t\t}", file=path, append=TRUE, sep="\n")
 					
 					cat("\t\tfunction style(feature) {", file=path, append=TRUE, sep="\n")
 					cat("\t\t\treturn {", file=path, append=TRUE, sep="\n")
 					if(is.null(style[[2]])) {
-						if(attr(style, "style.par")=="col") cat(paste("\t\t\t\t\"color\": getValue(feature.properties.", attr(style, "property"), ")", sep=""), file=path, append=TRUE, sep="\n")
-						else if(attr(style, "style.par")=="rad") cat(paste("\t\t\t\t\"radius\": getValue(feature.properties.", attr(style, "property"), ")", sep=""), file=path, append=TRUE, sep="\n")
+						if(attr(style, "style.par")=="col") cat(paste0("\t\t\t\t\"color\": getValue(feature.properties.", attr(style, "property"), ")"), file=path, append=TRUE, sep="\n")
+						else if(attr(style, "style.par")=="rad") cat(paste0("\t\t\t\t\"radius\": getValue(feature.properties.", attr(style, "property"), ")"), file=path, append=TRUE, sep="\n")
 					} else {
-						if(attr(style, "style.par")=="col") cat(paste("\t\t\t\t\"color\": getValue(feature.properties.", attr(style, "property"), "),", sep=""), file=path, append=TRUE, sep="\n")
-						else if(attr(style, "style.par")=="rad") cat(paste("\t\t\t\t\"radius\": getValue(feature.properties.", attr(style, "property"), "),", sep=""), file=path, append=TRUE, sep="\n")
-						if(length(style[[2]])==1) cat(paste("\t\t\t\t", style[[2]], sep=""), file=path, append=TRUE, sep="\n")
+						if(attr(style, "style.par")=="col") cat(paste0("\t\t\t\t\"color\": getValue(feature.properties.", attr(style, "property"), "),"), file=path, append=TRUE, sep="\n")
+						else if(attr(style, "style.par")=="rad") cat(paste0("\t\t\t\t\"radius\": getValue(feature.properties.", attr(style, "property"), "),"), file=path, append=TRUE, sep="\n")
+						if(length(style[[2]])==1) cat(paste0("\t\t\t\t", style[[2]]), file=path, append=TRUE, sep="\n")
 						else {
-							for(i in 1:(length(style[[2]])-1)) cat(paste("\t\t\t\t", style[[2]][i], ",", sep=""), file=path, append=TRUE, sep="\n")
-							cat(paste("\t\t\t\t", style[[2]][length(style[[2]])], sep=""), file=path, append=TRUE, sep="\n")
+							for(i in 1:(length(style[[2]])-1)) cat(paste0("\t\t\t\t", style[[2]][i], ","), file=path, append=TRUE, sep="\n")
+							cat(paste0("\t\t\t\t", style[[2]][length(style[[2]])]), file=path, append=TRUE, sep="\n")
 						}
 					}
 					cat("\t\t\t};", file=path, append=TRUE, sep="\n")
@@ -280,21 +278,21 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 				}
 				if(attr(style, "style.type")=="categorized") {
 					cat("\t\tfunction getValue(x) {", file=path, append=TRUE, sep="\n")
-					for(n in 1:length(style[[1]])) cat(paste("\t\t\t", style[[1]][n], sep=""), file=path, append=TRUE, sep="\n")
+					for(n in 1:length(style[[1]])) cat(paste0("\t\t\t", style[[1]][n]), file=path, append=TRUE, sep="\n")
 					cat("\t\t}", file=path, append=TRUE, sep="\n")
 					
 					cat("\t\tfunction style(feature) {", file=path, append=TRUE, sep="\n")
 					cat("\t\t\treturn {", file=path, append=TRUE, sep="\n")
 					if(is.null(style[[2]])) {
-						if(attr(style, "style.par")=="col") cat(paste("\t\t\t\t\"color\": getValue(feature.properties.", attr(style, "property"), ")", sep=""), file=path, append=TRUE, sep="\n")
-						else if(attr(style, "style.par")=="rad") cat(paste("\t\t\t\t\"radius\": getValue(feature.properties.", attr(style, "property"), ")", sep=""), file=path, append=TRUE, sep="\n")
+						if(attr(style, "style.par")=="col") cat(paste0("\t\t\t\t\"color\": getValue(feature.properties.", attr(style, "property"), ")"), file=path, append=TRUE, sep="\n")
+						else if(attr(style, "style.par")=="rad") cat(paste0("\t\t\t\t\"radius\": getValue(feature.properties.", attr(style, "property"), ")"), file=path, append=TRUE, sep="\n")
 					} else {
-						if(attr(style, "style.par")=="col") cat(paste("\t\t\t\t\"color\": getValue(feature.properties.", attr(style, "property"), "),", sep=""), file=path, append=TRUE, sep="\n")
-						else if(attr(style, "style.par")=="rad") cat(paste("\t\t\t\t\"radius\": getValue(feature.properties.", attr(style, "property"), "),", sep=""), file=path, append=TRUE, sep="\n")
-						if(length(style[[2]])==1) cat(paste("\t\t\t\t", style[[2]], sep=""), file=path, append=TRUE, sep="\n")
+						if(attr(style, "style.par")=="col") cat(paste0("\t\t\t\t\"color\": getValue(feature.properties.", attr(style, "property"), "),"), file=path, append=TRUE, sep="\n")
+						else if(attr(style, "style.par")=="rad") cat(paste0("\t\t\t\t\"radius\": getValue(feature.properties.", attr(style, "property"), "),"), file=path, append=TRUE, sep="\n")
+						if(length(style[[2]])==1) cat(paste0("\t\t\t\t", style[[2]]), file=path, append=TRUE, sep="\n")
 						else {
-							for(i in 1:(length(style[[2]])-1)) cat(paste("\t\t\t\t", style[[2]][i], ",", sep=""), file=path, append=TRUE, sep="\n")
-							cat(paste("\t\t\t\t", style[[2]][length(style[[2]])], sep=""), file=path, append=TRUE, sep="\n")
+							for(i in 1:(length(style[[2]])-1)) cat(paste0("\t\t\t\t", style[[2]][i], ","), file=path, append=TRUE, sep="\n")
+							cat(paste0("\t\t\t\t", style[[2]][length(style[[2]])]), file=path, append=TRUE, sep="\n")
 						}
 					}
 					cat("\t\t\t};", file=path, append=TRUE, sep="\n")
@@ -323,10 +321,10 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 			        if(any(is.na(style))) cat("\t\t\t\treturn L.circleMarker(latlng);", file=path, append=TRUE, sep="\n")
 			        else {
 			        	if(is.null(attr(style, "style.type"))) {
-				        	if(attr(style[[n]], "style.type")=="single") cat(paste("\t\t\t\treturn L.circleMarker(latlng, style", n, ");", sep=""), file=path, append=TRUE, sep="\n")
+				        	if(attr(style[[n]], "style.type")=="single") cat(paste0("\t\t\t\treturn L.circleMarker(latlng, style", n, ");"), file=path, append=TRUE, sep="\n")
 				        	else cat("\t\t\t\treturn L.circleMarker(latlng, style(feature));", file=path, append=TRUE, sep="\n")
 			        	} else {
-				        	if(attr(style, "style.type")=="single") cat(paste("\t\t\t\treturn L.circleMarker(latlng, style", n, ");", sep=""), file=path, append=TRUE, sep="\n")
+				        	if(attr(style, "style.type")=="single") cat(paste0("\t\t\t\treturn L.circleMarker(latlng, style", n, ");"), file=path, append=TRUE, sep="\n")
 				        	else cat("\t\t\t\treturn L.circleMarker(latlng, style(feature));", file=path, append=TRUE, sep="\n")
 			        	}
 			        }
@@ -337,10 +335,10 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 					if(any(!is.na(style)))   {
 						if(!any(is.na(popup))) cat("\t\t\tonEachFeature: onEachFeature,", file=path, append=TRUE, sep="\n")
 				        if(is.null(attr(style, "style.type"))) {
-				        	if(attr(style[[n]], "style.type")=="single") cat(paste("\t\t\tstyle: style", n, sep=""), file=path, append=TRUE, sep="\n")
+				        	if(attr(style[[n]], "style.type")=="single") cat(paste0("\t\t\tstyle: style", n), file=path, append=TRUE, sep="\n")
 				        	else cat("\t\t\tstyle: style", file=path, append=TRUE, sep="\n")
 				        } else {
-				        	if(attr(style, "style.type")=="single") cat(paste("\t\t\tstyle: style", n, sep=""), file=path, append=TRUE, sep="\n")
+				        	if(attr(style, "style.type")=="single") cat(paste0("\t\t\tstyle: style", n), file=path, append=TRUE, sep="\n")
 				        	else cat("\t\t\tstyle: style", file=path, append=TRUE, sep="\n")
 						}
 					} else if(!is.na(popup)) cat("\t\t\tonEachFeature: onEachFeature", file=path, append=TRUE, sep="\n")
@@ -351,10 +349,10 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 						if(!any(is.na(popup))) cat("\t\t\tonEachFeature: onEachFeature,", file=path, append=TRUE, sep="\n")
 				        if(is.null(attr(style, "style.type"))) {
 				        	cat(attr(style, "style.type"))
-				        	if(attr(style[[n]], "style.type")=="single") cat(paste("\t\t\tstyle: style", n, sep=""), file=path, append=TRUE, sep="\n")
+				        	if(attr(style[[n]], "style.type")=="single") cat(paste0("\t\t\tstyle: style", n), file=path, append=TRUE, sep="\n")
 				        	else cat("\t\t\tstyle: style", file=path, append=TRUE, sep="\n")
 				        } else {
-				        	if(attr(style, "style.type")=="single") cat(paste("\t\t\tstyle: style", n, sep=""), file=path, append=TRUE, sep="\n")
+				        	if(attr(style, "style.type")=="single") cat(paste0("\t\t\tstyle: style", n), file=path, append=TRUE, sep="\n")
 				        	else cat("\t\t\tstyle: style", file=path, append=TRUE, sep="\n")
 				        }
 					} else if(!any(is.na(popup))) cat("\t\t\tonEachFeature: onEachFeature", file=path, append=TRUE, sep="\n")
@@ -367,17 +365,17 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 			for(n in 1:length(dat)) {
 				ft <- getFeatureType(dat[[n]])
 				if(ft=="point") {
-					cat(paste("\t\t$.getJSON($(\"link[rel=\'", paste("dat", n, sep=""), "\']\").attr(\"href\"), function(data) {", sep=""), file=path, append=TRUE, sep="\n")
+					cat(paste0("\t\t$.getJSON($(\"link[rel=\'", paste0("dat", n), "\']\").attr(\"href\"), function(data) {"), file=path, append=TRUE, sep="\n")
 					cat("\t\t\tvar dat = L.geoJson(data, {", file=path, append=TRUE, sep="\n")
 					if(!any(is.na(popup))) cat("\t\t\t\tonEachFeature: onEachFeature,", file=path, append=TRUE, sep="\n")
 					cat("\t\t\t\tpointToLayer: function (feature, latlng) {", file=path, append=TRUE, sep="\n")
 			        if(any(is.na(style))) cat("\t\t\t\t\treturn L.circleMarker(latlng);", file=path, append=TRUE, sep="\n")
 			        else {
 			        	if(is.null(attr(style, "style.type"))) {
-				        	if(attr(style[[n]], "style.type")=="single") cat(paste("\t\t\t\t\treturn L.circleMarker(latlng, style", n, ");", sep=""), file=path, append=TRUE, sep="\n")
+				        	if(attr(style[[n]], "style.type")=="single") cat(paste0("\t\t\t\t\treturn L.circleMarker(latlng, style", n, ");"), file=path, append=TRUE, sep="\n")
 				        	else cat("\t\t\t\t\treturn L.circleMarker(latlng, style(feature));", file=path, append=TRUE, sep="\n")
 			        	} else {
-				        	if(attr(style, "style.type")=="single") cat(paste("\t\t\t\t\treturn L.circleMarker(latlng, style", n, ");", sep=""), file=path, append=TRUE, sep="\n")
+				        	if(attr(style, "style.type")=="single") cat(paste0("\t\t\t\t\treturn L.circleMarker(latlng, style", n, ");"), file=path, append=TRUE, sep="\n")
 				        	else cat("\t\t\t\t\treturn L.circleMarker(latlng, style(feature));", file=path, append=TRUE, sep="\n")
 			        	}
 			        }
@@ -387,15 +385,15 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 					cat("\t\t\tdat.addTo(map);", file=path, append=TRUE, sep="\n")
 					cat("\t\t});", file=path, append=TRUE, sep="\n")
 				} else if(ft=="line") {
-					cat(paste("\t\t$.getJSON($(\"link[rel=\'", paste("dat", n, sep=""), "\']\").attr(\"href\"), function(data) {", sep=""), file=path, append=TRUE, sep="\n")
+					cat(paste0("\t\t$.getJSON($(\"link[rel=\'", paste0("dat", n), "\']\").attr(\"href\"), function(data) {"), file=path, append=TRUE, sep="\n")
 					cat("\t\t\tvar dat = L.geoJson(data, {", file=path, append=TRUE, sep="\n")
 					if(any(!is.na(style)))   {
 						if(!any(is.na(popup))) cat("\t\t\t\tonEachFeature: onEachFeature,", file=path, append=TRUE, sep="\n")
 				        if(is.null(attr(style, "style.type"))) {
-				        	if(attr(style[[n]], "style.type")=="single") cat(paste("\t\t\t\tstyle: style", n, sep=""), file=path, append=TRUE, sep="\n")
+				        	if(attr(style[[n]], "style.type")=="single") cat(paste0("\t\t\t\tstyle: style", n), file=path, append=TRUE, sep="\n")
 				        	else cat("\t\t\t\tstyle: style", file=path, append=TRUE, sep="\n")
 				        } else {
-				        	if(attr(style, "style.type")=="single") cat(paste("\t\t\t\tstyle: style", n, sep=""), file=path, append=TRUE, sep="\n")
+				        	if(attr(style, "style.type")=="single") cat(paste0("\t\t\t\tstyle: style", n), file=path, append=TRUE, sep="\n")
 				        	else cat("\t\t\t\tstyle: style", file=path, append=TRUE, sep="\n")
 						}
 					} else if(!any(is.na(popup))) cat("\t\t\t\tonEachFeature: onEachFeature", file=path, append=TRUE, sep="\n")
@@ -404,16 +402,16 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 					cat("\t\t\tdat.addTo(map);", file=path, append=TRUE, sep="\n")
 					cat("\t\t});", file=path, append=TRUE, sep="\n")
 				} else if(ft=="polygon") {
-					cat(paste("\t\t$.getJSON($(\"link[rel=\'", paste("dat", n, sep=""), "\']\").attr(\"href\"), function(data) {", sep=""), file=path, append=TRUE, sep="\n")
+					cat(paste0("\t\t$.getJSON($(\"link[rel=\'", paste0("dat", n), "\']\").attr(\"href\"), function(data) {"), file=path, append=TRUE, sep="\n")
 					cat("\t\t\tvar dat = L.geoJson(data, {", file=path, append=TRUE, sep="\n")
 					if(any(!is.na(style)))   {
 						if(!any(is.na(popup))) cat("\t\t\t\tonEachFeature: onEachFeature,", file=path, append=TRUE, sep="\n")
 				        if(is.null(attr(style, "style.type"))) {
 				        	cat(attr(style, "style.type"))
-				        	if(attr(style[[n]], "style.type")=="single") cat(paste("\t\t\t\tstyle: style", n, sep=""), file=path, append=TRUE, sep="\n")
+				        	if(attr(style[[n]], "style.type")=="single") cat(paste0("\t\t\t\tstyle: style", n), file=path, append=TRUE, sep="\n")
 				        	else cat("\t\t\t\tstyle: style", file=path, append=TRUE, sep="\n")
 				        } else {
-				        	if(attr(style, "style.type")=="single") cat(paste("\t\t\t\tstyle: style", n, sep=""), file=path, append=TRUE, sep="\n")
+				        	if(attr(style, "style.type")=="single") cat(paste0("\t\t\t\tstyle: style", n), file=path, append=TRUE, sep="\n")
 				        	else cat("\t\t\t\tstyle: style", file=path, append=TRUE, sep="\n")
 				        }
 					} else if(!any(is.na(popup))) cat("\t\t\t\tonEachFeature: onEachFeature", file=path, append=TRUE, sep="\n")
@@ -430,46 +428,24 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 	if(length(base.map)>1) {
 		cat("\t\tvar baseMaps = {", file=path, append=TRUE, sep="\n")
 		for(n in 1:(length(base.map)-1)) {
-			if(base.map[[n]]=="osm") cat(paste("\t\t\t\"OpenStreetMap\": baseMap", n, ",", sep=""), file=path, append=TRUE, sep="\n")
-			if(base.map[[n]]=="tls") cat(paste("\t\t\t\"Thunderforest Landscape\": baseMap", n, ",", sep=""), file=path, append=TRUE, sep="\n")
-			if(base.map[[n]]=="cm") cat(paste("\t\t\t\"CloudMade\": baseMap", n, ",", sep=""), file=path, append=TRUE, sep="\n")
-			if(base.map[[n]]=="mqosm") cat(paste("\t\t\t\"MapQuest OSM\": baseMap", n, ",", sep=""), file=path, append=TRUE, sep="\n")
-			if(base.map[[n]]=="mqsat") cat(paste("\t\t\t\"MapQuest Open Aerial\": baseMap", n, ",", sep=""), file=path, append=TRUE, sep="\n")
-			if(base.map[[n]]=="water") cat(paste("\t\t\t\"Stamen Watercolor\": baseMap", n, ",", sep=""), file=path, append=TRUE, sep="\n")
-			if(base.map[[n]]=="toner") cat(paste("\t\t\t\"Stamen Toner\": baseMap", n, ",", sep=""), file=path, append=TRUE, sep="\n")
+			if(base.map[[n]]=="osm") cat(paste0("\t\t\t\"OpenStreetMap\": baseMap", n, ","), file=path, append=TRUE, sep="\n")
+			if(base.map[[n]]=="tls") cat(paste0("\t\t\t\"Thunderforest Landscape\": baseMap", n, ","), file=path, append=TRUE, sep="\n")
+			if(base.map[[n]]=="cm") cat(paste0("\t\t\t\"CloudMade\": baseMap", n, ","), file=path, append=TRUE, sep="\n")
+			if(base.map[[n]]=="mqosm") cat(paste0("\t\t\t\"MapQuest OSM\": baseMap", n, ","), file=path, append=TRUE, sep="\n")
+			if(base.map[[n]]=="mqsat") cat(paste0("\t\t\t\"MapQuest Open Aerial\": baseMap", n, ","), file=path, append=TRUE, sep="\n")
+			if(base.map[[n]]=="water") cat(paste0("\t\t\t\"Stamen Watercolor\": baseMap", n, ","), file=path, append=TRUE, sep="\n")
+			if(base.map[[n]]=="toner") cat(paste0("\t\t\t\"Stamen Toner\": baseMap", n, ","), file=path, append=TRUE, sep="\n")
 		}
-		if(base.map[[length(base.map)]]=="osm") cat(paste("\t\t\t\"OpenStreetMap\": baseMap", length(base.map), sep=""), file=path, append=TRUE, sep="\n")
-		if(base.map[[length(base.map)]]=="tls") cat(paste("\t\t\t\"Thunderforest Landscape\": baseMap", length(base.map), sep=""), file=path, append=TRUE, sep="\n")
-		if(base.map[[length(base.map)]]=="cm") cat(paste("\t\t\t\"CloudMade\": baseMap", length(base.map), sep=""), file=path, append=TRUE, sep="\n")
-		if(base.map[[length(base.map)]]=="mqosm") cat(paste("\t\t\t\"MapQuest OSM\": baseMap", length(base.map), sep=""), file=path, append=TRUE, sep="\n")
-		if(base.map[[length(base.map)]]=="mqsat") cat(paste("\t\t\t\"MapQuest Open Aerial\": baseMap", length(base.map), sep=""), file=path, append=TRUE, sep="\n")
-		if(base.map[[length(base.map)]]=="water") cat(paste("\t\t\t\"Stamen Watercolor\": baseMap", length(base.map), sep=""), file=path, append=TRUE, sep="\n")
-		if(base.map[[length(base.map)]]=="toner") cat(paste("\t\t\t\"Stamen Toner\": baseMap", length(base.map), sep=""), file=path, append=TRUE, sep="\n")
+		if(base.map[[length(base.map)]]=="osm") cat(paste0("\t\t\t\"OpenStreetMap\": baseMap", length(base.map)), file=path, append=TRUE, sep="\n")
+		if(base.map[[length(base.map)]]=="tls") cat(paste0("\t\t\t\"Thunderforest Landscape\": baseMap", length(base.map)), file=path, append=TRUE, sep="\n")
+		if(base.map[[length(base.map)]]=="cm") cat(paste0("\t\t\t\"CloudMade\": baseMap", length(base.map)), file=path, append=TRUE, sep="\n")
+		if(base.map[[length(base.map)]]=="mqosm") cat(paste0("\t\t\t\"MapQuest OSM\": baseMap", length(base.map)), file=path, append=TRUE, sep="\n")
+		if(base.map[[length(base.map)]]=="mqsat") cat(paste0("\t\t\t\"MapQuest Open Aerial\": baseMap", length(base.map)), file=path, append=TRUE, sep="\n")
+		if(base.map[[length(base.map)]]=="water") cat(paste0("\t\t\t\"Stamen Watercolor\": baseMap", length(base.map)), file=path, append=TRUE, sep="\n")
+		if(base.map[[length(base.map)]]=="toner") cat(paste0("\t\t\t\"Stamen Toner\": baseMap", length(base.map)), file=path, append=TRUE, sep="\n")
 		cat("\t\t};", file=path, append=TRUE, sep="\n")
 		cat("\t\tL.control.layers(baseMaps).addTo(map);", file=path, append=TRUE, sep="\n")
 	}
-	
-	# problems with referencing geojson -> initialized only in callback function(s)
-	#if(layer.switcher) {
-	#	if(length(dat)>1) {
-	#		cat("\t\tvar overlayMaps = {", file=path, append=TRUE, sep="\n")
-	#		for(n in 1:(length(dat)-1)) {
-	#			str(dat[[n]])
-	#			cat("\n")
-	#			cat(paste("\t\t\t\"", strsplit(dat[[n]], ".", fixed=TRUE)[[1]][1], "\": dat", n, ",", sep=""), file=path, append=TRUE, sep="\n")
-	#		}
-	#		cat(paste("\t\t\t\"", strsplit(dat[[length(dat)]], ".", fixed=TRUE)[[1]][1], "\": dat", length(dat), sep=""), file=path, append=TRUE, sep="\n")
-	#		cat("\t\t};", file=path, append=TRUE, sep="\n")
-	#	} else {
-	#		cat("\t\tvar overlayMaps = {", file=path, append=TRUE, sep="\n")
-	#		cat(paste("\t\t\t\"", strsplit(dat, ".", fixed=TRUE)[[1]][1], "\": dat", sep=""), file=path, append=TRUE, sep="\n")
-	#		cat("\t\t};", file=path, append=TRUE, sep="\n")
-	#	}
-	#}
-	
-	#if(length(base.map)>1 && layer.switcher) cat("\t\tL.control.layers(baseMaps, overlayMaps).addTo(map);", file=path, append=TRUE, sep="\n")
-	#if(length(base.map)>1 && !layer.switcher) cat("\t\tL.control.layers(baseMaps).addTo(map);", file=path, append=TRUE, sep="\n")
-	#if(length(base.map)==1 && layer.switcher) cat("\t\tL.control.layers(overlayMaps).addTo(map);", file=path, append=TRUE, sep="\n")
 	
 	# add legend
 	if(!any(is.na(style))) {
@@ -479,8 +455,8 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 				cat("\t\tlegend.onAdd = function(map) {", file=path, append=TRUE, sep="\n")
 				cat("\t\t\tvar div = L.DomUtil.create('div', 'legend'),", file=path, append=TRUE, sep="\n")
 		        cat("\t\t\tlabels = [],", file=path, append=TRUE, sep="\n")
-		        cat(paste("\t\t\tgrades = [", paste(attr(style, "breaks"), collapse=", "), "];", sep=""), file=path, append=TRUE, sep="\n")
-		        if(!is.null(attr(style, "leg"))) cat(paste("\t\t\tdiv.innerHTML += \'", attr(style, "leg"), "<br>\'", sep=""), file=path, append=TRUE, sep="\n")
+		        cat(paste0("\t\t\tgrades = [", paste(attr(style, "breaks"), collapse=", "), "];"), file=path, append=TRUE, sep="\n")
+		        if(!is.null(attr(style, "leg"))) cat(paste0("\t\t\tdiv.innerHTML += \'", attr(style, "leg"), "<br>\'"), file=path, append=TRUE, sep="\n")
 				if(attr(style, "style.par")=="col") { # color scale
 				    if(attr(style, "out")==0) { # left and right closed
 					    cat("\t\t\tfor (var i = 0; i < grades.length-1; i++) {", file=path, append=TRUE, sep="\n")
@@ -597,8 +573,8 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 				cat("\t\tlegend.onAdd = function(map) {", file=path, append=TRUE, sep="\n")
 				cat("\t\t\tvar div = L.DomUtil.create('div', 'legend'),", file=path, append=TRUE, sep="\n")
 		        cat("\t\t\tlabels = [],", file=path, append=TRUE, sep="\n")
-		        cat(paste("\t\t\tcats = [\"", paste(attr(style, "values"), collapse="\", \""), "\"];", sep=""), file=path, append=TRUE, sep="\n")
-		        if(!is.null(attr(style, "leg"))) cat(paste("\t\t\tdiv.innerHTML += \'", attr(style, "leg"), "<br>\'", sep=""), file=path, append=TRUE, sep="\n")
+		        cat(paste0("\t\t\tcats = [\"", paste(attr(style, "values"), collapse="\", \""), "\"];"), file=path, append=TRUE, sep="\n")
+		        if(!is.null(attr(style, "leg"))) cat(paste0("\t\t\tdiv.innerHTML += \'", attr(style, "leg"), "<br>\'"), file=path, append=TRUE, sep="\n")
 				if(attr(style, "style.par")=="col") { # color scale
 					cat("\t\t\tfor (var i = 0; i < cats.length; i++) {", file=path, append=TRUE, sep="\n")
 				    cat("\t\t\t\tdiv.innerHTML +=", file=path, append=TRUE, sep="\n")
@@ -617,13 +593,7 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 					cat("\t\t\t}", file=path, append=TRUE, sep="\n")
 					if(!is.null(attr(style, "na"))) {
 						cat("\t\t\tdiv.innerHTML +=", file=path, append=TRUE, sep="\n")
-					#	if(attr(style, "na.val")==0) {							
-					#		clr <- style[[2]][grep("color", style[[2]])]
-					#		opa <- style[[2]][grep("opacity", style[[2]])]									
-					#		cat(paste0("\t\t\t\t\t\'<table style=\"border: none;\"><tr><td class=\"circle\" style=\"width: \' + (getValue(cats[cats.length-1])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;\"><svg style=\"width: ", (as.numeric(gsub(".+\\s+", "", wght))-1)*2, "px; height: ", (as.numeric(gsub(".+\\s+", "", wght))-1)*2, "px;\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\"><circle cx=\"", (as.numeric(gsub(".+\\s+", "", wght))-1)*2, "\" cy=\"", (as.numeric(gsub(".+\\s+", "", wght))-1)*2, "\" r=\"", as.numeric(gsub(".+\\s+", "", wght))-1, "\" stroke-width=\"0\" fill=\"", substr(clr, nchar(clr)-7, nchar(clr)-1), "\" fill-opacity=\"", substr(opa, nchar(opa)-2, nchar(opa)), "\" /></svg></td><td class=\"value\">\' + \'", attr(style, "na"), "\' + \'</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
-					#	} else {
 						cat(paste0("\t\t\t\t\t\'<table style=\"border: none;\"><tr><td class=\"circle\" style=\"width: \' + (getValue(cats[cats.length-1])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;\"><svg style=\"width: \' + (getValue()*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px; height: \' + (getValue()*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\"><circle class=\"crcl\" cx=\"\' + (getValue()+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'\" cy=\"\' + (getValue()+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'\" r=\"\' + getValue() + \'\" /></svg></td><td class=\"value\">\' + \'", attr(style, "na"), "\' + \'</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
-					#	}
 					}
 				}
 				cat("\t\t\treturn div;", file=path, append=TRUE, sep="\n")

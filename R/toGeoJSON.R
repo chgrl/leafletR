@@ -24,7 +24,7 @@ function(data, name, dest, lat.lon, overwrite=TRUE) {
 	}
 	
 	if(!is.null(path)) {
-		cat("\nFile saved under", path)
+		message("\nFile saved under ", path)
 		invisible(path)
 	}
 }

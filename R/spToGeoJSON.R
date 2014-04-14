@@ -2,7 +2,7 @@ spToGeoJSON <-
 function(data, class, name, dest, overwrite) {
 	
 	path <- paste0(file.path(dest, name), ".geojson")
-	if(file.exists(path) && !overwrite) stop("Abort - file already exists\n")
+	if(file.exists(path) && !overwrite) stop("Abort - file already exists")
 	
 	stopifnot(require(sp, quietly=TRUE))
 	suppressWarnings(rgdal <- require(rgdal, quietly=TRUE))
@@ -26,7 +26,7 @@ function(data, class, name, dest, overwrite) {
 				if(!is.null(dat)) {
 					cat("      \"properties\": {", file=path, append=TRUE, sep="\n")
 					for(p in 1:length(dat)) {
-						cat(paste("        \"", names(dat)[p], "\": \"", dat[f,p], "\"", sep=""), file=path, append=TRUE)
+						cat(paste0("        \"", names(dat)[p], "\": \"", dat[f,p], "\""), file=path, append=TRUE)
 						if(p==length(dat)) cat("\n", file=path, append=TRUE)
 						else cat(",", file=path, append=TRUE, sep="\n")
 					}
@@ -37,7 +37,7 @@ function(data, class, name, dest, overwrite) {
 			# geometry
 			cat("      \"geometry\": {", file=path, append=TRUE, sep="\n")
 			cat("        \"type\": \"Point\",", file=path, append=TRUE, sep="\n")
-			cat(paste("        \"coordinates\": [", coord[f,1], ",", coord[f,2], "]", sep=""), file=path, append=TRUE, sep="\n")
+			cat(paste0("        \"coordinates\": [", coord[f,1], ",", coord[f,2], "]"), file=path, append=TRUE, sep="\n")
 			cat("      }", file=path, append=TRUE, sep="\n")
 			
 			if(f==nrow(data)) cat("    }", file=path, append=TRUE, sep="\n")
@@ -57,12 +57,12 @@ function(data, class, name, dest, overwrite) {
 				dat <- data@data
 				if(!is.null(dat)) {	
 					for(p in 1:length(dat)) {
-						cat(paste("        \"", names(dat)[p], "\": \"", dat[f,p], "\"", sep=""), file=path, append=TRUE)
+						cat(paste0("        \"", names(dat)[p], "\": \"", dat[f,p], "\""), file=path, append=TRUE)
 						cat(",", file=path, append=TRUE, sep="\n")
 					}
 				}
 			}
-			cat(paste("        \"ID\": \"", slot(slot(data, "lines")[[f]], "ID"), "\"", sep=""), file=path, append=TRUE)
+			cat(paste0("        \"ID\": \"", slot(slot(data, "lines")[[f]], "ID"), "\""), file=path, append=TRUE)
 			cat("\n      },", file=path, append=TRUE, sep="\n")
 			
 			# geometry
@@ -104,12 +104,12 @@ function(data, class, name, dest, overwrite) {
 				dat <- data@data
 				if(!is.null(dat)) {	
 					for(p in 1:length(dat)) {
-						cat(paste("        \"", names(dat)[p], "\": \"", dat[f,p], "\"", sep=""), file=path, append=TRUE)
+						cat(paste0("        \"", names(dat)[p], "\": \"", dat[f,p], "\""), file=path, append=TRUE)
 						cat(",", file=path, append=TRUE, sep="\n")
 					}
 				}
 			}
-			cat(paste("        \"ID\": \"", slot(slot(data, "polygons")[[f]], "ID"), "\"", sep=""), file=path, append=TRUE)
+			cat(paste0("        \"ID\": \"", slot(slot(data, "polygons")[[f]], "ID"), "\""), file=path, append=TRUE)
 			cat("\n      },", file=path, append=TRUE, sep="\n")
 			
 			# geometry
@@ -158,13 +158,13 @@ function(data, class, name, dest, overwrite) {
 						hol.idx <- NULL
 						for(h in 1:length(hol)) {
 							for(p in 1:length(pol)) {
-								if(holeCheck(coord.raw[[pol[p]]], coord.raw[[hol[h]]])) {
+								if(checkPolyHole(coord.raw[[pol[p]]], coord.raw[[hol[h]]])) {
 									hol.idx <- append(hol.idx, pol[p])
 									break
 								}
 							}
 						}
-						if(length(hol.idx)<length(hol)) cat("warning: one or more holes could not be assigned to polygon\n")
+						if(length(hol.idx)<length(hol)) warning("Warning: one or more holes could not be assigned to polygon", call.=FALSE)
 						
 						coord <- NULL
 						for(p in 1:length(pol)) {

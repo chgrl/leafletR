@@ -1,7 +1,7 @@
 getFeatureType <-
 function(dat) {
 	# check if file exists
-	if(!file.exists(dat)) stop("data file not found")
+	if(!file.exists(dat)) stop("Data file not found")
 	
 	suppressWarnings(rjsonio <- require(RJSONIO, quietly=TRUE))
 	
@@ -30,7 +30,7 @@ function(dat) {
 				ft <- "polygon"
 				break
 			}
-			else stop("geometry type not recognized")
+			else stop("Geometry type not recognized")
 		}
 		
 		close(con)

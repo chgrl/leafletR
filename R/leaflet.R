@@ -27,8 +27,8 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 	if(missing(style)) style <- NA
 	if(missing(popup)) popup <- NA
 	
-	if(length(data)>1 && !is.na(style)) if((length(style)<length(data) && is.list(style)) || !is.list(style)) stop("number of styles must correspond to number of data files")
-	if(file.exists(file.path(dest, gsub(" ", "_", title))) && !overwrite) stop("abort - file already exists")
+	if(length(data)>1 && !is.na(style)) if((length(style)<length(data) && is.list(style)) || !is.list(style)) stop("Number of styles must correspond to number of data files")
+	if(file.exists(file.path(dest, gsub(" ", "_", title))) && !overwrite) stop("Abort - file already exists")
 	
 	if(!any(is.na(popup))) {
 		if(is.list(popup)) {
@@ -46,8 +46,8 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 		center <- c(0,0)
 		zoom <- 2
 	}
-	filePath <- file.path(dest, gsub(" ", "_", title), paste(gsub(" ", "_", title), ".html", sep=""))
+	filePath <- file.path(dest, gsub(" ", "_", title), paste0(gsub(" ", "_", title), ".html"))
 	leafletInt(data, path=filePath, title, size, base.map, center, zoom, style, popup, incl.data)
-	cat("\nYour leaflet map has been saved under", filePath)
+	message("\nYour leaflet map has been saved under ", filePath)
 	invisible(filePath)
 }
