@@ -27,8 +27,6 @@ If \code{val} does not cover all data values, the unspecified data values are co
 # prepare data
 dat <- toGeoJSON(data=system.file(package="leafletR", "files", 
   "park_sk.zip"), dest=tempdir())
-data(quakes)
-qks <- toGeoJSON(data=quakes, dest=tempdir())
 
 # simple categorizing
 sty <- styleCat(prop="lynx", val=c("yes", "no"), 
