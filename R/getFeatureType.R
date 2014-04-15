@@ -12,7 +12,7 @@ function(dat) {
   		if(ft=="Point" || ft=="MultiPoint") ft <- "point"
   		else if(ft=="LineString" || ft=="MultiLineString") ft <- "line"
   		else if(ft=="Polygon" || ft=="MultiPolygon") ft <- "polygon"
-  		else stop("geometry type not recognized")
+  		else stop("Geometry type not recognized")
 	} else {	# fallback if RJSONIO package not available
 		con <- file(dat, "rt") 
 		

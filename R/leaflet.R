@@ -19,9 +19,9 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 		}
 	}
 	if(missing(size)) size <- NA
-	bm <- c("osm", "tls", "cm", "mqosm", "mqsat", "water", "toner")
+	bm <- c("osm", "tls", "mqosm", "mqsat", "water", "toner")
 	base.map <- bm[pmatch(base.map, bm)]
-	if(is.na(base.map)) stop("invalid base.map")
+	if(is.na(base.map)) stop("Invalid base.map")
 	if(missing(center)) center <- NA
 	if(missing(zoom)) zoom <- NA
 	if(missing(style)) style <- NA

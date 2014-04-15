@@ -166,9 +166,6 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 		} else if(base.map[[n]]=="tls") { # Thunderforest Landscape
 			cat(paste0("\t\tvar baseMap", n, " = L.tileLayer('http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png', {"), file=path, append=TRUE, sep="\n")
 			cat("\t\t\tattribution: 'Tiles &copy; <a href=\"http://thunderforest.com\", target=\"_blank\">Thunderforest</a>, Map data &copy; <a href=\"http://openstreetmap.org/copyright\", target=\"_blank\">OpenStreetMap contributors</a>'", file=path, append=TRUE, sep="\n")
-		} else if (base.map[[n]]=="cm") { # CloudMade
-			cat(paste0("\t\tvar baseMap", n, " = L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {"), file=path, append=TRUE, sep="\n")
-			cat("\t\t\tattribution: 'Tiles &copy; <a href=\"http://cloudmade.com\", target=\"_blank\">CloudMade</a>, Map data &copy; <a href=\"http://openstreetmap.org/copyright\", target=\"_blank\">OpenStreetMap contributors</a>'", file=path, append=TRUE, sep="\n")
 		} else if(base.map[[n]]=="mqosm") { # MapQuest OSM
 			cat(paste0("\t\tvar baseMap", n, " = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/{type}/{z}/{x}/{y}.png', {"), file=path, append=TRUE, sep="\n")
 			cat("\t\t\tsubdomains: '1234',", file=path, append=TRUE, sep="\n")
@@ -430,7 +427,6 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 		for(n in 1:(length(base.map)-1)) {
 			if(base.map[[n]]=="osm") cat(paste0("\t\t\t\"OpenStreetMap\": baseMap", n, ","), file=path, append=TRUE, sep="\n")
 			if(base.map[[n]]=="tls") cat(paste0("\t\t\t\"Thunderforest Landscape\": baseMap", n, ","), file=path, append=TRUE, sep="\n")
-			if(base.map[[n]]=="cm") cat(paste0("\t\t\t\"CloudMade\": baseMap", n, ","), file=path, append=TRUE, sep="\n")
 			if(base.map[[n]]=="mqosm") cat(paste0("\t\t\t\"MapQuest OSM\": baseMap", n, ","), file=path, append=TRUE, sep="\n")
 			if(base.map[[n]]=="mqsat") cat(paste0("\t\t\t\"MapQuest Open Aerial\": baseMap", n, ","), file=path, append=TRUE, sep="\n")
 			if(base.map[[n]]=="water") cat(paste0("\t\t\t\"Stamen Watercolor\": baseMap", n, ","), file=path, append=TRUE, sep="\n")
@@ -438,7 +434,6 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 		}
 		if(base.map[[length(base.map)]]=="osm") cat(paste0("\t\t\t\"OpenStreetMap\": baseMap", length(base.map)), file=path, append=TRUE, sep="\n")
 		if(base.map[[length(base.map)]]=="tls") cat(paste0("\t\t\t\"Thunderforest Landscape\": baseMap", length(base.map)), file=path, append=TRUE, sep="\n")
-		if(base.map[[length(base.map)]]=="cm") cat(paste0("\t\t\t\"CloudMade\": baseMap", length(base.map)), file=path, append=TRUE, sep="\n")
 		if(base.map[[length(base.map)]]=="mqosm") cat(paste0("\t\t\t\"MapQuest OSM\": baseMap", length(base.map)), file=path, append=TRUE, sep="\n")
 		if(base.map[[length(base.map)]]=="mqsat") cat(paste0("\t\t\t\"MapQuest Open Aerial\": baseMap", length(base.map)), file=path, append=TRUE, sep="\n")
 		if(base.map[[length(base.map)]]=="water") cat(paste0("\t\t\t\"Stamen Watercolor\": baseMap", length(base.map)), file=path, append=TRUE, sep="\n")
