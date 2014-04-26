@@ -300,6 +300,7 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 		
 		# data layer
 		if(incl.data) {
+			fit.bounds <- TRUE
 			for(n in 1:length(dat)) {
 				cat(paste0("\t\tvar data", n," ="), file=path, append=TRUE, sep="\n")
 				if(!file.exists(dat[[n]])) stop("data file not found")
@@ -355,10 +356,16 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 					} else if(!any(is.na(popup))) cat("\t\t\tonEachFeature: onEachFeature", file=path, append=TRUE, sep="\n")
 					cat("\t\t});", file=path, append=TRUE, sep="\n")
 				}
-				if(is.na(center) || is.na(zoom)) cat(paste0("\t\tmap.fitBounds(dat", n, ".getBounds());"), file=path, append=TRUE, sep="\n")
+				if(is.na(center) || is.na(zoom)) {
+					if(fit.bounds) {
+						cat(paste0("\t\tmap.fitBounds(dat", n, ".getBounds());"), file=path, append=TRUE, sep="\n")
+						fit.bounds <- FALSE
+					}
+				}
 				cat(paste0("\t\tdat", n, ".addTo(map);"), file=path, append=TRUE, sep="\n")
 			}			
 		} else {
+			fit.bounds <- TRUE
 			for(n in 1:length(dat)) {
 				ft <- getFeatureType(dat[[n]])
 				if(ft=="point") {
@@ -378,7 +385,12 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 			        }
 			    	cat("\t\t\t\t}", file=path, append=TRUE, sep="\n")
 					cat("\t\t\t});", file=path, append=TRUE, sep="\n")
-					if(is.na(center) || is.na(zoom)) cat("\t\t\tmap.fitBounds(dat.getBounds());", file=path, append=TRUE, sep="\n")
+					if(is.na(center) || is.na(zoom)) {
+						if(fit.bounds) {
+							cat("\t\t\tmap.fitBounds(dat.getBounds());", file=path, append=TRUE, sep="\n")
+							fit.bounds <- FALSE
+						}
+					}
 					cat("\t\t\tdat.addTo(map);", file=path, append=TRUE, sep="\n")
 					cat("\t\t});", file=path, append=TRUE, sep="\n")
 				} else if(ft=="line") {
@@ -395,7 +407,12 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 						}
 					} else if(!any(is.na(popup))) cat("\t\t\t\tonEachFeature: onEachFeature", file=path, append=TRUE, sep="\n")
 					cat("\t\t\t});", file=path, append=TRUE, sep="\n")
-					if(is.na(center) || is.na(zoom)) cat("\t\t\tmap.fitBounds(dat.getBounds());", file=path, append=TRUE, sep="\n")
+					if(is.na(center) || is.na(zoom)) {
+						if(fit.bounds) {
+							cat("\t\t\tmap.fitBounds(dat.getBounds());", file=path, append=TRUE, sep="\n")
+							fit.bounds <- FALSE
+						}
+					}
 					cat("\t\t\tdat.addTo(map);", file=path, append=TRUE, sep="\n")
 					cat("\t\t});", file=path, append=TRUE, sep="\n")
 				} else if(ft=="polygon") {
@@ -413,7 +430,12 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 				        }
 					} else if(!any(is.na(popup))) cat("\t\t\t\tonEachFeature: onEachFeature", file=path, append=TRUE, sep="\n")
 					cat("\t\t\t});", file=path, append=TRUE, sep="\n")
-					if(is.na(center) || is.na(zoom)) cat("\t\t\tmap.fitBounds(dat.getBounds());", file=path, append=TRUE, sep="\n")
+					if(is.na(center) || is.na(zoom)) {
+						if(fit.bounds) {
+							cat("\t\t\tmap.fitBounds(dat.getBounds());", file=path, append=TRUE, sep="\n")
+							fit.bounds <- FALSE
+						}
+					}
 					cat("\t\t\tdat.addTo(map);", file=path, append=TRUE, sep="\n")
 					cat("\t\t});", file=path, append=TRUE, sep="\n")
 				}
