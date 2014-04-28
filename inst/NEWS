@@ -1,3 +1,23 @@
+leafletR 0.2-0 [2014-04-28]
+---------------------------
+
+* bug fix in styleGrad: broken legend in some cases
+
+* bug fix in leaflet: no map display in case of multiple included
+  data layers
+
+* new function getProperties: prints names of properties 
+  available in GeoJSON file (RJSONIO package required)
+
+* leaflet: GeoJSON validation added (RJSONIO package required)
+
+* leaflet: CloudMade tiles removed (not free anymore)
+
+* toGeoJSON: spatial objects (sp) support added
+
+* internal functions improved/fixed
+
+
 leafletR 0.1-2 [2014-03-13]
 ---------------------------
 
