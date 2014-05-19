@@ -243,7 +243,7 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 				}
 			} else {
 				if(attr(style, "style.type")=="single") {
-					cat(paste0("\t\tvar style", n, "= {"), file=path, append=TRUE, sep="\n")
+					cat(paste0("\t\tvar style1= {"), file=path, append=TRUE, sep="\n")
 					if(length(style)==1) cat(paste0("\t\t\t", style), file=path, append=TRUE, sep="\n")
 					else {
 						for(i in 1:(length(style)-1)) cat(paste0("\t\t\t", style[i], ","), file=path, append=TRUE, sep="\n")
