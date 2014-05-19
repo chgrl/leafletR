@@ -40,7 +40,7 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 	
 	dir.create(file.path(dest, gsub(" ", "_", title)), showWarnings=FALSE)
 	if(any(!is.na(data)) && !incl.data) {
-		for(n in 1:length(data)) file.copy(data[[n]], file.path(dest, gsub(" ", "_", title)))
+		for(n in 1:length(data)) file.copy(data[[n]], file.path(dest, gsub(" ", "_", title)), overwrite=overwrite)
 	}
 	if(any(is.na(data))) {
 		center <- c(0,0)
