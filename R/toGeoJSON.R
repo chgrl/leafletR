@@ -12,7 +12,7 @@ function(data, name, dest, lat.lon, overwrite=TRUE) {
 		if(missing(lat.lon)) lat.lon <- c(1,2)
 		path <- dfToGeoJSON(data, name, dest, lat.lon, overwrite)
 	} else if(class(data)=="character") {
-		if(missing(name)) name <- strsplit(tail(strsplit(data, "/")[[1]], 1), "[.]")[[1]][1]
+		if(missing(name)) name <- paste(head(strsplit(tail(strsplit(data, "/")[[1]], 1), "[.]")[[1]], -1), collapse=".")
 		name <- gsub(" ", "_", name)
 		path <- fileToGeoJSON(data, name, dest, overwrite)
 	} else if(class(data)[1]=="SpatialPoints" || class(data)[1]=="SpatialPointsDataFrame" || class(data)[1]=="SpatialLines" || class(data)[1]=="SpatialLinesDataFrame" || class(data)[1]=="SpatialPolygons" || class(data)[1]=="SpatialPolygonsDataFrame") {

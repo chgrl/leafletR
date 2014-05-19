@@ -2,11 +2,11 @@ leaflet <-
 function(data, dest, title, size, base.map="osm", center, zoom, style, popup, incl.data=FALSE, overwrite=TRUE) {	
 	if(missing(data)) data <- NA
 	if(length(data)>1) for(n in 1:length(data)) {
-		if(!is.na(data[[n]])) if(tolower(strsplit(tail(strsplit(data[[n]], "/")[[1]], 1), "[.]")[[1]][2])!="geojson") stop("'data' requires GeoJSON files (file extension should be 'geojson')")
+		if(!is.na(data[[n]])) if(tolower(tail(strsplit(tail(strsplit(data[[n]], "/")[[1]], 1), "[.]")[[1]], 1))!="geojson") stop("'data' requires GeoJSON files (file extension should be 'geojson')")
 		suppressWarnings(if(require(RJSONIO, quietly=TRUE)) if(!isValidJSON(data[[n]])) stop("'data' is not a valid JSON file"))
 	} else {
 		if(!is.na(data)) {
-			if(tolower(strsplit(tail(strsplit(data, "/")[[1]], 1), "[.]")[[1]][2])!="geojson") stop("'data' requires GeoJSON files (file extension should be 'geojson')")
+			if(tolower(tail(strsplit(tail(strsplit(data, "/")[[1]], 1), "[.]")[[1]], 1))!="geojson") stop("'data' requires GeoJSON files (file extension should be 'geojson')")
 			suppressWarnings(if(require(RJSONIO, quietly=TRUE)) if(!isValidJSON(data)) stop("'data' is not a valid JSON file"))
 		}
 	}
@@ -15,7 +15,7 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 	if(missing(title)) {
 		if(any(is.na(data))) title <- "map" 
 		else {
-			if(length(data)==1) title <- gsub("_", " ", strsplit(tail(strsplit(data, "/")[[1]], 1), "[.]")[[1]][1]) else title <- "map"
+			if(length(data)==1) title <- gsub("_", " ", paste(head(strsplit(tail(strsplit(data, "/")[[1]], 1), "[.]")[[1]], -1), collapse="_")) else title <- "map"
 		}
 	}
 	if(missing(size)) size <- NA
