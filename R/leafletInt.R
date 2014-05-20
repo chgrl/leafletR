@@ -79,7 +79,7 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 	
 	# legend
 	if(!any(is.na(style))) {
-		if(!is.null(attr(style, "style.type"))) {
+		if(class(style)=="leafletr.style") {
 			if(attr(style, "style.type")=="graduated" || attr(style, "style.type")=="categorized") {
 				if(attr(style, "style.par")=="col") {
 					cat("\t\t.legend {", file=path, append=TRUE, sep="\n")
@@ -229,7 +229,7 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 		
 		# styling
 		if(any(!is.na(style))) {
-			if(is.list(style) && is.null(attr(style, "style.type"))) {
+			if(is.list(style)) {
 				for(n in 1:length(style)) {
 					if(any(!is.na(style[[n]]))) {	
 						cat(paste0("\t\tvar style", n, " = {"), file=path, append=TRUE, sep="\n")
@@ -318,7 +318,7 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 					cat("\t\t\tpointToLayer: function (feature, latlng) {", file=path, append=TRUE, sep="\n")
 			        if(any(is.na(style))) cat("\t\t\t\treturn L.circleMarker(latlng);", file=path, append=TRUE, sep="\n")
 			        else {
-			        	if(is.null(attr(style, "style.type"))) {
+			        	if(is.list(style)) {
 				        	if(attr(style[[n]], "style.type")=="single") cat(paste0("\t\t\t\treturn L.circleMarker(latlng, style", n, ");"), file=path, append=TRUE, sep="\n")
 				        	else cat("\t\t\t\treturn L.circleMarker(latlng, style(feature));", file=path, append=TRUE, sep="\n")
 			        	} else {
@@ -332,7 +332,7 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 					cat(paste0("\t\tvar dat", n, " = L.geoJson(data", n, ", {"), file=path, append=TRUE, sep="\n")
 					if(any(!is.na(style)))   {
 						if(!any(is.na(popup))) cat("\t\t\tonEachFeature: onEachFeature,", file=path, append=TRUE, sep="\n")
-				        if(is.null(attr(style, "style.type"))) {
+				        if(is.list(style)) {
 				        	if(attr(style[[n]], "style.type")=="single") cat(paste0("\t\t\tstyle: style", n), file=path, append=TRUE, sep="\n")
 				        	else cat("\t\t\tstyle: style", file=path, append=TRUE, sep="\n")
 				        } else {
@@ -345,7 +345,7 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 					cat(paste0("\t\tvar dat", n, " = L.geoJson(data", n, ", {"), file=path, append=TRUE, sep="\n")
 					if(any(!is.na(style)))   {
 						if(!any(is.na(popup))) cat("\t\t\tonEachFeature: onEachFeature,", file=path, append=TRUE, sep="\n")
-				        if(is.null(attr(style, "style.type"))) {
+				        if(is.list(style)) {
 				        	cat(attr(style, "style.type"))
 				        	if(attr(style[[n]], "style.type")=="single") cat(paste0("\t\t\tstyle: style", n), file=path, append=TRUE, sep="\n")
 				        	else cat("\t\t\tstyle: style", file=path, append=TRUE, sep="\n")
@@ -375,7 +375,7 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 					cat("\t\t\t\tpointToLayer: function (feature, latlng) {", file=path, append=TRUE, sep="\n")
 			        if(any(is.na(style))) cat("\t\t\t\t\treturn L.circleMarker(latlng);", file=path, append=TRUE, sep="\n")
 			        else {
-			        	if(is.null(attr(style, "style.type"))) {
+			        	if(is.list(style)) {
 				        	if(attr(style[[n]], "style.type")=="single") cat(paste0("\t\t\t\t\treturn L.circleMarker(latlng, style", n, ");"), file=path, append=TRUE, sep="\n")
 				        	else cat("\t\t\t\t\treturn L.circleMarker(latlng, style(feature));", file=path, append=TRUE, sep="\n")
 			        	} else {
@@ -398,7 +398,7 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 					cat("\t\t\tvar dat = L.geoJson(data, {", file=path, append=TRUE, sep="\n")
 					if(any(!is.na(style)))   {
 						if(!any(is.na(popup))) cat("\t\t\t\tonEachFeature: onEachFeature,", file=path, append=TRUE, sep="\n")
-				        if(is.null(attr(style, "style.type"))) {
+				        if(is.list(style)) {
 				        	if(attr(style[[n]], "style.type")=="single") cat(paste0("\t\t\t\tstyle: style", n), file=path, append=TRUE, sep="\n")
 				        	else cat("\t\t\t\tstyle: style", file=path, append=TRUE, sep="\n")
 				        } else {
@@ -420,8 +420,7 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 					cat("\t\t\tvar dat = L.geoJson(data, {", file=path, append=TRUE, sep="\n")
 					if(any(!is.na(style)))   {
 						if(!any(is.na(popup))) cat("\t\t\t\tonEachFeature: onEachFeature,", file=path, append=TRUE, sep="\n")
-				        if(is.null(attr(style, "style.type"))) {
-				        	cat(attr(style, "style.type"))
+				        if(is.list(style)) {
 				        	if(attr(style[[n]], "style.type")=="single") cat(paste0("\t\t\t\tstyle: style", n), file=path, append=TRUE, sep="\n")
 				        	else cat("\t\t\t\tstyle: style", file=path, append=TRUE, sep="\n")
 				        } else {
@@ -466,7 +465,7 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 	
 	# add legend
 	if(!any(is.na(style))) {
-		if(!is.null(attr(style, "style.type"))) {
+		if(class(style)=="leafletr.style") {
 			if(attr(style, "style.type")=="graduated") {
 				cat("\t\tvar legend = L.control({position: 'bottomright'});", file=path, append=TRUE, sep="\n")
 				cat("\t\tlegend.onAdd = function(map) {", file=path, append=TRUE, sep="\n")

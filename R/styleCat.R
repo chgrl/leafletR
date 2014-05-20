@@ -51,5 +51,6 @@ function(prop, val, style.par="col", style.val, leg, ...) {
 		#attr(cat.style, "na.val") <- stl.val[length(val)+1]
 	}
 	if(!missing(leg)) attr(cat.style, "leg") <- leg
+	class(cat.style) <- "leafletr.style"
 	return(cat.style)
 }

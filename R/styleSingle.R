@@ -18,5 +18,6 @@ function(col, lwd, alpha, fill, fill.alpha, rad) {
 
 	if(is.null(style)) stop("No style parameters defined")
 	attr(style, "style.type") <- "single"
+	class(style) <- "leafletr.style"
 	return(style)
 }
