@@ -27,7 +27,7 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 	if(missing(style)) style <- NA
 	if(missing(popup)) popup <- NA
 	
-	if(is.list(style)) {
+	if(class(style)=="list") {
 		for(i in 1:length(style)) if(class(style[[i]])!="leafletr.style") stop("At least one style object not recognized")
 	} else if(class(style)!="leafletr.style") stop("Style object not recognized")
 	
