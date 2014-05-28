@@ -79,8 +79,30 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 	
 	# legend
 	if(!any(is.na(style))) {
-		if(class(style)=="leafletr.style") {
-			if(attr(style, "style.type")=="graduated" || attr(style, "style.type")=="categorized") {
+		if(class(style)=="leafletr.style" || class(style)=="list") {
+			sty <- NULL
+			if(class(style)=="list") {
+				for(i in 1:length(style)) sty <- append(sty, attr(style[[i]], "style.type"))
+				if(all(sty=="single")) {
+					cat("\t\t.legend {", file=path, append=TRUE, sep="\n")
+					cat("\t\t\tpadding: 6px 8px;", file=path, append=TRUE, sep="\n")
+					cat("\t\t\tfont: 14px/16px Arial, Helvetica, sans-serif;", file=path, append=TRUE, sep="\n")
+					cat("\t\t\tbackground: white;", file=path, append=TRUE, sep="\n")
+					cat("\t\t\tbackground: rgba(255,255,255,0.8);", file=path, append=TRUE, sep="\n")
+					cat("\t\t\tbox-shadow: 0 0 15px rgba(0,0,0,0.2);", file=path, append=TRUE, sep="\n")
+					cat("\t\t\tborder-radius: 5px;", file=path, append=TRUE, sep="\n")
+				    cat("\t\t\tline-height: 18px;", file=path, append=TRUE, sep="\n")
+				    cat("\t\t\tcolor: #555;", file=path, append=TRUE, sep="\n")
+					cat("\t\t}", file=path, append=TRUE, sep="\n")
+					cat("\t\t.legend i {", file=path, append=TRUE, sep="\n")
+				    cat("\t\t\twidth: 18px;", file=path, append=TRUE, sep="\n")
+				    cat("\t\t\theight: 18px;", file=path, append=TRUE, sep="\n")
+				    cat("\t\t\tfloat: left;", file=path, append=TRUE, sep="\n")
+				    cat("\t\t\tmargin-right: 8px;", file=path, append=TRUE, sep="\n")
+					cat("\t\t}", file=path, append=TRUE, sep="\n")
+				}
+			}	
+			else if(attr(style, "style.type")=="graduated" || attr(style, "style.type")=="categorized") {
 				if(attr(style, "style.par")=="col") {
 					cat("\t\t.legend {", file=path, append=TRUE, sep="\n")
 					cat("\t\t\tpadding: 6px 8px;", file=path, append=TRUE, sep="\n")
@@ -233,7 +255,7 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 				for(n in 1:length(style)) {
 					if(any(!is.na(style[[n]]))) {	
 						cat(paste0("\t\tvar style", n, " = {"), file=path, append=TRUE, sep="\n")
-						if(length(style[[n]])==1) cat(paste0("\t\t\t", style[[n]]), file=path, append=TRUE)
+						if(length(style[[n]])==1) cat(paste0("\t\t\t", style[[n]]), file=path, append=TRUE, sep="\n")
 						else {
 							for(i in 1:(length(style[[n]])-1)) cat(paste0("\t\t\t", style[[n]][i], ","), file=path, append=TRUE, sep="\n")
 							cat(paste0("\t\t\t", style[[n]][length(style[[n]])]), file=path, append=TRUE, sep="\n")
@@ -465,8 +487,27 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 	
 	# add legend
 	if(!any(is.na(style))) {
-		if(class(style)=="leafletr.style") {
-			if(attr(style, "style.type")=="graduated") {
+		if(class(style)=="list") { # multiple single style
+			sty <- NULL
+			for(i in 1:length(style)) sty <- append(sty, attr(style[[i]], "style.type"))
+			if(all(sty=="single")) {
+				cat("\t\tvar legend = L.control({position: 'bottomright'});", file=path, append=TRUE, sep="\n")
+				cat("\t\tlegend.onAdd = function(map) {", file=path, append=TRUE, sep="\n")
+				cat("\t\t\tvar div = L.DomUtil.create('div', 'legend'),", file=path, append=TRUE, sep="\n")
+				if(!is.null(attr(style, "leg"))) cat(paste0("\t\t\tdiv.innerHTML += \'", attr(style, "leg"), "<br>\'"), file=path, append=TRUE, sep="\n")
+				for(i in 1:length(style)) {
+					cat("\t\t\tdiv.innerHTML +=", file=path, append=TRUE, sep="\n")
+					clr <- style[[i]][grep("fillColor", style[[i]])]
+					cat(paste0("\t\t\t\t\'<i style=\"background: ", substr(clr, nchar(clr)-7, nchar(clr)-1), ";\"></i>\'"), file=path, append=TRUE, sep="\n")
+					cat("\t\t\t}", file=path, append=TRUE, sep="\n")
+				}
+				cat("\t\t\treturn div;", file=path, append=TRUE, sep="\n")
+				cat("\t\t};", file=path, append=TRUE, sep="\n")
+				cat("\t\tlegend.addTo(map);", file=path, append=TRUE, sep="\n")
+			}
+		}
+		else if(class(style)=="leafletr.style") {
+			if(attr(style, "style.type")=="graduated") { # graduated style
 				cat("\t\tvar legend = L.control({position: 'bottomright'});", file=path, append=TRUE, sep="\n")
 				cat("\t\tlegend.onAdd = function(map) {", file=path, append=TRUE, sep="\n")
 				cat("\t\t\tvar div = L.DomUtil.create('div', 'legend'),", file=path, append=TRUE, sep="\n")
@@ -584,7 +625,7 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 				cat("\t\t};", file=path, append=TRUE, sep="\n")
 				cat("\t\tlegend.addTo(map);", file=path, append=TRUE, sep="\n")
 			}
-			if(attr(style, "style.type")=="categorized") {
+			else if(attr(style, "style.type")=="categorized") { # categorized style
 				cat("\t\tvar legend = L.control({position: 'bottomright'});", file=path, append=TRUE, sep="\n")
 				cat("\t\tlegend.onAdd = function(map) {", file=path, append=TRUE, sep="\n")
 				cat("\t\t\tvar div = L.DomUtil.create('div', 'legend'),", file=path, append=TRUE, sep="\n")
