@@ -41,7 +41,7 @@ function(prop, val, style.par="col", style.val, leg, ...) {
 		}
 	}
 	
-	cat.style <- list(cat.style, single.style)
+	cat.style <- list(style=cat.style, add=single.style)
 	attr(cat.style, "style.type") <- "categorized"
 	attr(cat.style, "property") <- prop
 	attr(cat.style, "values") <- val
