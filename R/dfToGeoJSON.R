@@ -24,9 +24,10 @@ function(data, name, dest, lat.lon, overwrite) {
 		# properties
 		if(length(data)>2) {
 			cat("      \"properties\": {", file=path, append=TRUE, sep="\n")
-			for(p in 3:length(data)) {
-				cat(paste0("        \"", names(data)[p], "\": \"", data[f,p], "\""), file=path, append=TRUE)
-				if(p==length(data)) cat("\n", file=path, append=TRUE)
+			dat <- data[f,-lat.lon]
+			for(p in 1:length(dat)) {
+				cat(paste0("        \"", names(dat)[p], "\": \"", dat[p], "\""), file=path, append=TRUE)
+				if(p==length(dat)) cat("\n", file=path, append=TRUE)
 				else cat(",", file=path, append=TRUE, sep="\n")
 			}
 			cat("      },", file=path, append=TRUE, sep="\n")
