@@ -1,4 +1,4 @@
-<img src="http://home.arcor.de/fett32/leafletR_logo.png" alt="leafletR" />
+<img src="leafletR_logo.png" alt="leafletR" />
 
 An R package to create interactive web-maps based on the Leaflet JavaScript library
 
