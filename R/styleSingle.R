@@ -13,7 +13,10 @@ function(col, lwd, alpha, fill, fill.alpha, rad) {
 		if(is.na(fill)) style <- append(style, "fill: false")
 		else style <- append(style, paste("fillColor: \"", getHex(fill), "\"", sep=""))
 	}
-	if(!missing(fill.alpha) && !missing(fill)) if(!is.na(fill)) style <- append(style, paste("fillOpacity:", fill.alpha))
+	if(!missing(fill.alpha)) {
+		if(missing(fill)) style <- append(style, paste("fillOpacity:", fill.alpha))
+		else if(!is.na(fill)) style <- append(style, paste("fillOpacity:", fill.alpha))
+	}
 	if(!missing(rad)) style <- append(style, paste("radius:", rad))
 
 	if(is.null(style)) stop("No style parameters defined")
