@@ -7,7 +7,10 @@ function(col, lwd, alpha, fill, fill.alpha, rad) {
 		if(is.na(col)) style <- append(style, "stroke: false")
 		else style <- append(style, paste("color: \"", getHex(col), "\"", sep=""))
 	}
-	if(!missing(lwd) && !missing(col)) if(!is.na(col)) style <- append(style, paste("weight:", lwd))
+	if(!missing(lwd)) {
+		if(missing(col)) style <- append(style, paste("weight:", lwd))
+		else if(!is.na(col)) style <- append(style, paste("weight:", lwd))
+	}
 	if(!missing(alpha)) {
 		if(missing(col)) style <- append(style, paste("opacity:", alpha))
 		else if(!is.na(col)) style <- append(style, paste("opacity:", alpha))
