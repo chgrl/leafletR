@@ -100,6 +100,46 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 				    cat("\t\t\tfloat: left;", file=path, append=TRUE, sep="\n")
 				    cat("\t\t\tmargin-right: 8px;", file=path, append=TRUE, sep="\n")
 					cat("\t\t}", file=path, append=TRUE, sep="\n")
+					cat("\t\ttable, td {", file=path, append=TRUE, sep="\n")
+					cat("\t\t\tborder: none;", file=path, append=TRUE, sep="\n")
+					cat("\t\t}", file=path, append=TRUE, sep="\n")
+					cat("\t\t.shape {", file=path, append=TRUE, sep="\n")
+					cat("\t\t\tpadding: 0px;", file=path, append=TRUE, sep="\n")
+					cat("\t\t\ttext-align: center;", file=path, append=TRUE, sep="\n")
+					cat("\t\t\tvertical-align: middle;", file=path, append=TRUE, sep="\n")
+					cat("\t\t}", file=path, append=TRUE, sep="\n")
+					cat("\t\t.value {", file=path, append=TRUE, sep="\n")
+					cat("\t\t\tpadding: 0px 0px 0px 8px;", file=path, append=TRUE, sep="\n")
+					cat("\t\t\ttext-align: left;", file=path, append=TRUE, sep="\n")
+					cat("\t\t\tvertical-align: middle;", file=path, append=TRUE, sep="\n")
+					cat("\t\t}", file=path, append=TRUE, sep="\n")
+									
+					ft <- getFeatureType(dat[[i]])
+					if(ft=="point") {
+						cat("\t\t.crcl {", file=path, append=TRUE, sep="\n")
+						cat("\t\t\tfill: #0033ff;", file=path, append=TRUE, sep="\n")
+						cat("\t\t\tfill-opacity: 0.5;", file=path, append=TRUE, sep="\n")
+						cat("\t\t\tstroke: #0033ff;", file=path, append=TRUE, sep="\n")
+						cat("\t\t\tstroke-width: 2;", file=path, append=TRUE, sep="\n")
+						cat("\t\t\tstroke-opacity: 0.5;", file=path, append=TRUE, sep="\n")
+						cat("\t\t}", file=path, append=TRUE, sep="\n")
+					} else if(ft=="line") {
+						cat("\t\t.ln {", file=path, append=TRUE, sep="\n")
+						cat("\t\t\tstroke: #0033ff;", file=path, append=TRUE, sep="\n")
+						cat("\t\t\tstroke-width: 5;", file=path, append=TRUE, sep="\n")
+						cat("\t\t\tstroke-opacity: 0.5;", file=path, append=TRUE, sep="\n")
+						cat("\t\t\tstroke-linecap: round;", file=path, append=TRUE, sep="\n")
+						cat("\t\t}", file=path, append=TRUE, sep="\n")
+					} else if(ft=="polygon") {
+						cat("\t\t.plgn {", file=path, append=TRUE, sep="\n")
+						cat("\t\t\tfill: #0033ff;", file=path, append=TRUE, sep="\n")
+						cat("\t\t\tfill-opacity: 0.5;", file=path, append=TRUE, sep="\n")
+						cat("\t\t\tstroke: #0033ff;", file=path, append=TRUE, sep="\n")
+						cat("\t\t\tstroke-width: 4;", file=path, append=TRUE, sep="\n")
+						cat("\t\t\tstroke-opacity: 0.5;", file=path, append=TRUE, sep="\n")
+						cat("\t\t\tstroke-linejoin: round;", file=path, append=TRUE, sep="\n")
+						cat("\t\t}", file=path, append=TRUE, sep="\n")
+					}
 				}
 			}	
 			else if(attr(style, "style.type")=="graduated" || attr(style, "style.type")=="categorized") {
@@ -487,19 +527,58 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 	
 	# add legend
 	if(!any(is.na(style))) {
-		if(class(style)=="list") { # multiple single style
+		if(class(style)=="list") { # multi single style
 			sty <- NULL
 			for(i in 1:length(style)) sty <- append(sty, attr(style[[i]], "style.type"))
 			if(all(sty=="single")) {
 				cat("\t\tvar legend = L.control({position: 'bottomright'});", file=path, append=TRUE, sep="\n")
 				cat("\t\tlegend.onAdd = function(map) {", file=path, append=TRUE, sep="\n")
-				cat("\t\t\tvar div = L.DomUtil.create('div', 'legend'),", file=path, append=TRUE, sep="\n")
+				cat("\t\t\tvar div = L.DomUtil.create('div', 'legend');", file=path, append=TRUE, sep="\n")
 				if(!is.null(attr(style, "leg"))) cat(paste0("\t\t\tdiv.innerHTML += \'", attr(style, "leg"), "<br>\'"), file=path, append=TRUE, sep="\n")
+				# get max column width
+				max.width <- 0
+				for(i in 1:length(style)) {
+					rad <- style[[i]][grep("rad", style[[i]])]
+					if(length(rad)==0) rad <- "radius: 10"
+					lwd <- style[[i]][grep("weight", style[[i]])]
+					if(length(lwd)==0) lwd <- "weight: 2"
+					rad <- substr(rad, 9, nchar(rad))
+					lwd <- substr(lwd, 9, nchar(lwd))
+					width <- as.numeric(rad)*2+as.numeric(lwd)
+					if(width>max.width) max.width <- width
+				}
+				# write legend
 				for(i in 1:length(style)) {
 					cat("\t\t\tdiv.innerHTML +=", file=path, append=TRUE, sep="\n")
-					clr <- style[[i]][grep("fillColor", style[[i]])]
-					cat(paste0("\t\t\t\t\'<i style=\"background: ", substr(clr, nchar(clr)-7, nchar(clr)-1), ";\"></i>\'"), file=path, append=TRUE, sep="\n")
-					cat("\t\t\t}", file=path, append=TRUE, sep="\n")
+					fill <- style[[i]][grep("fillColor", style[[i]])]
+					clr <- style[[i]][grep("color", style[[i]])]
+					if(length(fill)==0) fill <- clr
+					if(length(fill)==0) fill <- "color: \"#0033ff\""
+					if(length(clr)==0) clr <- "color: \"#0033ff\""
+					rad <- style[[i]][grep("rad", style[[i]])]
+					if(length(rad)==0) rad <- "radius: 10"
+					fill.opa <- style[[i]][grep("fillOpacity", style[[i]])]
+					if(length(fill.opa)==0) fill.opa <- "fillOpacity: 0.2"
+					opa <- style[[i]][grep("opacity", style[[i]])]
+					if(length(opa)==0) opa <- "opacity: 0.5"
+					lwd <- style[[i]][grep("weight", style[[i]])]
+					if(length(lwd)==0) lwd <- "weight: 2"
+					
+					ft <- getFeatureType(dat[[i]])
+					ttl <- names(dat)[i]
+					if(is.null(ttl)) ttl <- i
+					else if(ttl=="") ttl <- i
+					if(ft=="point") {
+						rd <- substr(rad, 9, nchar(rad))
+						lwd <- substr(lwd, 9, nchar(lwd))
+						st <- paste0("fill: ", substr(fill, nchar(fill)-7, nchar(fill)-1), "; stroke: ", substr(clr, nchar(clr)-7, nchar(clr)-1), "; fill-opacity: ", substr(fill.opa, 14, nchar(fill.opa)), "; stroke-opacity: ", substr(opa, 10, nchar(opa)), "; stroke-width: ", lwd, ";")
+						
+						cat(paste0("\t\t\t\t\t\'<table><tr><td class=\"shape\"><svg style=\"width: ", max.width, "px; height: ", as.numeric(rd)*2+as.numeric(lwd), "px;\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\"><circle class=\"crcl\" style=\"", st, "\" cx=\"", max.width/2, "\" cy=\"", (as.numeric(rd)*2+as.numeric(lwd))/2, "\" r=\"", rd, "\" /></svg></td><td class=\"value\">", ttl,"</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
+					} else if(ft=="line") {
+						#cat(paste0("\t\t\t\t\t\'<table><tr><td class=\"shape\"><svg style=\"width: 26px; height: 26px;\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\"><line class=\"ln\" x1=\"5\" y1=\"10\" x2=\"15\" y2=\"10\" /></svg></td><td class=\"value\">line</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
+					} else if(ft=="polygon") {
+						#cat(paste0("\t\t\t\t\t\'<table><tr><td class=\"shape\"><svg style=\"width: 26px; height: 26px;\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\"><polygon class=\"plgn\" points=\"2,2 12,8 18,4 18,16 2,16\" /></svg></td><td class=\"value\">polygon</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
+					}
 				}
 				cat("\t\t\treturn div;", file=path, append=TRUE, sep="\n")
 				cat("\t\t};", file=path, append=TRUE, sep="\n")
