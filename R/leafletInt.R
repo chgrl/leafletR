@@ -536,7 +536,7 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 				cat("\t\t\tvar div = L.DomUtil.create('div', 'legend');", file=path, append=TRUE, sep="\n")
 				if(!is.null(attr(style, "leg"))) cat(paste0("\t\t\tdiv.innerHTML += \'", attr(style, "leg"), "<br>\'"), file=path, append=TRUE, sep="\n")
 				# get max column width
-				max.width <- 0
+				max.width <- 24
 				for(i in 1:length(style)) {
 					rad <- style[[i]][grep("rad", style[[i]])]
 					if(length(rad)==0) rad <- "radius: 10"
@@ -562,20 +562,24 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 					opa <- style[[i]][grep("opacity", style[[i]])]
 					if(length(opa)==0) opa <- "opacity: 0.5"
 					lwd <- style[[i]][grep("weight", style[[i]])]
-					if(length(lwd)==0) lwd <- "weight: 2"
 					
 					ft <- getFeatureType(dat[[i]])
 					ttl <- names(dat)[i]
 					if(is.null(ttl)) ttl <- i
 					else if(ttl=="") ttl <- i
+					
 					if(ft=="point") {
 						rd <- substr(rad, 9, nchar(rad))
+						if(length(lwd)==0) lwd <- "weight: 2"
 						lwd <- substr(lwd, 9, nchar(lwd))
 						st <- paste0("fill: ", substr(fill, nchar(fill)-7, nchar(fill)-1), "; stroke: ", substr(clr, nchar(clr)-7, nchar(clr)-1), "; fill-opacity: ", substr(fill.opa, 14, nchar(fill.opa)), "; stroke-opacity: ", substr(opa, 10, nchar(opa)), "; stroke-width: ", lwd, ";")
 						
 						cat(paste0("\t\t\t\t\t\'<table><tr><td class=\"shape\"><svg style=\"width: ", max.width, "px; height: ", as.numeric(rd)*2+as.numeric(lwd), "px;\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\"><circle class=\"crcl\" style=\"", st, "\" cx=\"", max.width/2, "\" cy=\"", (as.numeric(rd)*2+as.numeric(lwd))/2, "\" r=\"", rd, "\" /></svg></td><td class=\"value\">", ttl,"</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
 					} else if(ft=="line") {
-						#cat(paste0("\t\t\t\t\t\'<table><tr><td class=\"shape\"><svg style=\"width: 26px; height: 26px;\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\"><line class=\"ln\" x1=\"5\" y1=\"10\" x2=\"15\" y2=\"10\" /></svg></td><td class=\"value\">line</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
+						if(length(lwd)==0) lwd <- "weight: 5"
+						lwd <- substr(lwd, 9, nchar(lwd))
+						st <- paste0("stroke: ", substr(clr, nchar(clr)-7, nchar(clr)-1), "; stroke-opacity: ", substr(opa, 10, nchar(opa)), "; stroke-width: ", lwd, ";")
+						cat(paste0("\t\t\t\t\t\'<table><tr><td class=\"shape\"><svg style=\"width: ", max.width, "px; height: 18px;\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\"><line class=\"ln\" style=\"", st, "\" x1=\"", as.numeric(lwd)+1, "\" y1=\"", "9", "\" x2=\"", max.width-as.numeric(lwd)-1, "\" y2=\"", "9", "\" /></svg></td><td class=\"value\">", ttl, "</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
 					} else if(ft=="polygon") {
 						#cat(paste0("\t\t\t\t\t\'<table><tr><td class=\"shape\"><svg style=\"width: 26px; height: 26px;\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\"><polygon class=\"plgn\" points=\"2,2 12,8 18,4 18,16 2,16\" /></svg></td><td class=\"value\">polygon</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
 					}
