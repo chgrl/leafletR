@@ -113,9 +113,14 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 					cat("\t\t\ttext-align: left;", file=path, append=TRUE, sep="\n")
 					cat("\t\t\tvertical-align: middle;", file=path, append=TRUE, sep="\n")
 					cat("\t\t}", file=path, append=TRUE, sep="\n")
-									
-					ft <- getFeatureType(dat[[i]])
-					if(ft=="point") {
+					
+					# get vector of featureTypes and add corresponding styles
+					ft <- getFeatureType(dat[[1]])
+					for(i in 2:length(dat)) {
+						f <- getFeatureType(dat[[i]])
+						if(!any(ft==f)) ft <- append(ft, f)
+					}
+					if(any(ft=="point")) {
 						cat("\t\t.crcl {", file=path, append=TRUE, sep="\n")
 						cat("\t\t\tfill: #0033ff;", file=path, append=TRUE, sep="\n")
 						cat("\t\t\tfill-opacity: 0.5;", file=path, append=TRUE, sep="\n")
@@ -123,14 +128,16 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 						cat("\t\t\tstroke-width: 2;", file=path, append=TRUE, sep="\n")
 						cat("\t\t\tstroke-opacity: 0.5;", file=path, append=TRUE, sep="\n")
 						cat("\t\t}", file=path, append=TRUE, sep="\n")
-					} else if(ft=="line") {
+					}
+					if(any(ft=="line")) {
 						cat("\t\t.ln {", file=path, append=TRUE, sep="\n")
 						cat("\t\t\tstroke: #0033ff;", file=path, append=TRUE, sep="\n")
 						cat("\t\t\tstroke-width: 5;", file=path, append=TRUE, sep="\n")
 						cat("\t\t\tstroke-opacity: 0.5;", file=path, append=TRUE, sep="\n")
 						cat("\t\t\tstroke-linecap: round;", file=path, append=TRUE, sep="\n")
 						cat("\t\t}", file=path, append=TRUE, sep="\n")
-					} else if(ft=="polygon") {
+					}
+					if(any(ft=="polygon")) {
 						cat("\t\t.plgn {", file=path, append=TRUE, sep="\n")
 						cat("\t\t\tfill: #0033ff;", file=path, append=TRUE, sep="\n")
 						cat("\t\t\tfill-opacity: 0.5;", file=path, append=TRUE, sep="\n")
@@ -535,8 +542,41 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 				cat("\t\tlegend.onAdd = function(map) {", file=path, append=TRUE, sep="\n")
 				cat("\t\t\tvar div = L.DomUtil.create('div', 'legend');", file=path, append=TRUE, sep="\n")
 				if(!is.null(attr(style, "leg"))) cat(paste0("\t\t\tdiv.innerHTML += \'", attr(style, "leg"), "<br>\'"), file=path, append=TRUE, sep="\n")
-				# get max column width
+				# rearrange layer for legend (point > line > polygon)
+				#n.dat <- 0
+				#dat.ra <- style.ra <- list()
+				#for(i in 1:length(dat)) {
+				#	if(getFeatureType(dat[[i]])=="point") {
+				#		dat.ra[[i]] <- dat[[i]]
+				#		style.ra[[i]] <- style[[i]]
+				#		if(!is.null(names(dat)[i])) dat.ra[[i]] <- names(dat)[i]
+				#		n.dat <- n.dat+1
+				#	}
+				#}
+				#if(n.dat<length(dat)) {
+				#	for(i in 1:length(dat)) {
+				#		if(getFeatureType(dat[[i]])=="line") {
+				#			dat.ra[[i]] <- dat[[i]]
+				#			style.ra[[i]] <- style[[i]]
+				#			if(!is.null(names(dat)[i])) dat.ra[[i]] <- names(dat)[i]
+				#			n.dat <- n.dat+1
+				#		}
+				#	}
+				#}
+				#if(n.dat<length(dat)) {
+				#	for(i in 1:length(dat)) {
+				#		if(getFeatureType(dat[[i]])=="polygon") {
+				#			dat.ra[[i]] <- dat[[i]]
+				#			style.ra[[i]] <- style[[i]]
+				#			if(!is.null(names(dat)[i])) dat.ra[[i]] <- names(dat)[i]
+				#			n.dat <- n.dat+1
+				#		}
+				#	}
+				#}
+				
+				# get max column width/height
 				max.width <- 24
+				max.lwd <- 2
 				for(i in 1:length(style)) {
 					rad <- style[[i]][grep("rad", style[[i]])]
 					if(length(rad)==0) rad <- "radius: 10"
@@ -546,6 +586,12 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 					lwd <- substr(lwd, 9, nchar(lwd))
 					width <- as.numeric(rad)*2+as.numeric(lwd)
 					if(width>max.width) max.width <- width
+					
+					lwd <- style[[i]][grep("weight", style[[i]])]
+					if(length(lwd)==0) lwd <- "weight: 5"
+					lwd <- substr(lwd, 9, nchar(lwd))
+					l <- as.numeric(lwd)
+					if(l>max.lwd) max.lwd <- l
 				}
 				# write legend
 				for(i in 1:length(style)) {
@@ -567,7 +613,7 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 					ttl <- names(dat)[i]
 					if(is.null(ttl)) ttl <- i
 					else if(ttl=="") ttl <- i
-					
+										
 					if(ft=="point") {
 						rd <- substr(rad, 9, nchar(rad))
 						if(length(lwd)==0) lwd <- "weight: 2"
@@ -579,7 +625,9 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 						if(length(lwd)==0) lwd <- "weight: 5"
 						lwd <- substr(lwd, 9, nchar(lwd))
 						st <- paste0("stroke: ", substr(clr, nchar(clr)-7, nchar(clr)-1), "; stroke-opacity: ", substr(opa, 10, nchar(opa)), "; stroke-width: ", lwd, ";")
-						cat(paste0("\t\t\t\t\t\'<table><tr><td class=\"shape\"><svg style=\"width: ", max.width, "px; height: 18px;\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\"><line class=\"ln\" style=\"", st, "\" x1=\"", as.numeric(lwd)+1, "\" y1=\"", "9", "\" x2=\"", max.width-as.numeric(lwd)-1, "\" y2=\"", "9", "\" /></svg></td><td class=\"value\">", ttl, "</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
+						if(as.numeric(lwd)<18) hght <- 18
+						else hght <- as.numeric(lwd)
+						cat(paste0("\t\t\t\t\t\'<table><tr><td class=\"shape\"><svg style=\"width: ", max.width, "px; height: ", hght, "px;\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\"><line class=\"ln\" style=\"", st, "\" x1=\"", max.lwd+1-(max.lwd-as.numeric(lwd)/2), "\" y1=\"", hght/2, "\" x2=\"", max.width-max.lwd-1+(max.lwd-as.numeric(lwd)/2), "\" y2=\"", hght/2, "\" /></svg></td><td class=\"value\">", ttl, "</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
 					} else if(ft=="polygon") {
 						#cat(paste0("\t\t\t\t\t\'<table><tr><td class=\"shape\"><svg style=\"width: 26px; height: 26px;\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\"><polygon class=\"plgn\" points=\"2,2 12,8 18,4 18,16 2,16\" /></svg></td><td class=\"value\">polygon</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
 					}
