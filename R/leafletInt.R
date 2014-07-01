@@ -542,37 +542,6 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 				cat("\t\tlegend.onAdd = function(map) {", file=path, append=TRUE, sep="\n")
 				cat("\t\t\tvar div = L.DomUtil.create('div', 'legend');", file=path, append=TRUE, sep="\n")
 				if(!is.null(attr(style, "leg"))) cat(paste0("\t\t\tdiv.innerHTML += \'", attr(style, "leg"), "<br>\'"), file=path, append=TRUE, sep="\n")
-				# rearrange layer for legend (point > line > polygon)
-				#n.dat <- 0
-				#dat.ra <- style.ra <- list()
-				#for(i in 1:length(dat)) {
-				#	if(getFeatureType(dat[[i]])=="point") {
-				#		dat.ra[[i]] <- dat[[i]]
-				#		style.ra[[i]] <- style[[i]]
-				#		if(!is.null(names(dat)[i])) dat.ra[[i]] <- names(dat)[i]
-				#		n.dat <- n.dat+1
-				#	}
-				#}
-				#if(n.dat<length(dat)) {
-				#	for(i in 1:length(dat)) {
-				#		if(getFeatureType(dat[[i]])=="line") {
-				#			dat.ra[[i]] <- dat[[i]]
-				#			style.ra[[i]] <- style[[i]]
-				#			if(!is.null(names(dat)[i])) dat.ra[[i]] <- names(dat)[i]
-				#			n.dat <- n.dat+1
-				#		}
-				#	}
-				#}
-				#if(n.dat<length(dat)) {
-				#	for(i in 1:length(dat)) {
-				#		if(getFeatureType(dat[[i]])=="polygon") {
-				#			dat.ra[[i]] <- dat[[i]]
-				#			style.ra[[i]] <- style[[i]]
-				#			if(!is.null(names(dat)[i])) dat.ra[[i]] <- names(dat)[i]
-				#			n.dat <- n.dat+1
-				#		}
-				#	}
-				#}
 				
 				# get max column width/height
 				max.width <- 24
