@@ -554,6 +554,7 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 					rad <- substr(rad, 9, nchar(rad))
 					lwd <- substr(lwd, 9, nchar(lwd))
 					width <- as.numeric(rad)*2+as.numeric(lwd)
+					if(getFeatureType(dat[[i]])=="polygon") width <- as.numeric(lwd)*2
 					if(width>max.width) max.width <- width
 					
 					lwd <- style[[i]][grep("weight", style[[i]])]
@@ -598,7 +599,12 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 						else hght <- as.numeric(lwd)
 						cat(paste0("\t\t\t\t\t\'<table><tr><td class=\"shape\"><svg style=\"width: ", max.width, "px; height: ", hght, "px;\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\"><line class=\"ln\" style=\"", st, "\" x1=\"", max.lwd+1-(max.lwd-as.numeric(lwd)/2), "\" y1=\"", hght/2, "\" x2=\"", max.width-max.lwd-1+(max.lwd-as.numeric(lwd)/2), "\" y2=\"", hght/2, "\" /></svg></td><td class=\"value\">", ttl, "</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
 					} else if(ft=="polygon") {
-						#cat(paste0("\t\t\t\t\t\'<table><tr><td class=\"shape\"><svg style=\"width: 26px; height: 26px;\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\"><polygon class=\"plgn\" points=\"2,2 12,8 18,4 18,16 2,16\" /></svg></td><td class=\"value\">polygon</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
+						if(length(lwd)==0) lwd <- "weight: 5"
+						lwd <- substr(lwd, 9, nchar(lwd))
+						st <- paste0("fill: ", substr(fill, nchar(fill)-7, nchar(fill)-1), "; stroke: ", substr(clr, nchar(clr)-7, nchar(clr)-1), "; fill-opacity: ", substr(fill.opa, 14, nchar(fill.opa)), "; stroke-opacity: ", substr(opa, 10, nchar(opa)), "; stroke-width: ", lwd, ";")
+						if(as.numeric(lwd)<11) hght <- 22
+						else hght <- as.numeric(lwd)*2
+						cat(paste0("\t\t\t\t\t\'<table><tr><td class=\"shape\"><svg style=\"width: ", max.width, "px; height: ", hght, "px;\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\"><polygon class=\"plgn\" style=\"", st, "\" points=\"", max.lwd+1-(max.lwd-as.numeric(lwd)/2), ",", as.numeric(lwd)/2, " ", max.width-max.lwd-1+(max.lwd-as.numeric(lwd)/2), ",", hght/2, " ", max.width-max.lwd-1+(max.lwd-as.numeric(lwd)/2), ",", hght-as.numeric(lwd)/2, " ", max.lwd+1-(max.lwd-as.numeric(lwd)/2), ",", hght-as.numeric(lwd)/2, "\" /></svg></td><td class=\"value\">", ttl, "</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
 					}
 				}
 				cat("\t\t\treturn div;", file=path, append=TRUE, sep="\n")
