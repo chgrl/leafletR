@@ -102,6 +102,10 @@ sty.2 <- styleSingle(col="brown", fill="brown", rad=3)
 map <- leaflet(data=list(park, peak), dest=tempdir(), 
   style=list(sty.1, sty.2), popup=list("*", "Name"))
 browseURL(map)
+
+map <- leaflet(data=list(National.Parks=park, Peaks=peak), dest=tempdir(), 
+  style=list(sty.1, sty.2), popup=list("*", "Name"))  # names in legend
+browseURL(map)
 }
 }
 \keyword{methods}
