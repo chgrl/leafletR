@@ -612,6 +612,8 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 					
 					ft <- getFeatureType(dat.ra[[i]])
 					ttl <- names(dat.ra)[i]
+					ttl <- gsub(".", " ", ttl, fixed=TRUE)
+					ttl <- gsub("_", " ", ttl, fixed=TRUE)
 					if(is.null(ttl)) ttl <- i
 					else if(ttl=="") ttl <- i
 										
