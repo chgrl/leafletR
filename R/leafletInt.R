@@ -542,45 +542,76 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
 				cat("\t\tlegend.onAdd = function(map) {", file=path, append=TRUE, sep="\n")
 				cat("\t\t\tvar div = L.DomUtil.create('div', 'legend');", file=path, append=TRUE, sep="\n")
 				if(!is.null(attr(style, "leg"))) cat(paste0("\t\t\tdiv.innerHTML += \'", attr(style, "leg"), "<br>\'"), file=path, append=TRUE, sep="\n")
+				# rearrange layers for legend (point > line > polygon)
+				n.dat <- 0
+				dat.ra <- style.ra <- list()
+				for(i in 1:length(dat)) {
+					if(getFeatureType(dat[[i]])=="point") {
+						dat.ra[[n.dat+1]] <- dat[[i]]
+						style.ra[[n.dat+1]] <- style[[i]]
+						if(!is.null(names(dat)[i])) names(dat.ra)[n.dat+1] <- names(dat)[i]
+						n.dat <- n.dat+1
+					}
+				}
+				if(n.dat<length(dat)) {
+					for(i in 1:length(dat)) {
+						if(getFeatureType(dat[[i]])=="line") {
+							dat.ra[[n.dat+1]] <- dat[[i]]
+							style.ra[[n.dat+1]] <- style[[i]]
+							if(!is.null(names(dat)[i])) names(dat.ra)[n.dat+1] <- names(dat)[i]
+							n.dat <- n.dat+1
+						}
+					}
+				}
+				if(n.dat<length(dat)) {
+					for(i in 1:length(dat)) {
+						if(getFeatureType(dat[[i]])=="polygon") {
+							dat.ra[[n.dat+1]] <- dat[[i]]
+							style.ra[[n.dat+1]] <- style[[i]]
+							if(!is.null(names(dat)[i])) names(dat.ra)[n.dat+1] <- names(dat)[i]
+							n.dat <- n.dat+1
+						}
+					}
+				}
 				
 				# get max column width/height
 				max.width <- 24
 				max.lwd <- 2
-				for(i in 1:length(style)) {
-					rad <- style[[i]][grep("rad", style[[i]])]
+				for(i in 1:length(style.ra)) {
+					rad <- style.ra[[i]][grep("rad", style.ra[[i]])]
 					if(length(rad)==0) rad <- "radius: 10"
-					lwd <- style[[i]][grep("weight", style[[i]])]
+					lwd <- style.ra[[i]][grep("weight", style.ra[[i]])]
 					if(length(lwd)==0) lwd <- "weight: 2"
 					rad <- substr(rad, 9, nchar(rad))
 					lwd <- substr(lwd, 9, nchar(lwd))
 					width <- as.numeric(rad)*2+as.numeric(lwd)
-					if(getFeatureType(dat[[i]])=="polygon") width <- as.numeric(lwd)*2
+					if(getFeatureType(dat.ra[[i]])=="polygon") width <- as.numeric(lwd)*2
 					if(width>max.width) max.width <- width
 					
-					lwd <- style[[i]][grep("weight", style[[i]])]
+					lwd <- style.ra[[i]][grep("weight", style.ra[[i]])]
 					if(length(lwd)==0) lwd <- "weight: 5"
 					lwd <- substr(lwd, 9, nchar(lwd))
 					l <- as.numeric(lwd)
 					if(l>max.lwd) max.lwd <- l
 				}
 				# write legend
-				for(i in 1:length(style)) {
+				for(i in 1:length(style.ra)) {
 					cat("\t\t\tdiv.innerHTML +=", file=path, append=TRUE, sep="\n")
-					fill <- style[[i]][grep("fillColor", style[[i]])]
-					clr <- style[[i]][grep("color", style[[i]])]
+					fill <- style.ra[[i]][grep("fillColor", style.ra[[i]])]
+					clr <- style.ra[[i]][grep("color", style.ra[[i]])]
 					if(length(fill)==0) fill <- clr
 					if(length(fill)==0) fill <- "color: \"#0033ff\""
 					if(length(clr)==0) clr <- "color: \"#0033ff\""
-					rad <- style[[i]][grep("rad", style[[i]])]
+					rad <- style.ra[[i]][grep("rad", style.ra[[i]])]
 					if(length(rad)==0) rad <- "radius: 10"
-					fill.opa <- style[[i]][grep("fillOpacity", style[[i]])]
+					fill.opa <- style.ra[[i]][grep("fillOpacity", style.ra[[i]])]
 					if(length(fill.opa)==0) fill.opa <- "fillOpacity: 0.2"
-					opa <- style[[i]][grep("opacity", style[[i]])]
+					opa <- style.ra[[i]][grep("opacity", style.ra[[i]])]
 					if(length(opa)==0) opa <- "opacity: 0.5"
-					lwd <- style[[i]][grep("weight", style[[i]])]
+					lwd <- style.ra[[i]][grep("weight", style.ra[[i]])]
 					
-					ft <- getFeatureType(dat[[i]])
-					ttl <- names(dat)[i]
+					ft <- getFeatureType(dat.ra[[i]])
+					ttl <- names(dat.ra)[i]
 					if(is.null(ttl)) ttl <- i
 					else if(ttl=="") ttl <- i
 										
