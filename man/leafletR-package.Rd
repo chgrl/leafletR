@@ -10,8 +10,8 @@
 \tabular{lll}{
   \tab Package: \tab leafletR\cr
   \tab Type: \tab Package\cr
-  \tab Version: \tab 0.2-0\cr
-  \tab Date: \tab 2014-04-28\cr
+  \tab Version: \tab 0.2-1\cr
+  \tab Date: \tab 2014-07-09\cr
   \tab License: \tab GPL (>=2)\cr
 }
 \code{leafletR} lets you display spatial data on interactive maps in web browsers (a.k.a. slippy maps). It takes advantage of the open-source JavaScript library Leaflet.js, developed by Vladimir Agafonkin. Focusing simplicity, the package provides basic web-mapping functionality and styling options only. For map display an internet connection is required to load the Leaflet library, stylesheets and base map tiles. The ready to use html file output can be viewed locally or uploaded to a web-server.
