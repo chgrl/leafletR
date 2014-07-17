@@ -2,11 +2,14 @@
 \name{styleCat}
 \alias{styleCat}
 \alias{cats}
+\alias{print.categorized.style}
 \title{Categorized styling}
 \description{Creates a categorized style based on an attribute}
 \usage{
 styleCat(prop, val, style.par, style.val, leg, ...)
 cats(prop, val, style.par, style.val, leg, ...)
+
+\method{print}{categorized.style}(x, ...)
 }
 \arguments{
   \item{prop}{Property (attribute) of the data to be styled, as string.}
@@ -15,6 +18,8 @@ cats(prop, val, style.par, style.val, leg, ...)
   \item{style.val}{Styling values, a vector of colors or radii applied to the categories given by \code{val}. See details for unspecified data values.}
   \item{leg}{Legend title as string. The line break sequence \code{\\n} may be used for line splitting.}
   \item{\dots}{Additional styling parameters, see \code{\link{styleSingle}} for details.}
+  
+  \item{x}{Style object, created by \code{styleCat}.}
 }
 \details{
 If \code{val} does not cover all data values, the unspecified data values are colored gray. By adding an extra color for unspecified data values to \code{style.val}, an "other"-category is shown in the legend.

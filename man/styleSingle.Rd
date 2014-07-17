@@ -2,11 +2,14 @@
 \name{styleSingle}
 \alias{styleSingle}
 \alias{singles}
+\alias{print.single.style}
 \title{Single symbol styling}
 \description{Creates a single symbol style.}
 \usage{
 styleSingle(col, lwd, alpha, fill, fill.alpha, rad)
 singles(col, lwd, alpha, fill, fill.alpha, rad)
+
+\method{print}{single.style}(x, ...)
 }
 \arguments{
   \item{col}{Color used for lines, i.e. lines itself, borders of polygons and circle borders (points). Color might be given as name, number [0-8] or hexadecimal code. If \code{fill} is not specified, \code{col} is used for border and circle area. If \code{col} is \code{NA}, the border is omitted.}
@@ -15,6 +18,9 @@ singles(col, lwd, alpha, fill, fill.alpha, rad)
   \item{fill}{Fill color used for polygons and circles (points). Color might be given as name, number [0-8] or hexadecimal code. If \code{fill} is \code{NA}, the circle area is left blank.}
   \item{fill.alpha}{Opacity of a polygon or circle area, as numeric value between \code{0} (fully transparent) and \code{1} (opaque).}
   \item{rad}{Radius of circles (points), in number of pixels -- default is \code{10}.}
+  
+  \item{x}{Style object, created by \code{singleStyle}.}
+  \item{\dots}{Arguments to be passed to \code{link{print}}.}
 }
 \value{A single symbol style object.}
 \note{Points are displayed as circles.}

@@ -2,13 +2,14 @@
 \name{styleGrad}
 \alias{styleGrad}
 \alias{grads}
+\alias{print.graduated.style}
 \title{Graduated styling}
 \description{Creates a graduated style based on an attribute.}
 \usage{
-styleGrad(prop, breaks, right=TRUE, out=0, 
-  style.par, style.val, leg, ...)
-grads(prop, breaks, right=TRUE, out=0, 
-  style.par, style.val, leg, ...)
+styleGrad(prop, breaks, right, out, style.par, style.val, leg, ...)
+grads(prop, breaks, right, out, style.par, style.val, leg, ...)
+  
+\method{print}{graduated.style}(x, ...)
 }
 \arguments{
   \item{prop}{Property (attribute) of the data to be styled, as string.}
@@ -19,6 +20,8 @@ grads(prop, breaks, right=TRUE, out=0,
   \item{style.val}{Styling values, a vector of colors or radii applied to the classes.}
   \item{leg}{Legend title as string. The line break sequence \code{\\n} may be used for line splitting.}
   \item{\dots}{Additional styling parameters, see \code{\link{styleSingle}} for details.}
+  
+  \item{x}{Style object, created by \code{styleGrad}.}
 }
 \value{A graduated style object.}
 \author{Christian Graul}
