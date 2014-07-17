@@ -14,3 +14,8 @@ export(
   cats,
   changes
 )
+
+## S3 methods
+S3method(print, single.style)
+S3method(print, categorized.style)
+S3method(print, graduated.style)
