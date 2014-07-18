@@ -67,6 +67,6 @@ function(prop, breaks, right=TRUE, out=0, style.par="col", style.val, leg, ...) 
 	attr(grad.style, "out") <- out
 	attr(grad.style, "style.par") <- style.par
 	if(!missing(leg)) attr(grad.style, "leg") <- leg
-	class(grad.style) <- "leafletr.style"
+	class(grad.style) <- c("leafletr.style", "graduated.style")
 	return(grad.style)
 }
