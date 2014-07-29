@@ -28,9 +28,9 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 	if(missing(popup)) popup <- NA
 	
 	if(any(!is.na(style))) {
-		if(any(class(style)=="list")) {
-			for(i in 1:length(style)) if(any(class(style[[i]])!="leafletr.style")) stop("At least one style object not recognized")
-		} else if(all(class(style)!="leafletr.style")) stop("Style object not recognized")
+		if(is.list(style)) {
+			for(i in 1:length(style)) if(! is(style[[i]], "leafletr.style")) stop("At least one style object not recognized")
+		} else if(! is(style, "leafletr.style")) stop("Style object not recognized")
 	}
 	
 	if(length(data)>1 && !is.na(style)) if(length(style)<length(data) || !is.list(style)) stop("Number of styles must correspond to number of data files")
