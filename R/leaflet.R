@@ -1,5 +1,5 @@
 leaflet <-
-function(data, dest, title, size, base.map="osm", center, zoom, style, popup, incl.data=FALSE, overwrite=TRUE) {	
+function(data, dest, title, size, base.map="osm", center, zoom, style, popup, incl.data=TRUE, overwrite=TRUE) {	
 	if(missing(data)) data <- NA
 	if(length(data)>1) for(n in 1:length(data)) {
 		if(!is.na(data[[n]])) if(tolower(tail(strsplit(tail(strsplit(data[[n]], "/")[[1]], 1), "[.]")[[1]], 1))!="geojson") stop("'data' requires GeoJSON files (file extension should be 'geojson')")
@@ -28,7 +28,7 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 	if(missing(popup)) popup <- NA
 	
 	if(any(!is.na(style))) {
-		if(is.list(style)) {
+		if(is.list(style) & !is(style, "leafletr.style")) {
 			for(i in 1:length(style)) if(! is(style[[i]], "leafletr.style")) stop("At least one style object not recognized")
 		} else if(! is(style, "leafletr.style")) stop("Style object not recognized")
 	}
