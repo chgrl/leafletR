@@ -48,9 +48,9 @@
 <% } -%>
 <%# legend -%>
 <% if(!any(is.na(style))) { -%>
-<% if(any(class(style)=="leafletr.style") || any(class(style)=="list")) { -%>
+<% if(is(style, "leafletr.style") || is.list(style)) { -%>
 <% sty <- NULL -%>
-<% if(any(class(style)=="list")) { -%>
+<% if(is.list(style)) { -%>
 <% for(i in 1:length(style)) sty <- append(sty, attr(style[[i]], "style.type")) -%>
 <% if(all(sty=="single")) { -%>			
 		.legend {
@@ -202,6 +202,8 @@ if (! is.null(bm)) {
 
 <%# data layer ############################################################################ -%>
 <% if(any(!is.na(dat))) { -%>
+	
+<% } -%>
 <%# popup #################################################################################-%>
 		function onEachFeature(feature, layer) {
 <% if(!any(is.na(popup))) { -%>
@@ -246,15 +248,15 @@ if (! is.null(bm)) {
 			return {
 <% if(is.null(style[[2]])) { -%>
 <% if(attr(style, "style.par")=="col") { -%> 
-				"color": getValue(feature.properties.<%= attr(style, "property") %>)
+				"color": getValue(feature.properties.<%= attr(style, "property") %>),
 <% } else if(attr(style, "style.par")=="rad") {-%> 
-				"radius": getValue(feature.properties.<%= attr(style, "property") %>)
+				"radius": getValue(feature.properties.<%= attr(style, "property") %>),
 <% } %>
 <% } else { -%>
 <% if(attr(style, "style.par")=="col") { -%> 
-				"color": getValue(feature.properties.<%= attr(style, "property") %>)
+				"color": getValue(feature.properties.<%= attr(style, "property") %>),
 <% } else if(attr(style, "style.par")=="rad") { -%>
-				"radius": getValue(feature.properties.<%= attr(style, "property") %>)
+				"radius": getValue(feature.properties.<%= attr(style, "property") %>),
 <% } %>
 				<%= paste(style[[2]], collapse=", ") %>
 <% } -%>
@@ -310,11 +312,11 @@ if (! is.null(bm)) {
 			<% if(any(is.na(style))) { %>
 				return L.circleMarker(latlng);
 			<% } else { -%>
-				var sty = (typeof style<%= n%> == "undefined")? style(feature) : style<%= n%> ;
+				var sty = (typeof style<%= n%> == "undefined")? (typeof style == "undefined"?undefined:style) : style<%= n%>;
 				return L.circleMarker(latlng, sty);
 			<% } -%>
 			},
-			style: (typeof style<%= n%> == "undefined")? undefined : style<%= n%>,
+			style: (typeof style<%= n%> == "undefined")? (typeof style == "undefined"?undefined:style) : style<%= n%>,
 			
 		});
 			<% if(is.na(center) || is.na(zoom)) { -%>
@@ -328,10 +330,11 @@ if (! is.null(bm)) {
 
 <%#	add legend ######################################################################################## -%>
 	<% if(!any(is.na(style))) {
-		if(any(class(style)=="list")) { # multi single style
+		if(is.list(style) & !is(style, "leafletr.style")) { # multi single style
 			sty <- NULL
 			for(i in 1:length(style)) sty <- append(sty, attr(style[[i]], "style.type"))
 			if(all(sty=="single")) { -%>
+		// single style
 		var legend = L.control({position: 'bottomright'});
 		legend.onAdd = function(map) {
 		var div = L.DomUtil.create('div', 'legend');
@@ -444,165 +447,177 @@ if (! is.null(bm)) {
 		};
 		legend.addTo(map);
 		<% } %>
-	<% }} %>
-	
-	
-	<%#
-	
-		else if(is(style, "leafletr.style")) {
-			if(attr(style, "style.type")=="graduated") { # graduated style
-				cat("\t\tvar legend = L.control({position: 'bottomright'});
-				cat("\t\tlegend.onAdd = function(map) {
-				cat("\t\t\tvar div = L.DomUtil.create('div', 'legend'),
-		        cat("\t\t\tlabels = [],
-		        cat(paste0("\t\t\tgrades = [", paste(attr(style, "breaks"), collapse=", "), "];"), file=path, append=TRUE, sep="\n")
-		        if(!is.null(attr(style, "leg"))) cat(paste0("\t\t\tdiv.innerHTML += \'", attr(style, "leg"), "<br>\'"), file=path, append=TRUE, sep="\n")
-				if(attr(style, "style.par")=="col") { # color scale
-				    if(attr(style, "out")==0) { # left and right closed
-					    cat("\t\t\tfor (var i = 0; i < grades.length-1; i++) {
-				        cat("\t\t\t\tdiv.innerHTML +=
-				        if(attr(style, "right")) cat("\t\t\t\t\t\'<i style="background:\' + getValue(grades[i]) + \'"></i> \' +
-				        else cat("\t\t\t\t\t\'<i style="background:\' + getValue(grades[i]+(grades[1]-grades[0])*0.01) + \'"></i> \' +
-						cat("\t\t\t\t\tgrades[i] + \'&ndash;\' + grades[i + 1] + \'<br>\';
-						cat("\t\t\t}
-					} else if(attr(style, "out")==1) { # left closed and right open
-					    cat("\t\t\tfor (var i = 0; i < grades.length; i++) {
-				        cat("\t\t\t\tdiv.innerHTML +=
-				        if(attr(style, "right")) {
-				        	cat("\t\t\t\t\t\'<i style="background:\' + getValue(grades[i]) + \'"></i> \' +
-				        	cat("\t\t\t\t\t(grades[i + 1] ? grades[i] + \'&ndash;\' + grades[i + 1] + \'<br>\' : \'&ge;\' + grades[i]);
-				        } else {
-				        	cat("\t\t\t\t\t\'<i style="background:\' + getValue(grades[i]+(grades[1]-grades[0])*0.01) + \'"></i> \' +
-				        	cat("\t\t\t\t\t(grades[i + 1] ? grades[i] + \'&ndash;\' + grades[i + 1] + \'<br>\' : \'&gt;\' + grades[i]);
-				        }
-						cat("\t\t\t}
-					} else if(attr(style, "out")==2) { # left open and right closed
-						cat("\t\t\tdiv.innerHTML +=
-						if(attr(style, "right")) cat("\t\t\t\t\'<i style="background:\' + getValue(grades[0]-(grades[1]-grades[0])*0.01) + \'"></i> &lt;\' + grades[0] + \'<br>\';
-						else cat("\t\t\t\t\'<i style="background:\' + getValue(grades[0]-(grades[1]-grades[0])*0.01) + \'"></i> &le;\' + grades[0] + \'<br>\';
-						cat("\t\t\tfor (var i = 0; i < grades.length-1; i++) {
-						cat("\t\t\t\tdiv.innerHTML +=
-						if(attr(style, "right")) cat("\t\t\t\t\t\'<i style="background:\' + getValue(grades[i]) + \'"></i> \' +
-						else cat("\t\t\t\t\t\'<i style="background:\' + getValue(grades[i]+(grades[1]-grades[0])*0.01) + \'"></i> \' +
-						cat("\t\t\t\t\t(i<grades.length-1 ? grades[i] + \'&ndash;\' + grades[i+1] + \'<br>\' : grades[i] + \'&ndash;\' + grades[i+1]);
-						cat("\t\t\t}
-					} else { # left and right open
-						cat("\t\t\tdiv.innerHTML +=
-						if(attr(style, "right")) cat("\t\t\t\t\'<i style="background:\' + getValue(grades[0]-(grades[1]-grades[0])*0.01) + \'"></i> &lt;\' + grades[0] + \'<br>\';
-						else cat("\t\t\t\t\'<i style="background:\' + getValue(grades[0]-(grades[1]-grades[0])*0.01) + \'"></i> &le;\' + grades[0] + \'<br>\';
-						cat("\t\t\tfor (var i = 0; i < grades.length; i++) {
-				        cat("\t\t\t\tdiv.innerHTML +=
-				        if(attr(style, "right")) {
-				        	cat("\t\t\t\t\t\'<i style="background:\' + getValue(grades[i]) + \'"></i> \' +
-				        	cat("\t\t\t\t\t(i<grades.length-1 ? grades[i] + \'&ndash;\' + grades[i+1] + \'<br>\' : \'&ge;\' + grades[i]);
-						} else {
-				        	cat("\t\t\t\t\t\'<i style="background:\' + getValue(grades[i]+(grades[1]-grades[0])*0.01) + \'"></i> \' +
-							cat("\t\t\t\t\t(i<grades.length-1 ? grades[i] + \'&ndash;\' + grades[i+1] + \'<br>\' : \'&gt;\' + grades[i]);
-				        }
-						cat("\t\t\t}
+	<% } else if(is(style, "leafletr.style")) { # non simpleStyle
+			if(attr(style, "style.type")=="graduated") { # graduated style -%>
+				// Graduated legend
+				var legend = L.control({position: 'bottomright'});
+				legend.onAdd = function(map) {
+					var div = L.DomUtil.create('div', 'legend');
+				    var labels = [];
+				    var grades = [<%= paste(attr(style, "breaks"), collapse=", ") %>];
+				    <% if(!is.null(attr(style, "leg"))) { %>div.innerHTML += '<%= attr(style, "leg") %><br>'<% } %>
+					
+						<% if(attr(style, "style.par")=="col") { # color scale %>
+					
+					
+					
+<% if(attr(style, "out")==0) { # left and right closed -%>
+					for (var i = 0; i < grades.length-1; i++) { 
+						div.innerHTML +=
+						        <% if(attr(style, "right")) {%>'<i style="background:' + getValue(grades[i]) + '"></i> ' +
+						        <% } else { %>'<i style="background:' + getValue(grades[i]+(grades[1]-grades[0])*0.01) + '"></i> ' + <% } -%>
+								grades[i] + '&ndash;' + grades[i + 1] + '<br>';
 					}
-				} else if(attr(style, "style.par")=="rad") { # radius scale
-					if(attr(style, "out")==0) { # left and right closed
-					    cat("\t\t\tfor (var i = 0; i < grades.length-1; i++) {
-					    cat("\t\t\t\tdiv.innerHTML +=
-					    wght <- style[[2]][grep("weight", style[[2]])]
-					    cat(paste0("\t\t\t\t\t\'<table style="border: none;"><tr><td class="circle" style="width: \' + (getValue(grades[grades.length-2])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;"><svg style="width: \' + (getValue(grades[i])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px; height: \' + (getValue(grades[i])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="\' + (getValue(grades[i])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" cy="\' + (getValue(grades[i])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" r="\' + getValue(grades[i]) + \'" /></svg></td><td class="value">\' + grades[i] + \'&ndash;\' + grades[i+1] + \'</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
-						cat("\t\t\t}
-					} else if(attr(style, "out")==1) { # left closed and right open
-					    wght <- style[[2]][grep("weight", style[[2]])]
-					    if(attr(style, "right")) {
-					    	cat("\t\t\tfor (var i = 0; i < grades.length-1; i++) {
-					    	cat("\t\t\t\tdiv.innerHTML +=
-					    	cat(paste0("\t\t\t\t\t\'<table style="border: none;"><tr><td class="circle" style="width: \' + (getValue(grades[grades.length-1])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;"><svg style="width: \' + (getValue(grades[i])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px; height: \' + (getValue(grades[i])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="\' + (getValue(grades[i])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" cy="\' + (getValue(grades[i])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" r="\' + getValue(grades[i]) + \'" /></svg></td><td class="value">\' + grades[i] + \'&ndash;\' + grades[i+1] + \'</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
-					    	cat("\t\t\t}
-							cat("\t\t\tdiv.innerHTML +=
-							cat(paste0("\t\t\t\t\'<table style="border: none;"><tr><td class="circle" style="width: \' + (getValue(grades[grades.length-1])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;"><svg style="width: \' + (getValue(grades[grades.length-1])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px; height: \' + (getValue(grades[grades.length-1])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="\' + (getValue(grades[grades.length-1])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" cy="\' + (getValue(grades[grades.length-1])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" r="\' + getValue(grades[grades.length-1]) + \'" /></svg></td><td class="value">\' + \'&ge;\' + grades[grades.length-1] + \'</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
-					    } else {
-					    	cat("\t\t\tfor (var i = 1; i < grades.length; i++) {
-					    	cat("\t\t\t\tdiv.innerHTML +=
-					    	cat(paste0("\t\t\t\t\t\'<table style="border: none;"><tr><td class="circle" style="width: \' + (getValue(grades[grades.length-1]+1)*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;"><svg style="width: \' + (getValue(grades[i])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px; height: \' + (getValue(grades[i])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="\' + (getValue(grades[i])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" cy="\' + (getValue(grades[i])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" r="\' + getValue(grades[i]) + \'" /></svg></td><td class="value">\' + grades[i-1] + \'&ndash;\' + grades[i] + \'</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
-					    	cat("\t\t\t}
-							cat("\t\t\tdiv.innerHTML +=
-							cat(paste0("\t\t\t\t\'<table style="border: none;"><tr><td class="circle" style="width: \' + (getValue(grades[grades.length-1]+1)*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;"><svg style="width: \' + (getValue(grades[grades.length-1]+1)*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px; height: \' + (getValue(grades[grades.length-1]+1)*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="\' + (getValue(grades[grades.length-1]+1)+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" cy="\' + (getValue(grades[grades.length-1]+1)+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" r="\' + getValue(grades[grades.length-1]+1) + \'" /></svg></td><td class="value">\' + \'&gt;\' + grades[grades.length-1] + \'</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
-					    }
-					} else if(attr(style, "out")==2) { # left open and right closed
-						if(attr(style, "right")) {
-							cat("\t\t\tdiv.innerHTML +=
-							cat(paste0("\t\t\t\t\'<table style="border: none;"><tr><td class="circle" style="width: \' + (getValue(grades[grades.length-2])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;"><svg style="width: \' + (getValue(grades[0]-1)*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px; height: \' + (getValue(grades[0]-1)*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="\' + (getValue(grades[0]-1)+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" cy="\' + (getValue(grades[0]-1)+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" r="\' + getValue(grades[0]-1) + \'" /></svg></td><td class="value">\' + \'&lt;\' + grades[0] + \'</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
-							cat("\t\t\tfor (var i = 1; i < grades.length; i++) {
-					    	cat("\t\t\t\tdiv.innerHTML +=
-					    	cat(paste0("\t\t\t\t\t\'<table style="border: none;"><tr><td class="circle" style="width: \' + (getValue(grades[grades.length-2])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;"><svg style="width: \' + (getValue(grades[i-1])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px; height: \' + (getValue(grades[i-1])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="\' + (getValue(grades[i-1])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" cy="\' + (getValue(grades[i-1])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" r="\' + getValue(grades[i-1]) + \'" /></svg></td><td class="value">\' + grades[i-1] + \'&ndash;\' + grades[i] + \'</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
-					    	cat("\t\t\t}
-						} else {
-							cat("\t\t\tdiv.innerHTML +=
-							cat(paste0("\t\t\t\t\'<table style="border: none;"><tr><td class="circle" style="width: \' + (getValue(grades[grades.length-1])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;"><svg style="width: \' + (getValue(grades[0])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px; height: \' + (getValue(grades[0])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="\' + (getValue(grades[0])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" cy="\' + (getValue(grades[0])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" r="\' + getValue(grades[0]) + \'" /></svg></td><td class="value">\' + \'&le;\' + grades[0] + \'</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
-							cat("\t\t\tfor (var i = 1; i < grades.length; i++) {
-					    	cat("\t\t\t\tdiv.innerHTML +=
-					    	cat(paste0("\t\t\t\t\t\'<table style="border: none;"><tr><td class="circle" style="width: \' + (getValue(grades[grades.length-1])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;"><svg style="width: \' + (getValue(grades[i])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px; height: \' + (getValue(grades[i])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="\' + (getValue(grades[i])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" cy="\' + (getValue(grades[i])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" r="\' + getValue(grades[i]) + \'" /></svg></td><td class="value">\' + grades[i-1] + \'&ndash;\' + grades[i] + \'</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
-					    	cat("\t\t\t}
-						}
-					} else { # left and right open
-						if(attr(style, "right")) {
-							cat("\t\t\tdiv.innerHTML +=
-							cat(paste0("\t\t\t\t\'<table style="border: none;"><tr><td class="circle" style="width: \' + (getValue(grades[grades.length-1])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;"><svg style="width: \' + (getValue(grades[0]-1)*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px; height: \' + (getValue(grades[0]-1)*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="\' + (getValue(grades[0]-1)+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" cy="\' + (getValue(grades[0]-1)+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" r="\' + getValue(grades[0]-1) + \'" /></svg></td><td class="value">\' + \'&lt;\' + grades[0] + \'</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
-							cat("\t\t\tfor (var i = 1; i < grades.length; i++) {
-					    	cat("\t\t\t\tdiv.innerHTML +=
-					    	cat(paste0("\t\t\t\t\t\'<table style="border: none;"><tr><td class="circle" style="width: \' + (getValue(grades[grades.length-1])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;"><svg style="width: \' + (getValue(grades[i-1])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px; height: \' + (getValue(grades[i-1])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="\' + (getValue(grades[i-1])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" cy="\' + (getValue(grades[i-1])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" r="\' + getValue(grades[i-1]) + \'" /></svg></td><td class="value">\' + grades[i-1] + \'&ndash;\' + grades[i] + \'</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
-					    	cat("\t\t\t}
-							cat("\t\t\tdiv.innerHTML +=
-							cat(paste0("\t\t\t\t\'<table style="border: none;"><tr><td class="circle" style="width: \' + (getValue(grades[grades.length-1])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;"><svg style="width: \' + (getValue(grades[grades.length-1])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px; height: \' + (getValue(grades[grades.length-1])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="\' + (getValue(grades[grades.length-1])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" cy="\' + (getValue(grades[grades.length-1])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" r="\' + getValue(grades[grades.length-1]) + \'" /></svg></td><td class="value">\' + \'&ge;\' + grades[grades.length-1] + \'</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
-						} else {
-							cat("\t\t\tdiv.innerHTML +=
-							cat(paste0("\t\t\t\t\'<table style="border: none;"><tr><td class="circle" style="width: \' + (getValue(grades[grades.length-1])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;"><svg style="width: \' + (getValue(grades[0])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px; height: \' + (getValue(grades[0])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="\' + (getValue(grades[0])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" cy="\' + (getValue(grades[0])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" r="\' + getValue(grades[0]) + \'" /></svg></td><td class="value">\' + \'&le;\' + grades[0] + \'</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
-							cat("\t\t\tfor (var i = 1; i < grades.length; i++) {
-					    	cat("\t\t\t\tdiv.innerHTML +=
-					    	cat(paste0("\t\t\t\t\t\'<table style="border: none;"><tr><td class="circle" style="width: \' + (getValue(grades[grades.length-1])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;"><svg style="width: \' + (getValue(grades[i])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px; height: \' + (getValue(grades[i])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="\' + (getValue(grades[i])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" cy="\' + (getValue(grades[i])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" r="\' + getValue(grades[i]) + \'" /></svg></td><td class="value">\' + grades[i-1] + \'&ndash;\' + grades[i] + \'</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
-					    	cat("\t\t\t}
-							cat("\t\t\tdiv.innerHTML +=
-							cat(paste0("\t\t\t\t\'<table style="border: none;"><tr><td class="circle" style="width: \' + (getValue(grades[grades.length-1]+1)*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;"><svg style="width: \' + (getValue(grades[grades.length-1]+1)*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px; height: \' + (getValue(grades[grades.length-1]+1)*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="\' + (getValue(grades[grades.length-1]+1)+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" cy="\' + (getValue(grades[grades.length-1]+1)+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" r="\' + getValue(grades[grades.length-1]+1) + \'" /></svg></td><td class="value">\' + \'&gt;\' + grades[grades.length-1] + \'</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
-						}
+					
+<% } else if(attr(style, "out")==1) { # left closed and right open -%>
+					for (var i = 0; i < grades.length; i++) {
+						div.innerHTML +=
+						        <% if(attr(style, "right")) { -%>
+							'<i style="background:' + getValue(grades[i]) + '"></i> ' +
+						    (grades[i + 1] ? grades[i] + '&ndash;' + grades[i + 1] + '<br>' : '&ge;' + grades[i]);
+						        <% } else { -%>
+						    '<i style="background:' + getValue(grades[i]+(grades[1]-grades[0])*0.01) + '"></i> ' +
+						    (grades[i + 1] ? grades[i] + '&ndash;' + grades[i + 1] + '<br>' : '&gt;' + grades[i]);
+						       <% } -%>
 					}
+<% } else if(attr(style, "out")==2) { # left open and right closed -%>
+					div.innerHTML +=
+						<% if(attr(style, "right")) { %>'<i style="background:' + getValue(grades[0]-(grades[1]-grades[0])*0.01) + '"></i> &lt;' + grades[0] + '<br>';
+						<% } else { %>'<i style="background:' + getValue(grades[0]-(grades[1]-grades[0])*0.01) + '"></i> &le;' + grades[0] + '<br>'; <% } %>
+					for (var i = 0; i < grades.length-1; i++) {
+						div.innerHTML +=
+							<% if(attr(style, "right")) { %>'<i style="background:' + getValue(grades[i]) + '"></i> ' +
+							<% }else { %>'<i style="background:' + getValue(grades[i]+(grades[1]-grades[0])*0.01) + '"></i> ' + <% } %>
+							(i<grades.length-1 ? grades[i] + '&ndash;' + grades[i+1] + '<br>' : grades[i] + '&ndash;' + grades[i+1]);
+					}
+<% } else { # left and right open -%>
+					div.innerHTML +=
+						<% if(attr(style, "right")) { %>'<i style="background:' + getValue(grades[0]-(grades[1]-grades[0])*0.01) + '"></i> &lt;' + grades[0] + '<br>';
+						<% } else { %>'<i style="background:' + getValue(grades[0]-(grades[1]-grades[0])*0.01) + '"></i> &le;' + grades[0] + '<br>'; <% } %>
+					for (var i = 0; i < grades.length; i++) {
+						div.innerHTML +=
+						        <% if(attr(style, "right")) { -%>
+						    '<i style="background:' + getValue(grades[i]) + '"></i> ' +
+						    (i<grades.length-1 ? grades[i] + '&ndash;' + grades[i+1] + '<br>' : '&ge;' + grades[i]);
+								 <% } else { -%>
+						    '<i style="background:' + getValue(grades[i]+(grades[1]-grades[0])*0.01) + '"></i> ' +
+							(i<grades.length-1 ? grades[i] + '&ndash;' + grades[i+1] + '<br>' : '&gt;' + grades[i]);
+						        <% } -%>
+					}	
+			//return div;
+			//};
+<% } # end out -%>
+					
+					
+					
+					
+					
+	<% } else if(attr(style, "style.par")=="rad") { # radius scale -%>
+					<% 
+					wght <- style[[2]][grep("weight", style[[2]])]
+					wght <- as.numeric(gsub(".+\\s+", "", wght))*2-1 
+					if(attr(style, "out")==0) { # left and right closed 
+						-%> 
+			for (var i = 0; i < grades.length-1; i++) {
+				div.innerHTML +=
+					'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-2])*2+<%= wght %>) + 'px;"><svg style="width: ' + (getValue(grades[i])*2+<%= wght %>) + 'px; height: ' + (getValue(grades[i])*2+<%= wght %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[i])+<%= wght %>) + '" cy="' + (getValue(grades[i])+<%= wght %>) + '" r="' + getValue(grades[i]) + '" /></svg></td><td class="value">' + grades[i] + '&ndash;' + grades[i+1] + '</td></tr></table>'
+			}
+					<% } else if(attr(style, "out")==1) { # left closed and right open -%>
+					    <% if(attr(style, "right")) { -%>
+			for (var i = 0; i < grades.length-1; i++) {
+				div.innerHTML +=
+					'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1])*2+<%= wght %>) + 'px;"><svg style="width: ' + (getValue(grades[i])*2+<%= wght %>) + 'px; height: ' + (getValue(grades[i])*2+<%= wght %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[i])+<%= wght %>) + '" cy="' + (getValue(grades[i])+<%= wght %>) + '" r="' + getValue(grades[i]) + '" /></svg></td><td class="value">' + grades[i] + '&ndash;' + grades[i+1] + '</td></tr></table>'
+			}
+			div.innerHTML +=
+				'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1])*2+<%= wght %>) + 'px;"><svg style="width: ' + (getValue(grades[grades.length-1])*2+<%= wght %>) + 'px; height: ' + (getValue(grades[grades.length-1])*2+<%= wght %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[grades.length-1])+<%= wght %>) + '" cy="' + (getValue(grades[grades.length-1])+<%= wght %>) + '" r="' + getValue(grades[grades.length-1]) + '" /></svg></td><td class="value">' + '&ge;' + grades[grades.length-1] + '</td></tr></table>'
+						<% } else { -%>
+			for (var i = 1; i < grades.length; i++) {
+				div.innerHTML +=
+					'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1]+1)*2+<%= wght %>) + 'px;"><svg style="width: ' + (getValue(grades[i])*2+<%= wght %>) + 'px; height: ' + (getValue(grades[i])*2+<%= wght %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[i])+<%= wght %>) + '" cy="' + (getValue(grades[i])+<%= wght %>) + '" r="' + getValue(grades[i]) + '" /></svg></td><td class="value">' + grades[i-1] + '&ndash;' + grades[i] + '</td></tr></table>'
+			}
+			div.innerHTML +=
+				'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1]+1)*2+<%= wght %>) + 'px;"><svg style="width: ' + (getValue(grades[grades.length-1]+1)*2+<%= wght %>) + 'px; height: ' + (getValue(grades[grades.length-1]+1)*2+<%= wght %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[grades.length-1]+1)+<%= wght %>) + '" cy="' + (getValue(grades[grades.length-1]+1)+<%= wght %>) + '" r="' + getValue(grades[grades.length-1]+1) + '" /></svg></td><td class="value">' + '&gt;' + grades[grades.length-1] + '</td></tr></table>'
+						<% } -%>
+					<%} else if(attr(style, "out")==2) { # left open and right closed -%>
+						<% if(attr(style, "right")) { -%>
+			div.innerHTML +=
+				'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-2])*2+<%= wght %>) + 'px;"><svg style="width: ' + (getValue(grades[0]-1)*2+<%= wght %>) + 'px; height: ' + (getValue(grades[0]-1)*2+<%= wght %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[0]-1)+<%= wght %>) + '" cy="' + (getValue(grades[0]-1)+<%= wght %>) + '" r="' + getValue(grades[0]-1) + '" /></svg></td><td class="value">' + '&lt;' + grades[0] + '</td></tr></table>'
+			for (var i = 1; i < grades.length; i++) {
+				div.innerHTML +=
+					 '<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-2])*2+<%= wght %>) + 'px;"><svg style="width: ' + (getValue(grades[i-1])*2+<%= wght %>) + 'px; height: ' + (getValue(grades[i-1])*2+<%= wght %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[i-1])+<%= wght %>) + '" cy="' + (getValue(grades[i-1])+<%= wght %>) + '" r="' + getValue(grades[i-1]) + '" /></svg></td><td class="value">' + grades[i-1] + '&ndash;' + grades[i] + '</td></tr></table>'
+			}
+						<% } else { -%>
+				div.innerHTML +=
+					'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1])*2+<%= wght %>) + 'px;"><svg style="width: ' + (getValue(grades[0])*2+<%= wght %>) + 'px; height: ' + (getValue(grades[0])*2+<%= wght %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[0])+<%= wght %>) + '" cy="' + (getValue(grades[0])+<%= wght %>) + '" r="' + getValue(grades[0]) + '" /></svg></td><td class="value">' + '&le;' + grades[0] + '</td></tr></table>'
+				for (var i = 1; i < grades.length; i++) {
+					div.innerHTML +=
+					 	'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1])*2+<%= wght %>) + 'px;"><svg style="width: ' + (getValue(grades[i])*2+<%= wght %>) + 'px; height: ' + (getValue(grades[i])*2+<%= wght %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[i])+<%= wght %>) + '" cy="' + (getValue(grades[i])+<%= wght %>) + '" r="' + getValue(grades[i]) + '" /></svg></td><td class="value">' + grades[i-1] + '&ndash;' + grades[i] + '</td></tr></table>'
 				}
+						<% } -%>
+					<% } else { # left and right open -%>
+						<% if(attr(style, "right")) { -%>
+			div.innerHTML +=
+				'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1])*2+<%= wght %>) + 'px;"><svg style="width: ' + (getValue(grades[0]-1)*2+<%= wght %>) + 'px; height: ' + (getValue(grades[0]-1)*2+<%= wght %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[0]-1)+<%= wght %>) + '" cy="' + (getValue(grades[0]-1)+<%= wght %>) + '" r="' + getValue(grades[0]-1) + '" /></svg></td><td class="value">' + '&lt;' + grades[0] + '</td></tr></table>'
+			for (var i = 1; i < grades.length; i++) {
+				div.innerHTML +=
+					'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1])*2+<%= wght %>) + 'px;"><svg style="width: ' + (getValue(grades[i-1])*2+<%= wght %>) + 'px; height: ' + (getValue(grades[i-1])*2+<%= wght %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[i-1])+<%= wght %>) + '" cy="' + (getValue(grades[i-1])+<%= wght %>) + '" r="' + getValue(grades[i-1]) + '" /></svg></td><td class="value">' + grades[i-1] + '&ndash;' + grades[i] + '</td></tr></table>'
+			}
+			div.innerHTML +=
+				'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1])*2+<%= wght %>) + 'px;"><svg style="width: ' + (getValue(grades[grades.length-1])*2+<%= wght %>) + 'px; height: ' + (getValue(grades[grades.length-1])*2+<%= wght %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[grades.length-1])+<%= wght %>) + '" cy="' + (getValue(grades[grades.length-1])+<%= wght %>) + '" r="' + getValue(grades[grades.length-1]) + '" /></svg></td><td class="value">' + '&ge;' + grades[grades.length-1] + '</td></tr></table>'
+						<% } else { -%>
+			div.innerHTML +=
+				'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1])*2+<%= wght %>) + 'px;"><svg style="width: ' + (getValue(grades[0])*2+<%= wght %>) + 'px; height: ' + (getValue(grades[0])*2+<%= wght %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[0])+<%= wght %>) + '" cy="' + (getValue(grades[0])+<%= wght %>) + '" r="' + getValue(grades[0]) + '" /></svg></td><td class="value">' + '&le;' + grades[0] + '</td></tr></table>'
+			for (var i = 1; i < grades.length; i++) {
+				div.innerHTML +=
+					'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1])*2+<%= wght %>) + 'px;"><svg style="width: ' + (getValue(grades[i])*2+<%= wght %>) + 'px; height: ' + (getValue(grades[i])*2+<%= wght %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[i])+<%= wght %>) + '" cy="' + (getValue(grades[i])+<%= wght %>) + '" r="' + getValue(grades[i]) + '" /></svg></td><td class="value">' + grades[i-1] + '&ndash;' + grades[i] + '</td></tr></table>'
+			}
+			div.innerHTML +=
+				'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1]+1)*2+<%= wght %>) + 'px;"><svg style="width: ' + (getValue(grades[grades.length-1]+1)*2+<%= wght %>) + 'px; height: ' + (getValue(grades[grades.length-1]+1)*2+<%= wght %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[grades.length-1]+1)+<%= wght %>) + '" cy="' + (getValue(grades[grades.length-1]+1)+<%= wght %>) + '" r="' + getValue(grades[grades.length-1]+1) + '" /></svg></td><td class="value">' + '&gt;' + grades[grades.length-1] + '</td></tr></table>'
+						<% }
+					}
+				} -%>
 				
-				cat("\t\t\treturn div;
-				cat("\t\t};
-				cat("\t\tlegend.addTo(map);
+			return div;
+		};
+		legend.addTo(map);
+				
+<% } else if(attr(style, "style.type")=="categorized") { # categorized style 
+	wght <- style[[2]][grep("weight", style[[2]])]
+	wght <- as.numeric(gsub(".+\\s+", "", wght))*2-1 
+	%>
+		var legend = L.control({position: 'bottomright'});
+		legend.onAdd = function(map) {
+			var div = L.DomUtil.create('div', 'legend');
+		    var labels = [];
+		    var cats = [<%= paste( paste0("'", attr(style, "values"), "'"), collapse=",") %>];
+		    <% if(!is.null(attr(style, "leg"))) %>div.innerHTML += '<%= attr(style, "leg") %><br>';
+				<% if(attr(style, "style.par")=="col") { # color scale -%>
+			for (var i = 0; i < cats.length; i++) {
+				div.innerHTML +=
+				    '<i style="background:' + getValue(cats[i]) + '"></i> ' +
+					cats[i] + '<br>';
 			}
-			else if(attr(style, "style.type")=="categorized") { # categorized style
-				cat("\t\tvar legend = L.control({position: 'bottomright'});
-				cat("\t\tlegend.onAdd = function(map) {
-				cat("\t\t\tvar div = L.DomUtil.create('div', 'legend'),
-		        cat("\t\t\tlabels = [],
-		        cat(paste0("\t\t\tcats = ["", paste(attr(style, "values"), collapse="", ""), ""];"), file=path, append=TRUE, sep="\n")
-		        if(!is.null(attr(style, "leg"))) cat(paste0("\t\t\tdiv.innerHTML += \'", attr(style, "leg"), "<br>\'"), file=path, append=TRUE, sep="\n")
-				if(attr(style, "style.par")=="col") { # color scale
-					cat("\t\t\tfor (var i = 0; i < cats.length; i++) {
-				    cat("\t\t\t\tdiv.innerHTML +=
-				    cat("\t\t\t\t\t\'<i style="background:\' + getValue(cats[i]) + \'"></i> \' +
-					cat("\t\t\t\t\tcats[i] + \'<br>\';
-					cat("\t\t\t}
-					if(!is.null(attr(style, "na"))) {
-						cat("\t\t\tdiv.innerHTML +=
-				    	cat(paste0("\t\t\t\t\'<i style="background:\' + getValue() + \'"></i> ", attr(style, "na"), "\'"), file=path, append=TRUE, sep="\n")
-					}
-				} else if(attr(style, "style.par")=="rad") { # radius scale
-					cat("\t\t\tfor (var i = 0; i < cats.length; i++) {
-				    cat("\t\t\t\tdiv.innerHTML +=
-				    wght <- style[[2]][grep("weight", style[[2]])]
-				    cat(paste0("\t\t\t\t\t\'<table style="border: none;"><tr><td class="circle" style="width: \' + (getValue(cats[cats.length-1])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;"><svg style="width: \' + (getValue(cats[i])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px; height: \' + (getValue(cats[i])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="\' + (getValue(cats[i])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" cy="\' + (getValue(cats[i])+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" r="\' + getValue(cats[i]) + \'" /></svg></td><td class="value">\' + cats[i] + \'</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
-					cat("\t\t\t}
-					if(!is.null(attr(style, "na"))) {
-						cat("\t\t\tdiv.innerHTML +=
-						cat(paste0("\t\t\t\t\t\'<table style="border: none;"><tr><td class="circle" style="width: \' + (getValue(cats[cats.length-1])*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;"><svg style="width: \' + (getValue()*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px; height: \' + (getValue()*2+", as.numeric(gsub(".+\\s+", "", wght))*2-1, ") + \'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="\' + (getValue()+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" cy="\' + (getValue()+", as.numeric(gsub(".+\\s+", "", wght)), ") + \'" r="\' + getValue() + \'" /></svg></td><td class="value">\' + \'", attr(style, "na"), "\' + \'</td></tr></table>\'"), file=path, append=TRUE, sep="\n")
-					}
-				}
-				cat("\t\t\treturn div;
-				cat("\t\t};
-				cat("\t\tlegend.addTo(map);
+					<% if(!is.null(attr(style, "na", T))) { -%>
+			div.innerHTML += '<i style="background:' + getValue() + '"></i> <%= attr(style, "na") %>'
+					<% } -%>
+					<% } else if(attr(style, "style.par")=="rad") { # radius scale 
+					-%>
+			for (var i = 0; i < cats.length; i++) {
+				div.innerHTML +=
+				    '<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(cats[cats.length-1])*2+<%= wght %>) + 'px;"><svg style="width: ' + (getValue(cats[i])*2+<%= wght %>) + 'px; height: ' + (getValue(cats[i])*2+<%= wght %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(cats[i])+<%= wght %>) + '" cy="' + (getValue(cats[i])+<%= wght %>) + '" r="' + getValue(cats[i]) + '" /></svg></td><td class="value">' + cats[i] + '</td></tr></table>'
 			}
-		}
-%>
-<% } -%>	
+					<% if(!is.null(attr(style, "na", T))) { -%>
+			div.innerHTML +=
+				'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(cats[cats.length-1])*2+<%= wght %>) + 'px;"><svg style="width: ' + (getValue()*2+<%= wght %>) + 'px; height: ' + (getValue()*2+<%= wght %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue()+<%= wght %>) + '" cy="' + (getValue()+<%= wght %>) + '" r="' + getValue() + '" /></svg></td><td class="value">' + '", attr(style, "na"), "' + '</td></tr></table>'
+					<% } -%>
+					<% } -%>
+			return div;
+		};
+		legend.addTo(map);
+			<% } -%>
+	<% } # end non simpleStyle -%>	
+
+<% } # end any data ? -%>	
 	</script>
 </body>
 </html>
