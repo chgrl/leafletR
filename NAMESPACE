@@ -12,7 +12,8 @@ export(
   grads,
   styleCat,
   cats,
-  changes
+  changes,
+  addBaseMap
 )
 
 ## S3 methods
