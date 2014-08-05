@@ -1,6 +1,8 @@
 leaflet <-
 function(data, dest, title, size, base.map="osm", center, zoom, style, popup, incl.data=TRUE, overwrite=TRUE) {	
-	if(missing(data)) data <- NA
+  basemaps <- getOption("leafletBaseMaps")
+  
+  if(missing(data)) data <- NA
 	if(length(data)>1) for(n in 1:length(data)) {
 		if(!is.na(data[[n]])) if(tolower(tail(strsplit(tail(strsplit(data[[n]], "/")[[1]], 1), "[.]")[[1]], 1))!="geojson") stop("'data' requires GeoJSON files (file extension should be 'geojson')")
 		suppressWarnings(if(require(RJSONIO, quietly=TRUE)) if(!isValidJSON(data[[n]])) stop("'data' is not a valid JSON file"))
@@ -19,7 +21,7 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 		}
 	}
 	if(missing(size)) size <- NA
-	bm <- c("osm", "tls", "mqosm", "mqsat", "water", "toner")
+	bm <- names(basemaps)
 	base.map <- bm[pmatch(base.map, bm)]
 	if(any(is.na(base.map))) stop("Invalid base.map")
 	if(missing(center)) center <- NA
