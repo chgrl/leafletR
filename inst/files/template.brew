@@ -31,8 +31,6 @@
 		}
 <% } -%>
 <%# popup -%>
-<% if(!any(is.na(popup))) { -%>
-<% for(n in 1:length(popup)) if(length(popup[[n]])>1) { -%>		
 		table, td {
 			border-collapse: collapse;
 			border-style: solid;
@@ -42,17 +40,8 @@
 		}
 		.evenrowcol{
 			background-color: #f6f6f6;
-		}		
-<% break -%>
-<% } -%>
-<% } -%>
+		}	
 <%# legend -%>
-<% if(!any(is.na(style))) { -%>
-<% if(is(style, "leafletr.style") || is.list(style)) { -%>
-<% sty <- NULL -%>
-<% if(is.list(style)) { -%>
-<% for(i in 1:length(style)) sty <- append(sty, attr(style[[i]], "style.type")) -%>
-<% if(all(sty=="single")) { -%>			
 		.legend {
 			padding: 6px 8px;
 			font: 14px/16px Arial, Helvetica, sans-serif;
@@ -69,25 +58,25 @@
 			float: left;
 			margin-right: 8px;
 		}
-		table, td {
+		.legend table, .legend td {
 			border: none;
+		}
+		.value {
+			border: none;
+			padding: 0px 0px 0px 8px;
+			text-align: left;
+			vertical-align: middle;
+		}
+		.circle {
+			border: none;
+			padding: 0px;
+			text-align: center;
+			vertical-align: middle;
 		}
 		.shape {
 			padding: 0px;
 			text-align: center;
 			vertical-align: middle;
-		}
-		.value {
-			padding: 0px 0px 0px 8px;
-			text-align: left;
-			vertical-align: middle;
-		}
-		.crcl {
-			fill: #0033ff;
-			fill-opacity: 0.5;
-			stroke: #0033ff;
-			stroke-width: 2;
-			stroke-opacity: 0.5;
 		}
 		.ln {
 			stroke: #0033ff;
@@ -103,52 +92,27 @@
 			stroke-opacity: 0.5;
 			stroke-linejoin: round;
 		}
+<% if(!any(is.na(style))) { -%>
+<% if(is(style, "leafletr.style") || is.list(style)) { -%>
+<% sty <- NULL -%>
+<% if(is.list(style)) { -%>
+<% for(i in 1:length(style)) sty <- append(sty, attr(style[[i]], "style.type")) -%>
+<% if(all(sty=="single")) { -%>			
+		.crcl {
+			fill: #0033ff;
+			fill-opacity: 0.5;
+			stroke: #0033ff;
+			stroke-width: 2;
+			stroke-opacity: 0.5;
+		}
 <% } -%>
 <% } else if(attr(style, "style.type")=="graduated" || attr(style, "style.type")=="categorized") { -%>
 <% if(attr(style, "style.par")=="col") { -%>
-					
-		.legend {
-			padding: 6px 8px;
-			font: 14px/16px Arial, Helvetica, sans-serif;
-			background: white;
-			background: rgba(255,255,255,0.8);
-			box-shadow: 0 0 15px rgba(0,0,0,0.2);
-			border-radius: 5px;
-			line-height: 18px;
-			color: #555;
-		}
 		.legend i {
-			width: 18px;
-			height: 18px;
-			float: left;
-			margin-right: 8px;
 			<% opa <- style[[2]][grep("fillOpacity", style[[2]])] %>
 			opacity: <%= as.numeric(gsub(".+\\s+", "", opa)) %>;
 		}				
 <% } else if(attr(style, "style.par")=="rad") { -%>
-					
-		.legend {
-			padding: 6px 8px;
-			font: 14px/16px Arial, Helvetica, sans-serif;
-			background: white;
-			background: rgba(255,255,255,0.8);
-			box-shadow: 0 0 15px rgba(0,0,0,0.2);
-			border-radius: 5px;
-			line-height: 18px;
-			color: #555;
-		}
-		.circle {
-			border: none;
-			padding: 0px;
-			text-align: center;
-			vertical-align: middle;
-		}
-		.value {
-			border: none;
-			padding: 0px 0px 0px 8px;
-			text-align: left;
-			vertical-align: middle;
-		}
 		.crcl {
 			<% clr <- style[[2]][grep("fillColor", style[[2]])] %>
 			fill: <%= substr(clr, nchar(clr)-7, nchar(clr)-1) %> ;
@@ -160,8 +124,7 @@
 			stroke-width: <%= as.numeric(gsub(".+\\s+", "", wght)) %> ;
 			<% opa <- style[[2]][grep("opacity", style[[2]])] %>
 			stroke-opacity: <%= as.numeric(gsub(".+\\s+", "", opa)) %> ;
-		}
-		
+		}	
 <% } -%>
 <% } -%>
 <% } -%>
@@ -176,35 +139,31 @@
 	<script type="text/javascript">	
 <%# initialize the map -%>
 <% if(is.na(center) || is.na(zoom)) { -%> 
-		var map = L.map('map')
+		var map = L.map('map');
 <% } else { -%> 
 		var map = L.map('map').setView([<%= center[1] %> , <%= center[2] %> ], <%= zoom %> );
 <% } -%>
+
 <%# base layer ############################################################################ -%>
+		// base layer
+		var baseMaps = {}, nbm = 0;
 <% 
 for(n in 1: length(base.map)) { 
 bm <- basemaps[[ base.map[[n]] ]]
 if (! is.null(bm)) { 	
 -%>
-		var baseMap<%= n %> = L.tileLayer('<%= bm$url %>', <%= jsonlite::toJSON(bm$options, auto_unbox=T) %>);
-		baseMap<%= n %>.addTo(map);
+		var baseMap = L.tileLayer('<%= bm$url %>', <%= jsonlite::toJSON(bm$options, auto_unbox=T) %>);
+		baseMap.addTo(map);
+		baseMaps["<%=  basemaps[[ base.map[[n]] ]]$name %>"] = baseMap;
+		nbm ++;
 <% }} -%>
 
 <%# layer control ############################################################################ -%>
-<% if(length(base.map)>1) { -%>
-		var baseMaps = { 
-<% for(n in 1:length(base.map)) { -%>
-			"<%=  basemaps[[ base.map[[n]] ]]$name %>" : baseMap<%= n %>,
-<% } -%>
-		};
-		L.control.layers(baseMaps).addTo(map);
-<% } -%>
+		// layer control
+		if (nbm > 1) L.control.layers(baseMaps).addTo(map);
 
-<%# data layer ############################################################################ -%>
-<% if(any(!is.na(dat))) { -%>
-	
-<% } -%>
 <%# popup #################################################################################-%>
+		// popup
 		function onEachFeature(feature, layer) {
 <% if(!any(is.na(popup))) { -%>
 <% for(n in 1:length(popup)) { -%>
@@ -225,16 +184,14 @@ if (! is.null(bm)) {
 <% } -%>
 		};
 
-
-<%# styling -%>
+<%# styling ################################################################################## -%>
+		// Styling
 <% if(any(!is.na(style))) { -%>
 <% if(any(class(style)=="list")) { -%>
 <% for(n in 1:length(style)) { -%>
 <% if(any(!is.na(style[[n]]))) { -%>	
 		var style<%= n %> = {<%= paste(style[[n]], collapse = ",") %>};
-<% } -%>
-<% } -%>
-<% } else { -%>
+<% }}} else { -%>
 <% if(attr(style, "style.type")=="single") { -%>
 		var style1= {<%= paste(style, collapse =", ") %>};
 <% } -%>
@@ -292,43 +249,41 @@ if (! is.null(bm)) {
 <% } -%>
 <% } -%>
 	
-<%# data layer #################################################################################### %>
-	<% fit.bounds <- TRUE -%>
-	<% for(n in 1:length(dat)) { -%>
-		<% if(incl.data) {	
-		
-			if(!file.exists(dat[[n]])) stop("data file not found")
-			con <- file(dat[[n]], "rt") 
-			lns <- readLines(con) 
-			close(con) -%>		
-		var data<%= n %> = <%= paste(lns, collapse="\n") %>
-		
-		<%} else {-%>
-		$.getJSON($("link[rel='dat<%= n %>']").attr("href"), function(data<%= n %>) {
-		<% } -%>
-		var dat<%= n%> = L.geoJson(data<%= n %>, {
-			onEachFeature: onEachFeature,
-			pointToLayer: function (feature, latlng) {
-			<% if(any(is.na(style))) { %>
-				return L.circleMarker(latlng);
-			<% } else { -%>
-				var sty = (typeof style<%= n%> == "undefined")? (typeof style == "undefined"?undefined:style) : style<%= n%>;
-				return L.circleMarker(latlng, sty);
-			<% } -%>
-			},
-			style: (typeof style<%= n%> == "undefined")? (typeof style == "undefined"?undefined:style) : style<%= n%>,
+<%# data layer #################################################################################### -%>
+		// data layers
+<% if (!any(is.na(dat))) { # begin data -%>
+        var fitBounds = <%= ifelse(is.na(center) || is.na(zoom), "true", "false") %>; 		
+		function addDataToMap(data) {
+			var dataLayer = L.geoJson(data, {
+				onEachFeature: onEachFeature,
+				pointToLayer: function (feature, latlng) {
+					return L.circleMarker(latlng);
+				},
+				style: (typeof style1 == "undefined")? (typeof style == "undefined"?undefined:style) : style1,
+			});
+			dataLayer.addTo(map);
 			
-		});
-			<% if(is.na(center) || is.na(zoom)) { -%>
-				<% if(fit.bounds) { -%>
-		map.fitBounds(dat<%= n %>.getBounds());
-				<% fit.bounds <- FALSE -%>
-			<% }} -%>
-		dat<%= n %>.addTo(map);
-		<% if(!incl.data) { %> }); <% } %>
-	<% } -%>
+			if (fitBounds) {
+				map.fitBounds(dataLayer.getBounds());
+				fitBounds = false;
+			}
+		};
+		
+<% for(n in 1:length(dat)) { # begin loop data-%>
+<% if(incl.data) {	
+if(!file.exists(dat[[n]])) stop("data file not found")
+con <- file(dat[[n]], "rt") 
+lns <- readLines(con) 
+close(con) -%>		
+		addDataToMap(<%= paste(lns, collapse="\t\t\n") %>);
+<%} else {-%>
+		$.getJSON($("link[rel='dat<%= n %>']").attr("href"), addDataToMap);
+<% } -%>
+<% } # end loop data -%>
+<% }  # end data -%>
 
 <%#	add legend ######################################################################################## -%>
+		//legend
 	<% if(!any(is.na(style))) {
 		if(is.list(style) & !is(style, "leafletr.style")) { # multi single style
 			sty <- NULL
