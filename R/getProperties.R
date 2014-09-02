@@ -1,6 +1,5 @@
 getProperties <-
 function(data, print=TRUE) {
-	stopifnot(require(RJSONIO, quietly=TRUE))
 	
 	# check if file exists and validate GeoJSON
 	if(!file.exists(data)) stop("Data file not found")	

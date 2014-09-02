@@ -15,6 +15,9 @@ export(
   changes
 )
 
+## Imports
+import(jsonlite)
+
 ## S3 methods
 S3method(print, single.style)
 S3method(print, categorized.style)
