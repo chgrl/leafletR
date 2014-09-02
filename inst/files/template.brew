@@ -201,7 +201,7 @@ if (! is.null(bm)) {
 <%= style[[1]][n] %>
 <% } -%>
 		}			
-		function style(feature) {
+		function style1(feature) {
 			return {
 <% if(is.null(style[[2]])) { -%>
 <% if(attr(style, "style.par")=="col") { -%> 
@@ -227,7 +227,7 @@ if (! is.null(bm)) {
 <% } -%>
 		}
 					
-		function style(feature) {
+		function style1(feature) {
 			return {
 <% if(is.null(style[[2]])) { -%>
 <% if(attr(style, "style.par")=="col") { -%> 
@@ -253,14 +253,14 @@ if (! is.null(bm)) {
 		// data layers
 <% if (!any(is.na(dat))) { # begin data -%>
         var fitBounds = <%= ifelse(is.na(center) || is.na(zoom), "true", "false") %>; 		
-		function addDataToMap(data) {
+		function addDataToMap(data, style) {
 			var dataLayer = L.geoJson(data, {
 				onEachFeature: onEachFeature,
 				pointToLayer: function (feature, latlng) {
 					return L.circleMarker(latlng);
 				},
-				style: (typeof style1 == "undefined")? (typeof style == "undefined"?undefined:style) : style1,
-			});
+				style: style,
+      });
 			dataLayer.addTo(map);
 			
 			if (fitBounds) {
@@ -270,14 +270,15 @@ if (! is.null(bm)) {
 		};
 		
 <% for(n in 1:length(dat)) { # begin loop data-%>
+ if (typeof style<%= n %> == "undefined") style<%= n %> = undefined;
 <% if(incl.data) {	
 if(!file.exists(dat[[n]])) stop("data file not found")
 con <- file(dat[[n]], "rt") 
 lns <- readLines(con) 
 close(con) -%>		
-		addDataToMap(<%= paste(lns, collapse="\t\t\n") %>);
+		addDataToMap(<%= paste(lns, collapse="\t\t\n") %>, style<%= n %>);
 <%} else {-%>
-		$.getJSON($("link[rel='dat<%= n %>']").attr("href"), addDataToMap);
+		$.getJSON($("link[rel='dat<%= n %>']").attr("href"), function(x) {addDataToMap(x, style<%= n %>)});
 <% } -%>
 <% } # end loop data -%>
 <% }  # end data -%>
