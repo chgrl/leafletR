@@ -26,8 +26,8 @@
 <%# manual size -%>
 <% } else { -%>
 		#map {
-			width: <%= size[1] %> px;
-			height: <%= size[2] %> px;
+			width: <%= size[1] %>px;
+			height: <%= size[2] %>px;
 		}
 <% } -%>
 <%# popup -%>
