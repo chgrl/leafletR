@@ -7,4 +7,4 @@ before_script:
 - sudo apt-get install -y gdal-bin libgdal-dev libgdal1-dev netcdf-bin libproj-dev libgdal1h
 - ./travis-tool.sh bootstrap
 - ./travis-tool.sh install_deps
-- ./travis-tool.sh install_r httr RJSONIO rgdal sp
+- ./travis-tool.sh install_r httr jsonlite rgdal sp
