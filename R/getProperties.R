@@ -3,7 +3,7 @@ function(data, print=TRUE) {
 	
 	# check if file exists and validate GeoJSON
 	if(!file.exists(data)) stop("Data file not found")	
-	if(!isValidJSON(data)) stop("Invalid GeoJSON")
+	if(!validate(data)) stop("Invalid GeoJSON")
 	
 	# get properties
 	json <- fromJSON(data)
