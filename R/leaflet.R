@@ -3,15 +3,11 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 	if(missing(data)) data <- NA
 	if(length(data)>1) for(n in 1:length(data)) {
 		if(!is.na(data[[n]])) if(tolower(tail(strsplit(tail(strsplit(data[[n]], "/")[[1]], 1), "[.]")[[1]], 1))!="geojson") stop("'data' requires GeoJSON files (file extension should be 'geojson')")
-		json <- jsonlite::fromJSON(data[[n]])  # just for testing
-		#the following drops an error, but why?
-		#tryCatch(json <- fromJSON(data[[n]]), error=stop("'data' contains invalid JSON file", call.=FALSE))
+		if(!isValidJSON(data[[n]])) stop("'data' is not a valid JSON file")
 	} else {
 		if(!is.na(data)) {
 			if(tolower(tail(strsplit(tail(strsplit(data, "/")[[1]], 1), "[.]")[[1]], 1))!="geojson") stop("'data' requires GeoJSON files (file extension should be 'geojson')")
-			json <- jsonlite::fromJSON(data)  # just for testing
-			#the following drops an error, but why?
-			#tryCatch(json <- jsonlite::fromJSON(data), error=stop("'data' is not a valid JSON file", call.=FALSE))
+			if(!isValidJSON(data)) stop("'data' is not a valid JSON file")
 		}
 	}
 	if(missing(dest)) dest <- getwd()
