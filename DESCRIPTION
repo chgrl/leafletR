@@ -8,5 +8,5 @@ Maintainer: Christian Graul <christian.graul@gmail.com>
 Description: Display your spatial data on interactive web-maps using the open-source JavaScript library Leaflet. The package provides basic web-mapping functionality to combine vector data and online map tiles from different sources.
 License: GPL (>= 2)
 URL: https://github.com/chgrl/leafletR
-Depends: R (>= 3.0.0), jsonlite
-Suggests: httr, rgdal, sp
+Depends: R (>= 3.0.0)
+Suggests: httr, RJSONIO, rgdal, sp
