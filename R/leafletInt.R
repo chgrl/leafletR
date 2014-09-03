@@ -7,5 +7,5 @@ function(dat, path, title, size, base.map, center, zoom, style, popup, incl.data
   if (! is.list(popup)) {
     popup <- list(popup)
   }  
-  brew(system.file("files/template.brew", package = "leafletR"), path) 
+  brew(system.file("templates/main.brew", package = "leafletR"), path) 
 }
