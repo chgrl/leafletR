@@ -1,6 +1,8 @@
 leaflet <-
-function(data, dest, title, size, base.map="osm", center, zoom, style, popup, incl.data=FALSE, overwrite=TRUE) {	
-	if(missing(data)) data <- NA
+function(data, dest, title, size, base.map="osm", center, zoom, style, popup, incl.data=TRUE, overwrite=TRUE) {	
+  basemaps <- getOption("leafletBaseMaps")
+  
+  if(missing(data)) data <- NA
 	if(length(data)>1) for(n in 1:length(data)) {
 		if(!is.na(data[[n]])) if(tolower(tail(strsplit(tail(strsplit(data[[n]], "/")[[1]], 1), "[.]")[[1]], 1))!="geojson") stop("'data' requires GeoJSON files (file extension should be 'geojson')")
 		suppressWarnings(if(require(RJSONIO, quietly=TRUE)) if(!isValidJSON(data[[n]])) stop("'data' is not a valid JSON file"))
@@ -19,7 +21,7 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 		}
 	}
 	if(missing(size)) size <- NA
-	bm <- c("osm", "tls", "mqosm", "mqsat", "water", "toner")
+	bm <- names(basemaps)
 	base.map <- bm[pmatch(base.map, bm)]
 	if(any(is.na(base.map))) stop("Invalid base.map")
 	if(missing(center)) center <- NA
@@ -28,9 +30,9 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 	if(missing(popup)) popup <- NA
 	
 	if(any(!is.na(style))) {
-		if(any(class(style)=="list")) {
-			for(i in 1:length(style)) if(any(class(style[[i]])!="leafletr.style")) stop("At least one style object not recognized")
-		} else if(all(class(style)!="leafletr.style")) stop("Style object not recognized")
+		if(is.list(style) & !is(style, "leafletr.style")) {
+			for(i in 1:length(style)) if(! is(style[[i]], "leafletr.style")) stop("At least one style object not recognized")
+		} else if(! is(style, "leafletr.style")) stop("Style object not recognized")
 	}
 	
 	if(length(data)>1 && !is.na(style)) if(length(style)<length(data) || !is.list(style)) stop("Number of styles must correspond to number of data files")
