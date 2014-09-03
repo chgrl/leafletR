@@ -3,13 +3,13 @@ function(data, print=TRUE) {
 	
 	# check if file exists and convert GeoJSON
 	if(!file.exists(data)) stop("Data file not found")
-	tryCatch(json <- fromJSON(data), error=stop("Invalid GeoJSON", call.=FALSE))
+	json <- jsonlite::fromJSON(data)
+	#the following drops an error, but why?
+	#tryCatch(json <- jsonlite::fromJSON(data), error=stop("Invalid GeoJSON", call.=FALSE))
 	
 	# get properties
-	prop <- NULL
-	for(n in 1:length(json$features)) prop <- append(prop, names(json$features[[n]]$properties))
-	prop <- unique(prop)
-	
+	prop <- unique(names(json$features$properties))
+	cat(prop)
 	if(print) print(prop)
 	invisible(prop)
 }
