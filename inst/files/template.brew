@@ -6,10 +6,10 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
 	<script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js?2"></script>
-<% if(any(!is.na(dat)) && !incl.data) { -%>
+<% if(any(!is.na(data)) && !incl.data) { -%>
 	<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-<% for(n in 1:length(dat)) { -%>
-	<link rel="dat<%= n %>" type="application/json" href="<%= tail(strsplit(dat[[n]], "/")[[1]], 1) %>" />
+<% for(n in 1:length(data)) { -%>
+	<link rel="dat<%= n %>" type="application/json" href="<%= tail(strsplit(data[[n]], "/")[[1]], 1) %>" />
 <% } -%>
 <% } -%>
 <%# extra style instructions start ######################################################### -%>
@@ -251,7 +251,7 @@ if (! is.null(bm)) {
 	
 <%# data layer #################################################################################### -%>
 		// data layers
-<% if (!any(is.na(dat))) { # begin data -%>
+<% if (!any(is.na(data))) { # begin data -%>
         var fitBounds = <%= ifelse(is.na(center) || is.na(zoom), "true", "false") %>; 		
 		function addDataToMap(data, style) {
 			var dataLayer = L.geoJson(data, {
@@ -269,11 +269,11 @@ if (! is.null(bm)) {
 			}
 		};
 		
-<% for(n in 1:length(dat)) { # begin loop data-%>
+<% for(n in 1:length(data)) { # begin loop data-%>
  if (typeof style<%= n %> == "undefined") style<%= n %> = undefined;
 <% if(incl.data) {	
-if(!file.exists(dat[[n]])) stop("data file not found")
-con <- file(dat[[n]], "rt") 
+if(!file.exists(data[[n]])) stop("data file not found")
+con <- file(data[[n]], "rt") 
 lns <- readLines(con) 
 close(con) -%>		
 		addDataToMap(<%= paste(lns, collapse="\t\t\n") %>, style<%= n %>);
@@ -299,30 +299,30 @@ close(con) -%>
 			<%# rearrange layers for legend (point > line > polygon) %>
 			<%	n.dat <- 0
 				dat.ra <- style.ra <- list()
-				for(i in 1:length(dat)) {
-					if(getFeatureType(dat[[i]])=="point") {
-						dat.ra[[n.dat+1]] <- dat[[i]]
+				for(i in 1:length(data)) {
+					if(getFeatureType(data[[i]])=="point") {
+						dat.ra[[n.dat+1]] <- data[[i]]
 						style.ra[[n.dat+1]] <- style[[i]]
-						if(!is.null(names(dat)[i])) names(dat.ra)[n.dat+1] <- names(dat)[i]
+						if(!is.null(names(data)[i])) names(dat.ra)[n.dat+1] <- names(data)[i]
 						n.dat <- n.dat+1
 					}
 				}
-				if(n.dat<length(dat)) {
-					for(i in 1:length(dat)) {
-						if(getFeatureType(dat[[i]])=="line") {
-							dat.ra[[n.dat+1]] <- dat[[i]]
+				if(n.dat<length(data)) {
+					for(i in 1:length(data)) {
+						if(getFeatureType(data[[i]])=="line") {
+							dat.ra[[n.dat+1]] <- data[[i]]
 							style.ra[[n.dat+1]] <- style[[i]]
-							if(!is.null(names(dat)[i])) names(dat.ra)[n.dat+1] <- names(dat)[i]
+							if(!is.null(names(data)[i])) names(dat.ra)[n.dat+1] <- names(data)[i]
 							n.dat <- n.dat+1
 						}
 					}
 				}
-				if(n.dat<length(dat)) {
-					for(i in 1:length(dat)) {
-						if(getFeatureType(dat[[i]])=="polygon") {
-							dat.ra[[n.dat+1]] <- dat[[i]]
+				if(n.dat<length(data)) {
+					for(i in 1:length(data)) {
+						if(getFeatureType(data[[i]])=="polygon") {
+							dat.ra[[n.dat+1]] <- data[[i]]
 							style.ra[[n.dat+1]] <- style[[i]]
-							if(!is.null(names(dat)[i])) names(dat.ra)[n.dat+1] <- names(dat)[i]
+							if(!is.null(names(data)[i])) names(dat.ra)[n.dat+1] <- names(data)[i]
 							n.dat <- n.dat+1
 						}
 					}
