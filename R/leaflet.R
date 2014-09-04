@@ -1,5 +1,5 @@
 leaflet <-
-function(data, dest, title, size, base.map="osm", center, zoom, style, popup, incl.data=TRUE, overwrite=TRUE) {	
+function(data, dest, title, size, base.map="osm", center, zoom, style, popup, incl.data=FALSE, overwrite=TRUE) {	
   basemaps <- getOption("leafletBaseMaps")
   
   if(missing(data)) data <- NA
@@ -55,7 +55,9 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 		zoom <- 2
 	}
 	filePath <- file.path(dest, gsub(" ", "_", title), paste0(gsub(" ", "_", title), ".html"))
-	leafletInt(data, path=filePath, title, size, base.map, center, zoom, style, popup, incl.data)
+	if (!is.list(popup)) popup <- list(popup)
+	
+	brew(system.file("files/template.brew", package="leafletR"), filePath) 
 	message("\nYour leaflet map has been saved under ", filePath)
 	invisible(filePath)
 }
