@@ -94,3 +94,7 @@ tg <- function(data, name, dest, lat.lon, overwrite=TRUE) {
 prop <- function(data, print=TRUE) {
 	getProperties(data, print)
 }
+
+base <- function(name, title, url, options) {
+	addBaseMap(name, title, url, options)
+}

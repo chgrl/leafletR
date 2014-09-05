@@ -1,6 +1,7 @@
 \encoding{UTF-8}
 \name{addBaseMap}
 \alias{addBaseMap}
+\alias{base}
 \title{Add custom base maps}
 \description{Add a custom base map to the list of maps available in the function \code{\link{leaflet}}.}
 \usage{
