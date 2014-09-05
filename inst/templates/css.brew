@@ -15,7 +15,7 @@
 		}
 <%	} -%>
 <%# popup -%>
-<%	if(!any(is.na(popup)))-%>
+<%	if(!any(is.na(popup))){ -%>
 		table, td {
 			border-collapse: collapse;
 			border-style: solid;
@@ -84,7 +84,7 @@
 			if(is.list(style)) {
 				for(i in 1:length(style)) sty <- append(sty, attr(style[[i]], "style.type"))
 				if(all(sty=="single")) {
--%>	
+-%>
 		.crcl {
 			fill: #0033ff;
 			fill-opacity: 0.5;

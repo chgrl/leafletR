@@ -1,7 +1,7 @@
 <%# initialize the map -%>
-<%	if(is.na(center) || is.na(zoom)) { -%> 
+<%	if(is.na(center) || is.na(zoom)) { -%>
 		var map = L.map('map');
-<%	} else { -%> 
+<%	} else { -%>
 		var map = L.map('map').setView([<%= center[1] %> , <%= center[2] %> ], <%= zoom %> );
 <%	} -%>
 

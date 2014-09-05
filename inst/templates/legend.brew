@@ -100,7 +100,7 @@
 					st <- paste0("stroke: ", substr(clr, nchar(clr)-7, nchar(clr)-1), "; stroke-opacity: ", substr(opa, 10, nchar(opa)), "; stroke-width: ", lwd, ";")
 					if(as.numeric(lwd)<18) hght <- 18
 					else hght <- as.numeric(lwd) 
--%>						
+-%>				
 					'<table><tr><td class="shape"><svg style="width:<%= max.width %>px; height:<%= hght %>px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><line class="ln" style="<%= st %>" x1="<%= max.lwd+1-(max.lwd-as.numeric(lwd)/2) %>" y1="<%= hght/2 %>" x2="<%= max.width-max.lwd-1+(max.lwd-as.numeric(lwd)/2) %>" y2="<%= hght/2 %>" /></svg></td><td class="value"><%= ttl %></td></tr></table>'				
 <%				} else if(ft=="polygon") {
 					if(length(lwd)==0) lwd <- "weight: 5"
@@ -192,7 +192,7 @@
 				wght <- style[[2]][grep("weight", style[[2]])]
 				wght <- as.numeric(gsub(".+\\s+", "", wght))*2-1 
 				if(attr(style, "out")==0) { # left and right closed 
--%> 
+-%>
 			for (var i = 0; i < grades.length-1; i++) {
 				div.innerHTML +=
 					'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-2])*2+<%= wght %>) + 'px;"><svg style="width: ' + (getValue(grades[i])*2+<%= wght %>) + 'px; height: ' + (getValue(grades[i])*2+<%= wght %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[i])+<%= wght %>) + '" cy="' + (getValue(grades[i])+<%= wght %>) + '" r="' + getValue(grades[i]) + '" /></svg></td><td class="value">' + grades[i] + '&ndash;' + grades[i+1] + '</td></tr></table>'

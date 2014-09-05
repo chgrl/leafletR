@@ -16,7 +16,6 @@
 </head>
 <body>
 	<div id="map"></div>
-	
 	<script type="text/javascript">
 <%	# map initialisation
  	brew(system.file("templates/map.brew", package = "leafletR")) 
