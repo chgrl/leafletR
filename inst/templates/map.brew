@@ -1,0 +1,28 @@
+<%# initialize the map -%>
+<%	if(is.na(center) || is.na(zoom)) { -%> 
+		var map = L.map('map');
+<%	} else { -%> 
+		var map = L.map('map').setView([<%= center[1] %> , <%= center[2] %> ], <%= zoom %> );
+<%	} -%>
+
+<%# base layer-%>
+		// base layer
+		var baseMaps = {};
+<%	nbm <- 0
+	for(n in 1: length(base.map)) { 
+		bm <- basemaps[[ base.map[[n]] ]]
+		if (! is.null(bm)) { 	
+			nbm <- nbm + 1
+-%>
+		var baseMap = L.tileLayer('<%= bm$url %>', <%= jsonlite::toJSON(bm$options, auto_unbox=T) %>);
+		baseMap.addTo(map);
+		baseMaps["<%=  basemaps[[ base.map[[n]] ]]$name %>"] = baseMap;
+<%		}
+	} 
+-%>
+
+<%# layer control # -%>
+<%	if (nbm > 1) { -%>
+		// layer control
+		L.control.layers(baseMaps).addTo(map);
+<%	} -%>
