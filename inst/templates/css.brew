@@ -15,6 +15,7 @@
 		}
 <%	} -%>
 <%# popup -%>
+<%	if(!any(is.na(popup)))-%>
 		table, td {
 			border-collapse: collapse;
 			border-style: solid;
@@ -24,8 +25,10 @@
 		}
 		.evenrowcol{
 			background-color: #f6f6f6;
-		}	
+		}
+<%	} -%>
 <%# legend -%>
+<%	if(!any(is.na(style))) { -%>
 		.legend {
 			padding: 6px 8px;
 			font: 14px/16px Arial, Helvetica, sans-serif;
@@ -76,13 +79,12 @@
 			stroke-opacity: 0.5;
 			stroke-linejoin: round;
 		}
-<%	if(!any(is.na(style))) {
-		if(is(style, "leafletr.style") || is.list(style)) {
+<%		if(is(style, "leafletr.style") || is.list(style)) {
 			sty <- NULL
 			if(is.list(style)) {
 				for(i in 1:length(style)) sty <- append(sty, attr(style[[i]], "style.type"))
-				if(all(sty=="single")) { 
--%>			
+				if(all(sty=="single")) {
+-%>	
 		.crcl {
 			fill: #0033ff;
 			fill-opacity: 0.5;
