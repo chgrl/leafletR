@@ -1,10 +1,13 @@
-addBaseMap <- function(shortname, name, url, options) {
+addBaseMap <- function(name, title, url, options) {
+  # get existing base maps
   baseMaps <-  getOption("leafletBaseMaps")
   
-  newBaseMap <- list(name=name, url=url)
-  if (!missing(options)) {
-    newBaseMap$options = options
-  }
-  baseMaps[[shortname]] <- newBaseMap
+  # create base map
+  if(missing(title)) title <- name
+  newBaseMap <- list(title=title, url=url)
+  if(!missing(options)) newBaseMap$options <- options
+  
+  # add base map
+  baseMaps[[name]] <- newBaseMap
   options(leafletBaseMaps=baseMaps)
 }
