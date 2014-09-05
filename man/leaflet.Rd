@@ -46,7 +46,7 @@ Base map tiles are provided by
 data(quakes)
 dat <- toGeoJSON(data=quakes, dest=tempdir())
 
-# create map quick and simple
+# create simple map
 map <- leaflet(dat)
 browseURL(map)
 
