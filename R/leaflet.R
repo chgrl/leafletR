@@ -61,7 +61,7 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 	filePath <- file.path(dest, gsub(" ", "_", title), paste0(gsub(" ", "_", title), ".html"))
 	if (!is.list(popup)) popup <- list(popup)
 	
-	brew(system.file("files/template.brew", package="leafletR"), filePath) 
+	brew(system.file("templates/main.brew", package="leafletR"), filePath) 
 	class(filePath) <- "leaflet"
 	message("\nYour leaflet map has been saved under ", filePath)
 	invisible(filePath)

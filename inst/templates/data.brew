@@ -15,11 +15,11 @@
 			}
 		};
 		
-<%	for(n in 1:length(dat)) { -%>
+<%	for(n in 1:length(data)) { -%>
 		if (typeof style<%= n %> == "undefined") style<%= n %> = undefined;
 <%		if(incl.data) {	
-			if(!file.exists(dat[[n]])) stop("data file not found")
-			con <- file(dat[[n]], "rt") 
+			if(!file.exists(data[[n]])) stop("data file not found")
+			con <- file(data[[n]], "rt") 
 			lns <- readLines(con) 
 			close(con) -%>
 		addDataToMap(<%= paste(lns, collapse="\n\t\t") %>, style<%= n %>);

@@ -13,30 +13,30 @@
 # rearrange layers for legend (point > line > polygon)
 		n.dat <- 0
 			dat.ra <- style.ra <- list()
-			for(i in 1:length(dat)) {
-				if(getFeatureType(dat[[i]])=="point") {
-					dat.ra[[n.dat+1]] <- dat[[i]]
+			for(i in 1:length(data)) {
+				if(getFeatureType(data[[i]])=="point") {
+					dat.ra[[n.dat+1]] <- data[[i]]
 					style.ra[[n.dat+1]] <- style[[i]]
-					if(!is.null(names(dat)[i])) names(dat.ra)[n.dat+1] <- names(dat)[i]
+					if(!is.null(names(data)[i])) names(dat.ra)[n.dat+1] <- names(data)[i]
 					n.dat <- n.dat+1
 				}
 			}
-			if(n.dat<length(dat)) {
-				for(i in 1:length(dat)) {
-					if(getFeatureType(dat[[i]])=="line") {
-						dat.ra[[n.dat+1]] <- dat[[i]]
+			if(n.dat<length(data)) {
+				for(i in 1:length(data)) {
+					if(getFeatureType(data[[i]])=="line") {
+						dat.ra[[n.dat+1]] <- data[[i]]
 						style.ra[[n.dat+1]] <- style[[i]]
-						if(!is.null(names(dat)[i])) names(dat.ra)[n.dat+1] <- names(dat)[i]
+						if(!is.null(names(data)[i])) names(dat.ra)[n.dat+1] <- names(data)[i]
 						n.dat <- n.dat+1
 					}
 				}
 			}
-			if(n.dat<length(dat)) {
-				for(i in 1:length(dat)) {
-					if(getFeatureType(dat[[i]])=="polygon") {
-						dat.ra[[n.dat+1]] <- dat[[i]]
+			if(n.dat<length(data)) {
+				for(i in 1:length(data)) {
+					if(getFeatureType(data[[i]])=="polygon") {
+						dat.ra[[n.dat+1]] <- data[[i]]
 						style.ra[[n.dat+1]] <- style[[i]]
-						if(!is.null(names(dat)[i])) names(dat.ra)[n.dat+1] <- names(dat)[i]
+						if(!is.null(names(data)[i])) names(dat.ra)[n.dat+1] <- names(data)[i]
 						n.dat <- n.dat+1
 					}
 				}
