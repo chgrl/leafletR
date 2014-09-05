@@ -5,11 +5,15 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
   if(missing(data)) data <- NA
 	if(length(data)>1) for(n in 1:length(data)) {
 		if(!is.na(data[[n]])) if(tolower(tail(strsplit(tail(strsplit(data[[n]], "/")[[1]], 1), "[.]")[[1]], 1))!="geojson") stop("'data' requires GeoJSON files (file extension should be 'geojson')")
-		suppressWarnings(if(require(RJSONIO, quietly=TRUE)) if(!isValidJSON(data[[n]])) stop("'data' is not a valid JSON file"))
+		json <- jsonlite::fromJSON(data[[n]])  # just for testing
+		#the following drops an error, but why?
+		#tryCatch(json <- fromJSON(data[[n]]), error=stop("'data' contains invalid JSON file", call.=FALSE))
 	} else {
 		if(!is.na(data)) {
 			if(tolower(tail(strsplit(tail(strsplit(data, "/")[[1]], 1), "[.]")[[1]], 1))!="geojson") stop("'data' requires GeoJSON files (file extension should be 'geojson')")
-			suppressWarnings(if(require(RJSONIO, quietly=TRUE)) if(!isValidJSON(data)) stop("'data' is not a valid JSON file"))
+			json <- jsonlite::fromJSON(data)  # just for testing
+			#the following drops an error, but why?
+			#tryCatch(json <- jsonlite::fromJSON(data), error=stop("'data' is not a valid JSON file", call.=FALSE))
 		}
 	}
 	if(missing(dest)) dest <- getwd()
@@ -58,6 +62,7 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 	if (!is.list(popup)) popup <- list(popup)
 	
 	brew(system.file("files/template.brew", package="leafletR"), filePath) 
+	class(filePath) <- "leaflet"
 	message("\nYour leaflet map has been saved under ", filePath)
 	invisible(filePath)
 }
