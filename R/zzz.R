@@ -13,21 +13,21 @@ function(libname, pkgname) {
 .onLoad <- function(libname, pkgname) {
 	options(leafletBaseMaps= list(
 		osm = list(
-			name = "OpenStreetMap",
+			title = "OpenStreetMap",
 			url = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 			options = list(
 				attribution='&copy; <a href="http://openstreetmap.org/copyright", target="_blank">OpenStreetMap contributors</a>'
 			)
 		),
 		tls = list(
-			name= "Thunderforest Landscape",
+			title= "Thunderforest Landscape",
 			url = "http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png",
 			options = list(
 				attribution='Tiles &copy; <a href="http://thunderforest.com", target="_blank">Thunderforest</a>, Map data &copy; <a href="http://openstreetmap.org/copyright", target="_blan\">OpenStreetMap contributors</a>'
 			)
 		),
 		mqosm = list(
-			name = "MapQuest OSM",
+			title = "MapQuest OSM",
 			url = "http://otile{s}.mqcdn.com/tiles/1.0.0/{type}/{z}/{x}/{y}.png",
 			options = list(
 				subdomains= '1234',
@@ -36,7 +36,7 @@ function(libname, pkgname) {
 			)
 		),
 		mqsat = list(
-			name = "MapQuest Open Aerial",
+			title = "MapQuest Open Aerial",
 			url = "http://otile{s}.mqcdn.com/tiles/1.0.0/{type}/{z}/{x}/{y}.png",
 			options = list(
 				subdomains= '1234',
@@ -46,14 +46,14 @@ function(libname, pkgname) {
 			)
 		),
 		water = list(
-			name = "Stamen Watercolor",
+			title = "Stamen Watercolor",
 			url = "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.png",
 			options = list(
 				attribution='Tiles &copy; <a href=\"http://stamen.com\", target=\"_blank\">Stamen Design</a> (<a href=\"http://creativecommons.org/licenses/by/3.0\", target=\"_blank\">CC BY 3.0</a>), Map data &copy; <a href=\"http://openstreetmap.org\", target=\"_blank\">OpenStreetMap</a> under <a href=\"http://creativecommons.org/licenses/by-sa/3.0\", target=\"_blank\">CC BY SA</a>'
 			)
 		),
 		toner = list(
-			name = "Stamen Toner",
+			title = "Stamen Toner",
 			url = "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.png",
 			options = list(
 				attribution='Tiles &copy; <a href=\"http://stamen.com\", target=\"_blank\">Stamen Design</a> (<a href=\"http://creativecommons.org/licenses/by/3.0\", target=\"_blank\">CC BY 3.0</a>), Map data &copy; <a href=\"http://openstreetmap.org\", target=\"_blank\">OpenStreetMap</a> (<a href=\"http://creativecommons.org/licenses/by-sa/3.0\", target=\"_blank\">CC BY SA</a>)'
@@ -93,4 +93,8 @@ tg <- function(data, name, dest, lat.lon, overwrite=TRUE) {
 
 prop <- function(data, print=TRUE) {
 	getProperties(data, print)
+}
+
+base <- function(name, title, url, options) {
+	addBaseMap(name, title, url, options)
 }

@@ -13,7 +13,8 @@ export(
   styleCat,
   cats,
   changes,
-  addBaseMap
+  addBaseMap,
+  base
 )
 
 ## Imports
