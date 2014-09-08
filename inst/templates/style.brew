@@ -1,0 +1,63 @@
+		// Styling
+<%	if(any(class(style)=="list")) {
+		for(n in 1:length(style)) {
+			if(any(!is.na(style[[n]]))) { -%>
+		var style<%= n %> = {<%= paste(style[[n]], collapse = ",") %>};
+<%			}
+		}
+	} else { -%>
+<%		if(attr(style, "style.type")=="single") { -%>
+		var style1= {<%= paste(style, collapse =", ") %>};
+<%		} -%>
+<%		if(attr(style, "style.type")=="graduated") { -%>
+		function getValue(x) {
+<%			for(n in 1:length(style[[1]])) { -%>
+			<%= style[[1]][n] %>
+<%			} -%>
+		}			
+		function style1(feature) {
+			return {
+<%			if(is.null(style[[2]])) {
+				if(attr(style, "style.par")=="col") { -%>
+				"color": getValue(feature.properties.<%= attr(style, "property") %>),
+<%				} else if(attr(style, "style.par")=="rad") {-%>
+				"radius": getValue(feature.properties.<%= attr(style, "property") %>),
+<%				}
+			} else {
+				if(attr(style, "style.par")=="col") { -%>
+				"color": getValue(feature.properties.<%= attr(style, "property") %>),
+<%				} else if(attr(style, "style.par")=="rad") { -%>
+				"radius": getValue(feature.properties.<%= attr(style, "property") %>),
+<%				} %>
+				<%= paste(style[[2]], collapse=", ") %>
+<%			} -%>
+			};
+		}
+<%		}
+		if(attr(style, "style.type")=="categorized") { -%>
+		function getValue(x) {
+<%			for(n in 1:length(style[[1]])) { -%>
+			<%= style[[1]][n] %>
+<%			} -%>
+		}
+					
+		function style1(feature) {
+			return {
+<%			if(is.null(style[[2]])) {
+				if(attr(style, "style.par")=="col") { -%>
+				"color": getValue(feature.properties.<%= attr(style, "property") %>),
+<%				} else if(attr(style, "style.par")=="rad") {-%>
+				"radius": getValue(feature.properties.<%= attr(style, "property") %>),
+<%				}
+			} else {
+				if(attr(style, "style.par")=="col") { -%>
+				"color": getValue(feature.properties.<%= attr(style, "property") %>),
+<%				} else if(attr(style, "style.par")=="rad") { -%>
+				"radius": getValue(feature.properties.<%= attr(style, "property") %>),
+<%				} -%>
+				<%= paste(style[[2]], collapse=", ") %>
+<%			} -%>
+			};
+		}
+<%		} -%>
+<%	} -%>

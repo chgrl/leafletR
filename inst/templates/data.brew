@@ -1,0 +1,29 @@
+<%# data layer #################################################################################### -%>
+		// data layers
+        var fitBounds = <%= ifelse(is.na(center) || is.na(zoom), "true", "false") %>; 		
+		function addDataToMap(data, style) {
+			var dataLayer = L.geoJson(data, {
+				onEachFeature: (typeof onEachFeature == "undefined")? undefined: onEachFeature,
+				pointToLayer: function (feature, latlng) {return L.circleMarker(latlng);},
+				style: style,
+			});
+			dataLayer.addTo(map);
+			
+			if (fitBounds) {
+				map.fitBounds(dataLayer.getBounds());
+				fitBounds = false;
+			}
+		};
+		
+<%	for(n in 1:length(data)) { -%>
+		if (typeof style<%= n %> == "undefined") style<%= n %> = undefined;
+<%		if(incl.data) {	
+			if(!file.exists(data[[n]])) stop("data file not found")
+			con <- file(data[[n]], "rt") 
+			lns <- readLines(con) 
+			close(con) -%>
+		addDataToMap(<%= paste(lns, collapse="\n\t\t") %>, style<%= n %>);
+<%		} else {-%>
+		$.getJSON($("link[rel='dat<%= n %>']").attr("href"), function(x) {addDataToMap(x, style<%= n %>)});
+<%		} -%>
+<%	} -%>

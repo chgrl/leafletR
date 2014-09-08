@@ -70,8 +70,8 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 	}
 	filePath <- file.path(dest, gsub(" ", "_", title), paste0(gsub(" ", "_", title), ".html"))
 	
-	# brew
-	brew(system.file("files/template.brew", package="leafletR"), filePath) 
+  # brew
+	brew(system.file("templates/main.brew", package="leafletR"), filePath) 
 	
 	# finish
 	class(filePath) <- "leaflet"
