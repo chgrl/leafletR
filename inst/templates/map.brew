@@ -16,7 +16,7 @@
 -%>
 		var baseMap = L.tileLayer('<%= bm$url %>', <%= jsonlite::toJSON(bm$options, auto_unbox=T) %>);
 		baseMap.addTo(map);
-		baseMaps["<%=  basemaps[[ base.map[[n]] ]]$name %>"] = baseMap;
+		baseMaps["<%=  basemaps[[ base.map[[n]] ]]$title %>"] = baseMap;
 <%		}
 	} 
 -%>
