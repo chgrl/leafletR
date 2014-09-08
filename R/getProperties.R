@@ -9,7 +9,6 @@ function(data, print=TRUE) {
 	
 	# get properties
 	prop <- unique(names(json$features$properties))
-	cat(prop)
 	if(print) print(prop)
 	invisible(prop)
 }
