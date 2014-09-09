@@ -93,8 +93,7 @@ map <- leaflet(data=dat, dest=tempdir(), base.map="mqsat", style=sty)
 browseURL(map)
 
 # more than one data set
-park <- toGeoJSON(data=system.file(package="leafletR", "files", 
-  "park_sk.zip"), dest=tempdir())
+park <- system.file(package="leafletR", "files", "park_sk.geojson")
 peak <- toGeoJSON(system.file(package="leafletR", "files", "peak_sk.kml"), 
   dest=tempdir())
 sty.1 <- styleSingle(col="green", fill="green")

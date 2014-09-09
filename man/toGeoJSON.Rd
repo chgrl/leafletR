@@ -62,13 +62,8 @@ msp <- SpatialPolygons(list(Polygons(list(Polygon(meuse.riv)),
 toGeoJSON(data=msp, dest=tempdir()) # rgdal package required
 
 # convert a shapefile (in zipped archive)
-toGeoJSON(data=system.file(package="leafletR", "files", "park_sk.zip"), 
-  name="NatParks_SK", dest=tempdir())
-
-# convert a DXF file
-# storing output file path in variable
-path <- toGeoJSON(data=system.file(package="leafletR", "files", 
-  "lynx.dxf"), name="lynx_telemetry", dest=tempdir())
+toGeoJSON(data=system.file(package="leafletR", "files", "lynx.zip"), 
+  name="lynx_telemetry", dest=tempdir())
 
 # convert a KML file
 # using name of data file and saving to working directory

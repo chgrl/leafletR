@@ -58,7 +58,7 @@ browseURL(map)
 ## line data ##
 # prepare data
 dat <- toGeoJSON(data=system.file(package="leafletR", "files", 
-  "lynx.dxf"), dest=tempdir())
+  "lynx.zip"), name="Lynx telemetry", dest=tempdir())
 
 # style
 sty <- styleSingle(col="#bb650b", lwd=3, alpha=0.8)
@@ -68,8 +68,7 @@ browseURL(map)
 
 ## polygon data ##
 # prepare data
-dat <- toGeoJSON(data=system.file(package="leafletR", "files", 
-  "park_sk.zip"), dest=tempdir())
+dat <- system.file(package="leafletR", "files", "park_sk.geojson")
 
 # change borders
 # note: if fill color is not specified, col is also used as fill color 

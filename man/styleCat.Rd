@@ -25,8 +25,7 @@ If \code{val} does not cover all data values, the unspecified data values are co
 \examples{
 \dontrun{
 # prepare data
-dat <- toGeoJSON(data=system.file(package="leafletR", "files", 
-  "park_sk.zip"), dest=tempdir())
+dat <- system.file(package="leafletR", "files", "park_sk.geojson")
 
 # simple categorizing
 sty <- styleCat(prop="lynx", val=c("yes", "no"), 
