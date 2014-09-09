@@ -1,4 +1,4 @@
-## Export methods
+## Exports
 export(
   leaflet,
   leaf,
@@ -18,7 +18,10 @@ export(
 )
 
 ## Imports
-import(jsonlite)
+import(
+  brew,
+  jsonlite
+)
 
 ## S3 methods
 S3method(print, leaflet)
