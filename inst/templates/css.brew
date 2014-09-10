@@ -79,9 +79,9 @@
 			stroke-opacity: 0.5;
 			stroke-linejoin: round;
 		}
-<%		if(is(style, "leafletr.style") || is.list(style)) {
+<%		if(is(style, "leafletr.style") || all(class(style)=="list")) {
 			sty <- NULL
-			if(is.list(style)) {
+			if(all(class(style)=="list")) {
 				for(i in 1:length(style)) sty <- append(sty, attr(style[[i]], "style.type"))
 				if(all(sty=="single")) {
 -%>
@@ -95,12 +95,12 @@
 <%				}
 			} else if(attr(style, "style.type")=="graduated" || attr(style, "style.type")=="categorized") {
 				if(attr(style, "style.par")=="col") { 
-					opa <- style[[2]][grep("fillOpacity", style[[2]])] 
+					opa <- style[[2]][grep("fillOpacity", style[[2]])]
 -%>
 		.legend i {
 			opacity: <%= as.numeric(gsub(".+\\s+", "", opa)) %>;
 		}				
-<%				} else if(attr(style, "style.par")=="rad") { 
+<%				} else if(attr(style, "style.par")=="rad") {
 					clr <- style[[2]][grep("fillColor", style[[2]])]
 					opa <- style[[2]][grep("fillOpacity", style[[2]])]
 					brd <- style[[2]][grep("color", style[[2]])]
