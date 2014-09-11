@@ -3,10 +3,10 @@ Type: Package
 Title: Interactive web-maps based on the Leaflet JavaScript library
 Version: 0.2-1
 Date: 2014-07-09
-Author: Christian Graul
+Author: Christian Graul, with contributions from Francois Guillem
 Maintainer: Christian Graul <christian.graul@gmail.com>
 Description: Display your spatial data on interactive web-maps using the open-source JavaScript library Leaflet. The package provides basic web-mapping functionality to combine vector data and online map tiles from different sources.
 License: GPL (>= 2)
 URL: https://github.com/chgrl/leafletR
 Depends: R (>= 3.0.0), brew, jsonlite
-Suggests: httr, RJSONIO, rgdal, sp
+Suggests: httr, rgdal, sp
