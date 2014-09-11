@@ -24,10 +24,10 @@ tg(data, name, dest, lat.lon, overwrite=TRUE)
 
 \emph{Conversion of external spatial data files}
 
-\code{toGeoJSON} uses the Ogre web API (\url{http://ogre.adc4gis.com}). Ogre accepts the following file types directly: .bna, .csv, .dgn, .dxf, .gxt, .txt, .rss, .georss, .xml, .gmt, .kml and .kmz. Please note that for Shapefiles, GML, MapInfo, and VRT, Ogre only accepts a zip file. The Ogre API does not support large files (>15 MB). Have a look at the \code{rgdal} package and its \code{writeOGR} function, to convert files on your local machine.
+\code{toGeoJSON} uses the Ogre web API (\url{http://ogre.adc4gis.com}). See the \href{http://ogre.adc4gis.com}{Ogre} website for a list of supported formats. Please note that for Shapefiles, MapInfo and VRT, Ogre only accepts a zip file. The Ogre API does not support large files (>15 MB). Have a look at the \code{rgdal} package and its \code{writeOGR} function, to convert files on your local machine.
 }
 \value{GeoJSON file path, as string.}
-\source{The code for the conversion of external data files is taken from the \code{togeojson} function of the \code{rgbif} package (\url{http://cran.r-project.org/web/packages/rgbif}). Package import would have unreasonably increased the dependencies of \code{leafletR}.}
+\source{The code for the conversion of external data files is taken from the \code{togeojson} function of the \code{rgbif} package. Package import would have unreasonably increased the dependencies of \code{leafletR}.}
 \author{Christian Graul}
 \seealso{\code{\link{leaflet}}}
 \examples{

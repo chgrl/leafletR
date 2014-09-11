@@ -16,6 +16,7 @@ addBaseMap(name, title, url, options)
 \author{François Guillem}
 \seealso{\code{\link{leaflet}}}
 \examples{
+\dontrun{
 # duplicates osm base map
 addBaseMap(
   name="myosm", 
@@ -28,5 +29,6 @@ addBaseMap(
 )
 
 browseURL(leaflet(base.map="myosm"))
+}
 }
 \keyword{methods}

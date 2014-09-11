@@ -7,27 +7,20 @@
 \description{Display your spatial data on interactive web-maps using the open-source JavaScript library Leaflet. The package provides basic web-mapping functionality to combine vector data and online map tiles from different sources.
 }
 \details{
-\tabular{lll}{
-  \tab Package: \tab leafletR\cr
-  \tab Type: \tab Package\cr
-  \tab Version: \tab 0.2-1\cr
-  \tab Date: \tab 2014-07-09\cr
-  \tab License: \tab GPL (>=2)\cr
-}
 \code{leafletR} lets you display spatial data on interactive maps in web browsers (a.k.a. slippy maps). It takes advantage of the open-source JavaScript library Leaflet.js, developed by Vladimir Agafonkin. Focusing simplicity, the package provides basic web-mapping functionality and styling options only. For map display an internet connection is required to load the Leaflet library, stylesheets and base map tiles. The ready to use html file output can be viewed locally or uploaded to a web-server.
 
 \code{leafletR} supports GeoJSON files directly. Additionally it contains conversion tools for sp spatial objects, several popular spatial vector data formats and R data frames containing point coordinates.
 	
 \code{leafletR} uses open base map tiles only. Map data is provided by the \href{http://www.openstreetmap.org}{OpenStreetMap} project and satellite images are provided by courtesy of NASA/ JPL-Caltech and U.S. Department of Agriculture, Farm Service Agency.
 
-Try the example below to check if \code{leafletR} has been correctly installed. Any question and feedback is welcome via email to <christian.graul@gmail.com>.
+Try the example below to check if \code{leafletR} has been correctly installed. Any question and feedback is welcome via email to <christian.graul@gmail.com> or on \href{https://github.com/chgrl/leafletR}{GitHub}.
 
 Example output:
 
-\figure{quakes.png}{options: width=390px}
+\figure{quakes.png}{options: width=350px}
 }
 \author{
-Christian Graul
+Christian Graul, with contributions from Francois Guillem
 
 Maintainer: Christian Graul <christian.graul@gmail.com>
 }
