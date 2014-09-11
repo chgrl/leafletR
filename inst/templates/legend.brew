@@ -191,6 +191,7 @@
 			} else if(attr(style, "style.par")=="rad") { # radius scale 
 				wght <- style[[2]][grep("weight", style[[2]])]
 				wght <- as.numeric(gsub(".+\\s+", "", wght))*2
+				if(length(wght)==0) wght <- 4
 				if(wght==0) {
 					xy <- wght+1
 					cont <- wght+1
@@ -275,6 +276,7 @@
 <%		} else if(attr(style, "style.type")=="categorized") { # categorized style 
 			wght <- style[[2]][grep("weight", style[[2]])]
 			wght <- as.numeric(gsub(".+\\s+", "", wght))*2
+			if(length(wght)==0) wght <- 4
 			if(wght==0) {
 				xy <- wght+1
 				cont <- wght+1
