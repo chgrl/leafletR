@@ -1,4 +1,9 @@
-<%	if(all(class(style)=="list") && !is(style, "leafletr.style")) { # multi single style
+<%#
+ 
+    MULTI SINGLE STYLE
+
+-%>
+<%	if(all(class(style)=="list") && !is(style, "leafletr.style")) {
 		sty <- NULL
 		for(i in 1:length(style)) sty <- append(sty, attr(style[[i]], "style.type"))
 		if(all(sty=="single")) { 
@@ -116,8 +121,18 @@
 		};
 		legend.addTo(map);
 <%		} %>
-<%	} else if(is(style, "leafletr.style")) { # non simpleStyle
-		if(attr(style, "style.type")=="graduated") { # graduated style 
+<%#
+ 
+    GRADUATED OR CATEGORIZED STYLE
+
+-%>
+<%	} else if(is(style, "leafletr.style")) { -%>
+<%#
+ 
+    GRADUATED STYLE
+
+-%>
+<%		if(attr(style, "style.type")=="graduated") {
 -%>
 				// Graduated legend
 				var legend = L.control({position: 'bottomright'});
@@ -273,7 +288,12 @@
 		};
 		legend.addTo(map);
 				
-<%		} else if(attr(style, "style.type")=="categorized") { # categorized style 
+<%# 
+
+    CATEGORIZED STYLE
+
+-%>
+<%		} else if(attr(style, "style.type")=="categorized") { 
 			wght <- style[[2]][grep("weight", style[[2]])]
 			wght <- as.numeric(gsub(".+\\s+", "", wght))*2
 			if(length(wght)==0) wght <- 4

@@ -1,4 +1,4 @@
-<%# data layer #################################################################################### -%>
+
 		// data layers
         var fitBounds = <%= ifelse(is.na(center) || is.na(zoom), "true", "false") %>; 		
 		function addDataToMap(data, style) {

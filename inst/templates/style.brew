@@ -1,4 +1,8 @@
-		// Styling
+
+		// styling
+<%# 
+    STYLE LIST (MULTI SINGLE STYLE)
+-%>
 <%	if(any(class(style)=="list")) {
 		for(n in 1:length(style)) {
 			if(any(!is.na(style[[n]]))) { -%>
@@ -6,9 +10,15 @@
 <%			}
 		}
 	} else { -%>
+<%# 
+    SINGLE STYLE
+-%>
 <%		if(attr(style, "style.type")=="single") { -%>
 		var style1= {<%= paste(style, collapse =", ") %>};
 <%		} -%>
+<%# 
+    GRADUATED STYLE
+-%>
 <%		if(attr(style, "style.type")=="graduated") { -%>
 		function getValue(x) {
 <%			for(n in 1:length(style[[1]])) { -%>
@@ -33,8 +43,11 @@
 <%			} -%>
 			};
 		}
-<%		}
-		if(attr(style, "style.type")=="categorized") { -%>
+<%		} -%>
+<%# 
+    CATEGORIZED STYLE
+-%>
+<%		if(attr(style, "style.type")=="categorized") { -%>
 		function getValue(x) {
 <%			for(n in 1:length(style[[1]])) { -%>
 			<%= style[[1]][n] %>

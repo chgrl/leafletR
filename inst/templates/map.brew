@@ -1,11 +1,15 @@
-<%# initialize the map -%>
+<%# 
+    INITIALIZE MAP
+-%>
 <%	if(is.na(center) || is.na(zoom)) { -%>
 		var map = L.map('map');
 <%	} else { -%>
 		var map = L.map('map').setView([<%= center[1] %> , <%= center[2] %> ], <%= zoom %> );
 <%	} -%>
+<%# 
+    BASE LAYER
+-%>
 
-<%# base layer-%>
 		// base layer
 		var baseMaps = {};
 <%	nbm <- 0
@@ -20,9 +24,11 @@
 <%		}
 	} 
 -%>
-
-<%# layer control # -%>
+<%# 
+    LAYER CONTROL
+-%>
 <%	if (nbm > 1) { -%>
+		
 		// layer control
 		L.control.layers(baseMaps).addTo(map);
 <%	} -%>

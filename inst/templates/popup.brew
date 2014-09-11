@@ -1,3 +1,4 @@
+
 		// popup
 		function onEachFeature(feature, layer) {
 <%	for(n in 1:length(popup)) { -%>
