@@ -1,3 +1,24 @@
+leafletR 0.3-0 [2014-09-12]
+---------------------------
+
+* rewrite of leaflet: maps now generated using brew and templates;
+  RJSONIO dependency replaced by jsonlite 
+
+* new function addBaseMap: add custom base maps
+
+* print method for leaflet: view your map even faster by typing
+  map object name
+  
+* update to Leaflet version 0.7.3
+
+* bug fixes in leaflet: failed for style lists; bad detection of
+  wrong styles
+
+* bug fix in styleCat/styleGrad/styleSingle: printing failed
+
+* bug fix in toGeoJSON: failed for data frames with three columns
+
+
 leafletR 0.2-1 [2014-07-09]
 ---------------------------
 
