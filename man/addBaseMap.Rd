@@ -11,7 +11,7 @@ addBaseMap(name, title, url, options)
   \item{name}{Name of the base map.}
   \item{title}{Title of the base map, used in the layer control of the resulting map. Optional -- if missing, \code{name} is used.}
   \item{url}{URL for the base map. See \url{http://leafletjs.com/reference.html#tilelayer} for more information.}
-  \item{options}{(Optional list of additional options. See \url{http://leafletjs.com/reference.html#tilelayer} for for a list of valid options.}
+  \item{options}{Optional list of additional options. See \url{http://leafletjs.com/reference.html#tilelayer} for for a list of valid options.}
 }
 \author{François Guillem}
 \seealso{\code{\link{leaflet}}}
@@ -28,7 +28,7 @@ addBaseMap(
   )
 )
 
-browseURL(leaflet(base.map="myosm"))
+map <- leaflet(base.map="myosm")
 }
 }
 \keyword{methods}

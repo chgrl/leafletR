@@ -46,28 +46,24 @@ Base map tiles are provided by
 data(quakes)
 dat <- toGeoJSON(data=quakes, dest=tempdir())
 
-# create simple map
+# create and view simple map
 map <- leaflet(dat)
-browseURL(map)
+map  # redirects to browseURL(map)
 
 # set output directory and map title
 map <- leaflet(data=dat, dest=tempdir(), title="Fiji Earthquakes")
-browseURL(map)
 
 # set map size, center and zoom level
 map <- leaflet(data=dat, dest=tempdir(), 
   size=c(800,600), center=c(-18.35, 179.75), zoom=6)
-browseURL(map)
 
 # set base map and popup
 # magnitude is used as popup (type names(quakes) for available properties)
 map <- leaflet(data=dat, dest=tempdir(), 
   base.map="mqsat", popup="mag")
-browseURL(map)
 
 # include data in HTML file
 map <- leaflet(dat, incl.data=TRUE)
-browseURL(map)
 
 # preserve existing files from overwriting
 map <- leaflet(dat, overwrite=FALSE)
@@ -75,36 +71,30 @@ map <- leaflet(dat, overwrite=FALSE)
 # more than one base map
 map <- leaflet(data=dat, dest=tempdir(), 
   base.map=list("osm", "mqsat", "tls"))
-browseURL(map)
 
 # multiple properties in the popup
 map <- leaflet(data=dat, dest=tempdir(), 
   popup=c("mag", "depth"))
-browseURL(map)
 
 # all available properties in the popup
 map <- leaflet(data=dat, dest=tempdir(), 
   popup="*")
-browseURL(map)
 
 # change style
 sty <- styleSingle(col="red", fill=NA)
 map <- leaflet(data=dat, dest=tempdir(), base.map="mqsat", style=sty)
-browseURL(map)
 
 # more than one data set
 park <- system.file(package="leafletR", "files", "park_sk.geojson")
-peak <- toGeoJSON(system.file(package="leafletR", "files", "peak_sk.kml"), 
+peak <- toGeoJSON(system.file(package="leafletR", "files", "peak_sk.kmz"), 
   dest=tempdir())
 sty.1 <- styleSingle(col="green", fill="green")
 sty.2 <- styleSingle(col="brown", fill="brown", rad=3)
 map <- leaflet(data=list(park, peak), dest=tempdir(), 
   style=list(sty.1, sty.2), popup=list("*", "Name"))
-browseURL(map)
 
 map <- leaflet(data=list(National.Parks=park, Peaks=peak), dest=tempdir(), 
   style=list(sty.1, sty.2), popup=list("*", "Name"))  # names in legend
-browseURL(map)
 }
 }
 \keyword{methods}

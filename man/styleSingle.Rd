@@ -31,28 +31,23 @@ dat <- toGeoJSON(data=quakes, dest=tempdir())
 # note: if fill color is not specified, col is also used as fill color 
 sty <- styleSingle(col=2, lwd=1, alpha=1)
 map <- leaflet(data=dat, dest=tempdir(), style=sty)
-browseURL(map)
 
 # change fill color, alpha and radius
 sty <- styleSingle(fill="red", fill.alpha=1, rad=2)
 map <- leaflet(data=dat, dest=tempdir(), style=sty)
-browseURL(map)
 
 # no border
 sty <- styleSingle(col=NA)
 map <- leaflet(data=dat, dest=tempdir(), style=sty)
-browseURL(map)
 
 # blank circle area
 sty <- styleSingle(fill=NA)
 map <- leaflet(data=dat, dest=tempdir(), style=sty)
-browseURL(map)
 
 # change all arguments
 sty <- styleSingle(col="#d4d4d4", lwd=1, alpha=0.8, 
   fill="darkred", fill.alpha=0.4, rad=4)
 map <- leaflet(data=dat, dest=tempdir(), style=sty)
-browseURL(map)
 
 
 ## line data ##
@@ -63,7 +58,6 @@ dat <- toGeoJSON(data=system.file(package="leafletR", "files",
 # style
 sty <- styleSingle(col="#bb650b", lwd=3, alpha=0.8)
 map <- leaflet(data=dat, dest=tempdir(), style=sty)
-browseURL(map)
 
 
 ## polygon data ##
@@ -74,28 +68,23 @@ dat <- system.file(package="leafletR", "files", "park_sk.geojson")
 # note: if fill color is not specified, col is also used as fill color 
 sty <- styleSingle(col=3, lwd=2, alpha=1)
 map <- leaflet(data=dat, dest=tempdir(), style=sty)
-browseURL(map)
 
 # change fill color and alpha
 sty <- styleSingle(fill="darkgreen", fill.alpha=0.8)
 map <- leaflet(data=dat, dest=tempdir(), style=sty)
-browseURL(map)
 
 # no border
 sty <- styleSingle(col=NA)
 map <- leaflet(data=dat, dest=tempdir(), style=sty)
-browseURL(map)
 
 # blank polygon area
 sty <- styleSingle(fill=NA)
 map <- leaflet(data=dat, dest=tempdir(), style=sty)
-browseURL(map)
 
 # change all arguments
 sty <- styleSingle(col="#006400", lwd=5, alpha=0.8, 
   fill="darkgreen", fill.alpha=0.4)
 map <- leaflet(data=dat, dest=tempdir(), style=sty)
-browseURL(map)
 }
 }
 \keyword{methods}

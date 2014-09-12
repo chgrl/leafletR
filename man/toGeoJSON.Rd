@@ -65,9 +65,9 @@ toGeoJSON(data=msp, dest=tempdir()) # rgdal package required
 toGeoJSON(data=system.file(package="leafletR", "files", "lynx.zip"), 
   name="lynx_telemetry", dest=tempdir())
 
-# convert a KML file
+# convert a KML/KMZ file
 # using name of data file and saving to working directory
-toGeoJSON(system.file(package="leafletR", "files", "peak_sk.kml"))
+toGeoJSON(system.file(package="leafletR", "files", "peak_sk.kmz"))
 }
 }
 \keyword{methods}

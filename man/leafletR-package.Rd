@@ -45,5 +45,5 @@ q.map <- leaflet(data=q.dat, dest=tempdir(), title="Fiji Earthquakes",
   base.map="mqsat", style=q.style, popup="mag")
 
 # view map in browser
-#browseURL(q.map)
+#q.map
 }
