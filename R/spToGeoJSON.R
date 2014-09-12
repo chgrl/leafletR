@@ -4,9 +4,8 @@ function(data, class, name, dest, overwrite) {
 	path <- paste0(file.path(dest, name), ".geojson")
 	if(file.exists(path) && !overwrite) stop("Abort - file already exists")
 	
-	stopifnot(require(sp, quietly=TRUE))
-	suppressWarnings(rgdal <- require(rgdal, quietly=TRUE))
-    if(rgdal) data=spTransform(data, CRS("+proj=longlat +ellps=WGS84"))
+	stopifnot(requireNamespace("sp", quietly=TRUE))
+	if(requireNamespace("rgdal", quietly=TRUE)) data <- sp::spTransform(data, sp::CRS("+proj=longlat +ellps=WGS84"))
 	
 	# heading
 	cat("{", file=path, sep="\n")
@@ -69,15 +68,15 @@ function(data, class, name, dest, overwrite) {
 			cat("      \"geometry\": {", file=path, append=TRUE, sep="\n")
 			if(f.len[f]==1) {	# SingleLines
 				cat("        \"type\": \"LineString\",", file=path, append=TRUE, sep="\n")
-				coord <- paste0("[", coordinates(data@lines[[f]])[[1]][1,1], ",", coordinates(data@lines[[f]])[[1]][1,2], "]")
-				for(i in 2:length(coordinates(data@lines[[f]])[[1]][,1])) coord <- append(coord, paste0("[", coordinates(data@lines[[f]])[[1]][i,1], ",", coordinates(data@lines[[f]])[[1]][i,2], "]"))
+				coord <- paste0("[", sp::coordinates(data@lines[[f]])[[1]][1,1], ",", sp::coordinates(data@lines[[f]])[[1]][1,2], "]")
+				for(i in 2:length(sp::coordinates(data@lines[[f]])[[1]][,1])) coord <- append(coord, paste0("[", sp::coordinates(data@lines[[f]])[[1]][i,1], ",", sp::coordinates(data@lines[[f]])[[1]][i,2], "]"))
 				coord <- paste(coord, collapse=", ")
 			} else {	# MultiLines
 				cat("        \"type\": \"MultiLineString\",", file=path, append=TRUE, sep="\n")
 				coord <- NULL
 				for(l in 1:f.len[f]) {
-					ln <- paste0("[", coordinates(data@lines[[f]])[[l]][1,1], ",", coordinates(data@lines[[f]])[[l]][1,2], "]")
-					for(i in 2:length(coordinates(data@lines[[f]])[[l]][,1])) ln <- append(ln, paste0("[", coordinates(data@lines[[f]])[[l]][i,1], ",", coordinates(data@lines[[f]])[[l]][i,2], "]"))
+					ln <- paste0("[", sp::coordinates(data@lines[[f]])[[l]][1,1], ",", sp::coordinates(data@lines[[f]])[[l]][1,2], "]")
+					for(i in 2:length(sp::coordinates(data@lines[[f]])[[l]][,1])) ln <- append(ln, paste0("[", sp::coordinates(data@lines[[f]])[[l]][i,1], ",", sp::coordinates(data@lines[[f]])[[l]][i,2], "]"))
 					ln <- paste("[", paste(ln, collapse=", "), "]")
 					if(is.null(coord)) coord <- ln
 					else coord <- append(coord, ln)
