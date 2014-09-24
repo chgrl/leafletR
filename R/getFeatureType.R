@@ -7,8 +7,9 @@ function(dat) {
 	fl <- jsonlite::fromJSON(dat)
 	
 	# get FeatureType
-	ft <- unique(gsub("multi", "", tolower(fl$features$geometry$type)))
-	if(length(ft)>1) stop("GeoJSON contains different geometry types")
+	if(tolower(tail(strsplit(basename(dat), "[.]")[[1]], 1))=="geojson") ft <- unique(gsub("multi", "", tolower(fl$features$geometry$type)))
+	else if(tolower(tail(strsplit(basename(dat), "[.]")[[1]], 1))=="json") ft <- unique(gsub("multi", "", tolower(fl$objects[[1]]$geometries$type))) # TODO: takes first topology object only --> getTopologyObjects
+	if(length(ft)>1) stop("File contains different geometry types")
 	if(ft=="linestring") ft <- "line"
 	
 	return(ft)

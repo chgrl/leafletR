@@ -4,13 +4,17 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
   # prepare data
   if(missing(data)) data <- NA
 	if(length(data)>1) for(n in 1:length(data)) {
-		if(!is.na(data[[n]])) if(tolower(tail(strsplit(tail(strsplit(data[[n]], "/")[[1]], 1), "[.]")[[1]], 1))!="geojson") stop("'data' requires GeoJSON files (file extension should be 'geojson')")
+		if(!is.na(data[[n]])) {
+			ext <- tolower(tail(strsplit(basename(data[[n]]), "[.]")[[1]], 1))
+			if(ext!="geojson" && ext!="json") stop("'data' requires GeoJSON (file extension should be 'geojson' or topoJSON files (file extension should be 'json')")
+		}
 		json <- jsonlite::fromJSON(data[[n]])  # just for testing
 		#the following drops an error, but why?
 		#tryCatch(json <- fromJSON(data[[n]]), error=stop("'data' contains invalid JSON file", call.=FALSE))
 	} else {
 		if(!is.na(data)) {
-			if(tolower(tail(strsplit(tail(strsplit(data, "/")[[1]], 1), "[.]")[[1]], 1))!="geojson") stop("'data' requires GeoJSON files (file extension should be 'geojson')")
+			ext <- tolower(tail(strsplit(basename(data), "[.]")[[1]], 1))
+			if(ext!="geojson" && ext!="json") stop("'data' requires GeoJSON (file extension should be 'geojson' or topoJSON files (file extension should be 'json')")
 			json <- jsonlite::fromJSON(data)  # just for testing
 			#the following drops an error, but why?
 			#tryCatch(json <- jsonlite::fromJSON(data), error=stop("'data' is not a valid JSON file", call.=FALSE))
@@ -23,7 +27,7 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 	if(missing(title)) {
 		if(any(is.na(data))) title <- "map" 
 		else {
-			if(length(data)==1) title <- gsub("_", " ", paste(head(strsplit(tail(strsplit(data, "/")[[1]], 1), "[.]")[[1]], -1), collapse="_")) else title <- "map"
+			if(length(data)==1) title <- gsub("_", " ", paste(head(strsplit(basename(data), "[.]")[[1]], -1), collapse="_")) else title <- "map"
 		}
 	}
 	
