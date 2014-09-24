@@ -1,3 +1,5 @@
+
+		// styling
 <%#
  
     MULTI SINGLE STYLE
@@ -8,7 +10,6 @@
 		for(i in 1:length(style)) sty <- append(sty, attr(style[[i]], "style.type"))
 		if(all(sty=="single")) { 
 -%>
-		// single style
 		var legend = L.control({position: 'bottomright'});
 		legend.onAdd = function(map) {
 			var div = L.DomUtil.create('div', 'legend');
@@ -134,7 +135,6 @@
 -%>
 <%		if(attr(style, "style.type")=="graduated") {
 -%>
-				// Graduated legend
 				var legend = L.control({position: 'bottomright'});
 				legend.onAdd = function(map) {
 					var div = L.DomUtil.create('div', 'legend');
