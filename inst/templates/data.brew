@@ -26,8 +26,10 @@
 <%		} else {-%>
 <%			if(tolower(tail(strsplit(basename(data[[n]]), "[.]")[[1]], 1))=="geojson") { -%>
 		$.getJSON($("link[rel='dat<%= n %>']").attr("href"), function(x) {addDataToMap(x, style<%= n %>)});
-<%			} else if(tolower(tail(strsplit(basename(data[[n]]), "[.]")[[1]], 1))=="json") {
-				obj <- "nld"-%>	<%# TODO: how to derive object name from topojson file??? -%>
+<%			} else if(tolower(tail(strsplit(basename(data[[n]]), "[.]")[[1]], 1))=="json") { -%>
+				<%# takes the first object from the topojson file 
+					TODO: give a warning, if more than one topology objects are available -%>
+<%				obj <- getTopologyObjects(data[[n]])[1] -%>
 		$.getJSON($("link[rel='dat<%= n %>']").attr("href"), function(x) {addDataToMap(topojson.feature(x, x.objects.<%= obj %>), style<%= n %>)});
 <%			} -%>
 <%		} -%>
