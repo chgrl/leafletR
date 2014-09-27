@@ -1,12 +1,14 @@
 leaflet <-
 function(data, dest, title, size, base.map="osm", center, zoom, style, popup, incl.data=FALSE, overwrite=TRUE) {	
   
-  # prepare data
-  if(missing(data)) data <- NA
+	# prepare data
+	if(missing(data)) data <- NA
+	topojson <- FALSE
 	if(length(data)>1) for(n in 1:length(data)) {
 		if(!is.na(data[[n]])) {
 			ext <- tolower(tail(strsplit(basename(data[[n]]), "[.]")[[1]], 1))
 			if(ext!="geojson" && ext!="json") stop("'data' requires GeoJSON (file extension should be 'geojson' or TopoJSON files (file extension should be 'json')")
+			if(ext=="json") topojson <- TRUE
 		}
 		json <- jsonlite::fromJSON(data[[n]])  # just for testing
 		#the following drops an error, but why?
@@ -15,6 +17,7 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 		if(!is.na(data)) {
 			ext <- tolower(tail(strsplit(basename(data), "[.]")[[1]], 1))
 			if(ext!="geojson" && ext!="json") stop("'data' requires GeoJSON (file extension should be 'geojson' or TopoJSON files (file extension should be 'json')")
+			if(ext=="json") topojson <- TRUE
 			json <- jsonlite::fromJSON(data)  # just for testing
 			#the following drops an error, but why?
 			#tryCatch(json <- jsonlite::fromJSON(data), error=stop("'data' is not a valid JSON file", call.=FALSE))

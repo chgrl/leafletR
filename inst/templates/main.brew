@@ -8,7 +8,7 @@
 	<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 <%	if(any(!is.na(data)) && !incl.data) { -%>
 	<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-<%# TODO: only add if data format is topojson -%>
+<%		if(topojson) -%>
 	<script src="http://d3js.org/topojson.v1.min.js"></script>
 <%		for(n in 1:length(data)) { -%>
 	<link rel="dat<%= n %>" type="application/json" href="<%= basename(data[[n]]) %>" />
