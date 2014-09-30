@@ -1,15 +1,19 @@
 getProperties <-
 function(data, print=TRUE) {
 	
-	# check if file exists and convert JSON
-	if(!file.exists(data)) stop("Data file not found")
-	json <- jsonlite::fromJSON(data)
-	#the following drops an error, but why?
-	#tryCatch(json <- jsonlite::fromJSON(data), error=stop("Invalid GeoJSON", call.=FALSE))
+	# if file path is given
+	if(is.character(data)) {
+		# check if file exists and convert JSON
+		if(!file.exists(data)) stop("Data file not found")
+		data <- jsonlite::fromJSON(data)
+		if(is.null(data$type)) stop("'data' requires GeoJSON or TopoJSON file")
+	}
 	
 	# get properties
-	if(tolower(tail(strsplit(basename(data), "[.]")[[1]], 1))=="geojson") prop <- unique(names(json$features$properties))
-	else if(tolower(tail(strsplit(basename(data), "[.]")[[1]], 1))=="json") prop <- unique(names(json$objects[[1]]$geometries$properties)) # TODO: takes first topology object only --> getTopologyObjects
+	if(tolower(data$type)=="topology") prop <- unique(names(data$objects[[1]]$geometries$properties)) # TODO: takes first topology object only
+	else prop <- unique(names(data$features$properties))
+	
+	# print and return
 	if(print) print(prop)
 	invisible(prop)
 }
