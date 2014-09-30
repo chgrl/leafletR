@@ -4,23 +4,18 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 	# prepare data
 	if(missing(data)) data <- NA
 	topojson <- FALSE
+	json <- list()
 	if(length(data)>1) for(n in 1:length(data)) {
 		if(!is.na(data[[n]])) {
-			ext <- tolower(tail(strsplit(basename(data[[n]]), "[.]")[[1]], 1))
-			if(ext!="geojson" && ext!="json") stop("'data' requires GeoJSON (file extension should be 'geojson' or TopoJSON files (file extension should be 'json')")
-			if(ext=="json") topojson <- TRUE
+			json[[n]] <- jsonlite::fromJSON(data[[n]])
+			if(is.null(json[[n]]$type)) stop("'data' requires GeoJSON or TopoJSON files")
+			if(tolower(json[[n]]$type)=="topology") topojson <- TRUE
 		}
-		json <- jsonlite::fromJSON(data[[n]])  # just for testing
-		#the following drops an error, but why?
-		#tryCatch(json <- fromJSON(data[[n]]), error=stop("'data' contains invalid JSON file", call.=FALSE))
 	} else {
 		if(!is.na(data)) {
-			ext <- tolower(tail(strsplit(basename(data), "[.]")[[1]], 1))
-			if(ext!="geojson" && ext!="json") stop("'data' requires GeoJSON (file extension should be 'geojson' or TopoJSON files (file extension should be 'json')")
-			if(ext=="json") topojson <- TRUE
-			json <- jsonlite::fromJSON(data)  # just for testing
-			#the following drops an error, but why?
-			#tryCatch(json <- jsonlite::fromJSON(data), error=stop("'data' is not a valid JSON file", call.=FALSE))
+			json[[1]] <- jsonlite::fromJSON(data)
+			if(is.null(json[[1]]$type)) stop("'data' requires GeoJSON or TopoJSON files")
+			if(tolower(json[[1]]$type)=="topology") topojson <- TRUE
 		}
 	}
 	
@@ -54,9 +49,9 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 	if(missing(popup)) popup <- NA
 	if(!any(is.na(popup))) {
 		if(is.list(popup)) {
-			for(n in 1:length(popup)) if(length(popup[[n]])==1) if(popup[[n]]=="*") popup[[n]] <- getProperties(data[[n]], FALSE)
+			for(n in 1:length(popup)) if(length(popup[[n]])==1) if(popup[[n]]=="*") popup[[n]] <- getProperties(json[[n]], FALSE)
 		} else {
-			if(length(popup)==1) if(popup=="*") popup <- getProperties(data[[1]], FALSE)
+			if(length(popup)==1) if(popup=="*") popup <- getProperties(json[[1]], FALSE)
 		}
 	}
 	if(!is.list(popup)) popup <- list(popup)
