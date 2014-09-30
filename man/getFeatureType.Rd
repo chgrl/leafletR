@@ -3,9 +3,9 @@
 \alias{getFeatureType}
 \title{Internal function}
 \description{Checks for type of features stored in a GeoJSON file.}
-\usage{getFeatureType(dat)}
+\usage{getFeatureType(data)}
 \arguments{
-  \item{dat}{Name of data file as string.}
+  \item{data}{GeoJSON or TopoJSON object.}
 }
 \value{FeatureType as string.}
 \author{Christian Graul}

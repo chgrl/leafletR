@@ -4,7 +4,7 @@
 <%	if(is.na(center) || is.na(zoom)) { -%>
 		var map = L.map('map');
 <%	} else { -%>
-		var map = L.map('map').setView([<%= center[1] %> , <%= center[2] %> ], <%= zoom %> );
+		var map = L.map('map').setView([<%= center[1] %>,<%= center[2] %>], <%= zoom %>);
 <%	} -%>
 <%# 
     BASE LAYER

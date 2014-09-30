@@ -1,3 +1,5 @@
+
+		// legend
 <%#
  
     MULTI SINGLE STYLE
@@ -8,7 +10,6 @@
 		for(i in 1:length(style)) sty <- append(sty, attr(style[[i]], "style.type"))
 		if(all(sty=="single")) { 
 -%>
-		// single style
 		var legend = L.control({position: 'bottomright'});
 		legend.onAdd = function(map) {
 			var div = L.DomUtil.create('div', 'legend');
@@ -19,7 +20,7 @@
 		n.dat <- 0
 			dat.ra <- style.ra <- list()
 			for(i in 1:length(data)) {
-				if(getFeatureType(data[[i]])=="point") {
+				if(getFeatureType(json[[i]])=="point") {
 					dat.ra[[n.dat+1]] <- data[[i]]
 					style.ra[[n.dat+1]] <- style[[i]]
 					if(!is.null(names(data)[i])) names(dat.ra)[n.dat+1] <- names(data)[i]
@@ -28,7 +29,7 @@
 			}
 			if(n.dat<length(data)) {
 				for(i in 1:length(data)) {
-					if(getFeatureType(data[[i]])=="line") {
+					if(getFeatureType(json[[i]])=="line") {
 						dat.ra[[n.dat+1]] <- data[[i]]
 						style.ra[[n.dat+1]] <- style[[i]]
 						if(!is.null(names(data)[i])) names(dat.ra)[n.dat+1] <- names(data)[i]
@@ -38,7 +39,7 @@
 			}
 			if(n.dat<length(data)) {
 				for(i in 1:length(data)) {
-					if(getFeatureType(data[[i]])=="polygon") {
+					if(getFeatureType(json[[i]])=="polygon") {
 						dat.ra[[n.dat+1]] <- data[[i]]
 						style.ra[[n.dat+1]] <- style[[i]]
 						if(!is.null(names(data)[i])) names(dat.ra)[n.dat+1] <- names(data)[i]
@@ -134,7 +135,6 @@
 -%>
 <%		if(attr(style, "style.type")=="graduated") {
 -%>
-				// Graduated legend
 				var legend = L.control({position: 'bottomright'});
 				legend.onAdd = function(map) {
 					var div = L.DomUtil.create('div', 'legend');

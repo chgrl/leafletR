@@ -6,7 +6,7 @@
 <%	if(any(class(style)=="list")) {
 		for(n in 1:length(style)) {
 			if(any(!is.na(style[[n]]))) { -%>
-		var style<%= n %> = {<%= paste(style[[n]], collapse = ",") %>};
+		var style<%= n %> = {<%= paste(style[[n]], collapse = ", ") %>};
 <%			}
 		}
 	} else { -%>

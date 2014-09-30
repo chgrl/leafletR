@@ -98,3 +98,7 @@ prop <- function(data, print=TRUE) {
 base <- function(name, title, url, options) {
 	addBaseMap(name, title, url, options)
 }
+
+topo <- function(data, print=TRUE) {
+	getTopologies(data, print)
+}

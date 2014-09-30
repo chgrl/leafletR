@@ -1,6 +1,6 @@
 Package: leafletR
 Type: Package
-Title: Interactive web-maps based on the Leaflet JavaScript library
+Title: Interactive Web-Maps Based on the Leaflet JavaScript Library
 Version: 0.3-0
 Date: 2014-09-12
 Author: Christian Graul, with contributions from Francois Guillem
