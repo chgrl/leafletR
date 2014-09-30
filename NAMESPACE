@@ -6,6 +6,8 @@ export(
   tg,
   getProperties,
   prop,
+  getTopologies,
+  topo,
   styleSingle,
   singles,
   styleGrad,
