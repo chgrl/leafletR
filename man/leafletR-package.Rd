@@ -3,7 +3,7 @@
 \alias{leafletR-package}
 \alias{leafletR}
 \docType{package}
-\title{Interactive web-maps based on the Leaflet JavaScript library}
+\title{Interactive Web-Maps Based on the Leaflet JavaScript Library}
 \description{Display your spatial data on interactive web-maps using the open-source JavaScript library Leaflet. The package provides basic web-mapping functionality to combine vector data and online map tiles from different sources.
 }
 \details{
