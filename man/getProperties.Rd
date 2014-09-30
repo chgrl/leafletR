@@ -9,7 +9,7 @@ getProperties(data, print=TRUE)
 prop(data, print=TRUE)
 }
 \arguments{
-  \item{data}{Name of data file as string.}
+  \item{data}{Path to data file as string or GeoJSON/TopoJSON object.}
   \item{print}{If \code{TRUE} (default), the property names are printed.}
 }
 \value{Property names as string vector.}
