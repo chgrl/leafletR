@@ -4,7 +4,9 @@
 <%	for(n in 1:length(popup)) { -%>
 			if (feature.properties &&  <%= paste0("feature.properties.", popup[[n]], collapse=" && ") %>) {
 <%		if(length(popup[[n]])==1) { -%>
+<%			if(!is.na(popup[[n]])) { -%>
 				layer.bindPopup("<%= popup[[n]] %>: " + feature.properties.<%= popup[[n]] %>);
+<%			} -%>
 <%		} else { -%>
 				layer.bindPopup(
 					"<table>" +

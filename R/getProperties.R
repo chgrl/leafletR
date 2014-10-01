@@ -12,6 +12,7 @@ function(data, print=TRUE) {
 	# get properties
 	if(tolower(data$type)=="topology") prop <- unique(names(data$objects[[1]]$geometries$properties)) # TODO: takes first topology object only
 	else prop <- unique(names(data$features$properties))
+	if(is.null(prop)) prop <- NA
 	
 	# print and return
 	if(print) print(prop)

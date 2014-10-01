@@ -19,7 +19,7 @@
 <%#
     POPUP
 -%>
-<%	if(!any(is.na(popup))){ -%>
+<%	if(!missing(popup)) if(multi.prop) { -%>
 		table, td {
 			border-collapse: collapse;
 			border-style: solid;

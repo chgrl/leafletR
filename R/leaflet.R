@@ -46,15 +46,16 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 	if(file.exists(file.path(dest, gsub(" ", "_", title))) && !overwrite) stop("Abort - file already exists")
 	
 	# prepare popup
-	if(missing(popup)) popup <- NA
-	if(!any(is.na(popup))) {
+	if(!missing(popup)) {
 		if(is.list(popup)) {
-			for(n in 1:length(popup)) if(length(popup[[n]])==1) if(popup[[n]]=="*") popup[[n]] <- getProperties(json[[n]], FALSE)
+			for(n in 1:length(popup)) if(length(popup[[n]])==1) if(!is.na(popup[[n]])) if(popup[[n]]=="*") popup[[n]] <- getProperties(json[[n]], FALSE)
 		} else {
-			if(length(popup)==1) if(popup=="*") popup <- getProperties(json[[1]], FALSE)
+			if(length(popup)==1) if(!is.na(popup)) if(popup=="*") popup <- getProperties(json[[1]], FALSE)
+			popup <- list(popup)
 		}
+		if(length(popup)==length(unlist(popup))) multi.prop <- FALSE
+		else multi.prop <- TRUE
 	}
-	if(!is.list(popup)) popup <- list(popup)
 	
 	# prepare map parameter
 	if(missing(size)) size <- NA

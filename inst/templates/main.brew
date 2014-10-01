@@ -22,9 +22,9 @@
 <%	# map initialisation
  	brew(system.file("templates/map.brew", package = "leafletR")) 
 	
-	if (!any(is.na(data))) { # If there is at least one data layer
+	if (!any(is.na(data))) { # if there is at least one data layer
 		# popup
-		if(!any(is.na(popup))) brew(system.file("templates/popup.brew", package = "leafletR")) 
+		if(!missing(popup)) brew(system.file("templates/popup.brew", package = "leafletR")) 
 		# styling
 		if(any(!is.na(style))) brew(system.file("templates/style.brew", package = "leafletR"))
 		# data layers
