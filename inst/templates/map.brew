@@ -11,6 +11,10 @@
 <%	} else { -%>
 		var map = L.map(<%= map %>).setView([<%= center[1] %>,<%= center[2] %>], <%= zoom %>);
 <%	} -%>
+<%	if(scale.ctrl) { -%>
+		
+		// scale bar
+		L.control.scale().addTo(map);
 <%	} -%>
 <%# 
     BASE LAYER
