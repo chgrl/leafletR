@@ -5,10 +5,10 @@
 \title{Create a Leaflet web-map}
 \description{Creates a web-map of users' spatial data over open-source base maps. Output consists of a ready to use HTML file and a GeoJSON data file.}
 \usage{
-leaflet(data, dest, title, size, base.map="osm", center, 
-  zoom, style, popup, incl.data=FALSE, overwrite=TRUE)
-leaf(data, dest, title, size, base.map="osm", center, 
-  zoom, style, popup, incl.data=FALSE, overwrite=TRUE)
+leaflet(data, dest, title, size, base.map="osm", center, zoom, 
+  style, popup, controls="all", incl.data=FALSE, overwrite=TRUE)
+leaf(data, dest, title, size, base.map="osm", center, zoom, 
+  style, popup, controls="all", incl.data=FALSE, overwrite=TRUE)
 }
 \arguments{
   \item{data}{Name(s) of data file(s) (GeoJSON format), as string or a list of strings. Plotting order follows the file sequence.}
@@ -20,6 +20,7 @@ leaf(data, dest, title, size, base.map="osm", center,
   \item{zoom}{Map zoom level, as integer value. Usually a value between \code{0} (global small scale) and \code{18} (detailed large scale). The MapQuest Open Aerial map (\code{base.map="mqsat"}) provides only 12 zoom levels [0-11]. Optional -- if missing, the zoom level is calculated for the bounding box of the data layer.}
   \item{style}{Style(s) of the data layer(s). One or a list of style object(s), created by \code{\link{styleSingle}}, \code{\link{styleGrad}} or \code{\link{styleCat}}. Optional -- if missing, a default style is applied.}
   \item{popup}{Properties (attributes) of the data to be shown in a popup when a map object is clicked. String or a vector of strings. \code{"*"} adds all available properties to the popup. A \code{list} of (vectors of) strings specifies properties for multiple \code{data} layers. Per default no popups are shown.}
+  \item{controls}{List of controls to be added to the map. Available controls are \code{"zoom"}, \code{"scale"}, \code{"layer"}, \code{"legend"}. \code{"all"} (the default) adds all controls. Controls are only added if necessary, e.g. in case of one data layer there is no legend. \code{NA} omits all controls.}
   \item{incl.data}{If \code{TRUE}, \code{data} is included in the HTML file itself. Per default (\code{incl.data=FALSE}) the data is saved in a separate file. Including data in the HTML file allows for viewing the map locally on Chrome and Opera browsers.}
   \item{overwrite}{\code{TRUE} (which is the default) overwrites existing files with the same name.}
 }

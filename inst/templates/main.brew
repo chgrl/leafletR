@@ -30,9 +30,9 @@
 		# data layers
 		brew(system.file("templates/data.brew", package = "leafletR"))
 		# layer control
-		brew(system.file("templates/layer.brew", package = "leafletR"))
+		if(layer.ctrl) brew(system.file("templates/layer.brew", package = "leafletR"))
 		# legend
-		if(!any(is.na(style))) brew(system.file("templates/legend.brew", package = "leafletR"))
+		if(legend.ctrl) if(!any(is.na(style))) brew(system.file("templates/legend.brew", package = "leafletR"))
 	} -%>
 	</script>
 </body>

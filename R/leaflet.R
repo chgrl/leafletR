@@ -1,5 +1,5 @@
 leaflet <-
-function(data, dest, title, size, base.map="osm", center, zoom, style, popup, incl.data=FALSE, overwrite=TRUE) {	
+function(data, dest, title, size, base.map="osm", center, zoom, style, popup, controls="all", incl.data=FALSE, overwrite=TRUE) {	
   
 	# prepare data
 	if(missing(data)) data <- NA
@@ -65,6 +65,14 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, in
 		center <- c(0,0)
 		zoom <- 2
 	}
+	
+	# prepare controls
+	zoom.ctrl <- scale.ctrl <- layer.ctrl <- legend.ctrl <- TRUE
+	if(length(controls)==1 && !is.na(controls)) if(controls=="all") controls <- list("zoom", "scale", "layer", "legend")
+	if(any("zoom"==controls)) zoom.ctrl <- FALSE
+	if(any("scale"==controls)) scale.ctrl <- FALSE
+	if(any("layer"==controls)) layer.ctrl <- FALSE
+	if(any("legend"==controls)) legend.ctrl <- FALSE
 	
 	# prepare file path
 	dir.create(file.path(dest, gsub(" ", "_", title)), showWarnings=FALSE)
