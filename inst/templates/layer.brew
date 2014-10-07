@@ -1,0 +1,14 @@
+<%# 
+    LAYER CONTROL
+-%>
+<%	if(length(base.map)>1 || (length(data)>1 && incl.data)) { -%>
+		
+<%		controls <- NULL
+		if(length(base.map)>1) controls <- append(controls, "baseMaps")
+		else controls <- append(controls, "null")
+		if(length(data)>1 && incl.data) controls <- append(controls, ", layers")
+-%>
+		
+		// layer control
+		L.control.layers(<%= controls %>).addTo(map);
+<%	} -%>

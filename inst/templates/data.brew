@@ -1,35 +1,37 @@
 
 		// data layers
+        var layers = {};
         var fitBounds = <%= ifelse(is.na(center) || is.na(zoom), "true", "false") %>; 		
-		function addDataToMap(data, style) {
-			var dataLayer = L.geoJson(data, {
+		function addDataToMap(data, style, layer) {
+			layers[layer] = L.geoJson(data, {
 				onEachFeature: (typeof onEachFeature == "undefined") ? undefined : onEachFeature,
 				pointToLayer: function (feature, latlng) {return L.circleMarker(latlng);},
 				style: style,
 			});
-			dataLayer.addTo(map);
+			layers[layer].addTo(map);
 			
 			if(fitBounds) {
-				map.fitBounds(dataLayer.getBounds());
+				map.fitBounds(layers[layer].getBounds());
 				fitBounds = false;
 			}
 		};
 		
 <%	for(n in 1:length(data)) { -%>
+<%		layer.name <- gsub("_", " ", paste(head(strsplit(basename(data[[n]]), "[.]")[[1]], -1), collapse="_")) -%>
 		if(typeof style<%= n %> == "undefined") style<%= n %> = undefined;
 <%		if(incl.data) {	
 			if(!file.exists(data[[n]])) stop("data file not found")
 			con <- file(data[[n]], "rt") 
 			lns <- readLines(con) 
 			close(con) -%>
-		addDataToMap(<%= paste(lns, collapse="\n\t\t") %>, style<%= n %>);
+		addDataToMap(<%= paste(lns, collapse="\n\t\t") %>, style<%= n %>, "<%= layer.name %>");
 <%		} else {-%>
 <%			if(tolower(tail(strsplit(basename(data[[n]]), "[.]")[[1]], 1))=="geojson") { -%>
-		$.getJSON($("link[rel='dat<%= n %>']").attr("href"), function(x) {addDataToMap(x, style<%= n %>)});
+		$.getJSON($("link[rel='dat<%= n %>']").attr("href"), function(x) {addDataToMap(x, style<%= n %>, "<%= layer.name %>")});
 <%			} else if(tolower(tail(strsplit(basename(data[[n]]), "[.]")[[1]], 1))=="json") { -%>
 <%				obj <- getTopologies(json[[n]], FALSE) -%>
 <%				if(length(obj)>1) warning("TopoJSON file contains more than one topology objects - only first object is used", call.=FALSE) -%>
-		$.getJSON($("link[rel='dat<%= n %>']").attr("href"), function(x) {addDataToMap(topojson.feature(x, x.objects.<%= obj[1] %>), style<%= n %>)});
+		$.getJSON($("link[rel='dat<%= n %>']").attr("href"), function(x) {addDataToMap(topojson.feature(x, x.objects.<%= obj[1] %>), style<%= n %>, "<%= layer.name %>")});
 <%			} -%>
 <%		} -%>
 <%	} -%>

@@ -29,6 +29,8 @@
 		if(any(!is.na(style))) brew(system.file("templates/style.brew", package = "leafletR"))
 		# data layers
 		brew(system.file("templates/data.brew", package = "leafletR"))
+		# layer control
+		brew(system.file("templates/layer.brew", package = "leafletR"))
 		# legend
 		if(!any(is.na(style))) brew(system.file("templates/legend.brew", package = "leafletR"))
 	} -%>
