@@ -67,12 +67,12 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, co
 	}
 	
 	# prepare controls
-	zoom.ctrl <- scale.ctrl <- layer.ctrl <- legend.ctrl <- TRUE
+	zoom.ctrl <- scale.ctrl <- layer.ctrl <- legend.ctrl <- FALSE
 	if(length(controls)==1 && !is.na(controls)) if(controls=="all") controls <- list("zoom", "scale", "layer", "legend")
-	if(any("zoom"==controls)) zoom.ctrl <- FALSE
-	if(any("scale"==controls)) scale.ctrl <- FALSE
-	if(any("layer"==controls)) layer.ctrl <- FALSE
-	if(any("legend"==controls)) legend.ctrl <- FALSE
+	if(any("zoom"==controls)) zoom.ctrl <- TRUE
+	if(any("scale"==controls)) scale.ctrl <- TRUE
+	if(any("layer"==controls)) layer.ctrl <- TRUE
+	if(any("legend"==controls)) legend.ctrl <- TRUE
 	
 	# prepare file path
 	dir.create(file.path(dest, gsub(" ", "_", title)), showWarnings=FALSE)
