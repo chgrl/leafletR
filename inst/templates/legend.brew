@@ -86,10 +86,7 @@
 				
 				ft <- getFeatureType(dat.ra[[i]])
 				ttl <- names(dat.ra)[i]
-				if(!is.null(ttl)) {
-					ttl <- gsub(".", " ", ttl, fixed=TRUE)
-					ttl <- gsub("_", " ", ttl, fixed=TRUE)
-				}
+				if(!is.null(ttl)) ttl <- gsub("[_.]", " ", ttl)
 				if(is.null(ttl)) ttl <- gsub("_", " ", paste(head(strsplit(basename(dat.ra[[i]]), "[.]")[[1]], -1), collapse="_"))
 				else if(ttl=="") ttl <- gsub("_", " ", paste(head(strsplit(basename(dat.ra[[i]]), "[.]")[[1]], -1), collapse="_"))
 									
