@@ -16,8 +16,12 @@
 			}
 		};
 		
-<%	for(n in 1:length(data)) { -%>
-<%		layer.name <- gsub("_", " ", paste(head(strsplit(basename(data[[n]]), "[.]")[[1]], -1), collapse="_")) -%>
+<%	for(n in 1:length(data)) {
+		layer.name <- names(data)[n]
+		if(!is.null(layer.name)) layer.name <- gsub("[_.]", " ", layer.name)
+		if(is.null(layer.name)) layer.name <- gsub("_", " ", paste(head(strsplit(basename(data[[n]]), "[.]")[[1]], -1), collapse="_"))
+		else if(layer.name=="") layer.name <- gsub("_", " ", paste(head(strsplit(basename(data[[n]]), "[.]")[[1]], -1), collapse="_"))
+-%>
 		if(typeof style<%= n %> == "undefined") style<%= n %> = undefined;
 <%		if(incl.data) {	
 			if(!file.exists(data[[n]])) stop("data file not found")
