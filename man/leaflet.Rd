@@ -20,12 +20,12 @@ leaf(data, dest, title, size, base.map="osm", center, zoom,
   \item{zoom}{Map zoom level, as integer value. Usually a value between \code{0} (global small scale) and \code{18} (detailed large scale). The MapQuest Open Aerial map (\code{base.map="mqsat"}) provides only 12 zoom levels [0-11]. Optional -- if missing, the zoom level is calculated for the bounding box of the data layer.}
   \item{style}{Style(s) of the data layer(s). One or a list of style object(s), created by \code{\link{styleSingle}}, \code{\link{styleGrad}} or \code{\link{styleCat}}. Optional -- if missing, a default style is applied.}
   \item{popup}{Properties (attributes) of the data to be shown in a popup when a map object is clicked. String or a vector of strings. \code{"*"} adds all available properties to the popup. A \code{list} of (vectors of) strings specifies properties for multiple \code{data} layers. Per default no popups are shown.}
-  \item{controls}{List of controls to be added to the map. Available controls are \code{"zoom"}, \code{"scale"}, \code{"layer"}, \code{"legend"}. \code{"all"} (the default) adds all controls. Controls are only added if necessary, e.g. in case of one data layer there is no legend. \code{NA} omits all controls.}
-  \item{incl.data}{If \code{TRUE}, \code{data} is included in the HTML file itself. Per default (\code{incl.data=FALSE}) the data is saved in a separate file. Including data in the HTML file allows for viewing the map locally on Chrome and Opera browsers.}
+  \item{controls}{List of controls to be added to the map. Available controls are \code{"zoom"}, \code{"scale"}, \code{"layer"} and \code{"legend"}. \code{"all"} (the default) adds all controls. Controls are only added if necessary, e.g. in case of one data layer there is no legend. \code{NA} omits all controls. Note: data layer controls only appear if \code{incl.data} is set to \code{TRUE}.}
+  \item{incl.data}{If \code{TRUE}, \code{data} is included in the HTML file itself. Per default (\code{incl.data=FALSE}) the data is saved in a separate file. Including data in the HTML file allows for viewing the map locally on some browsers (e.g. Chrome and Opera) and enables support for data layer control.}
   \item{overwrite}{\code{TRUE} (which is the default) overwrites existing files with the same name.}
 }
 \note{
-Please note: \code{data} only accepts GeoJSON files with one geometry type and geographical coordinates (longlat, WGS84). 
+Please note: \code{data} only accepts GeoJSON/TopoJSON files with one geometry type and geographical coordinates (longlat, WGS84). 
 }
 \references{
 Base map tiles are provided by 
@@ -85,6 +85,10 @@ map <- leaflet(data=dat, dest=tempdir(),
 sty <- styleSingle(col="red", fill=NA)
 map <- leaflet(data=dat, dest=tempdir(), base.map="mqsat", style=sty)
 
+# controls
+map <- leaflet(data=dat, dest=tempdir(), controls=NA)  # no controls
+map <- leaflet(data=dat, dest=tempdir(), controls="scale")  # scale only
+
 # more than one data set
 park <- system.file(package="leafletR", "files", "park_sk.geojson")
 peak <- toGeoJSON(system.file(package="leafletR", "files", "peak_sk.kmz"), 
@@ -94,8 +98,15 @@ sty.2 <- styleSingle(col="brown", fill="brown", rad=3)
 map <- leaflet(data=list(park, peak), dest=tempdir(), 
   style=list(sty.1, sty.2), popup=list("*", "Name"))
 
-map <- leaflet(data=list(National.Parks=park, Peaks=peak), dest=tempdir(), 
-  style=list(sty.1, sty.2), popup=list("*", "Name"))  # names in legend
+# names in legend
+# note: "_" and "." are replaced with blanks in the legend 
+map <- leaflet(data=list(National_Parks=park, Peaks.(>600.m)=peak), 
+  dest=tempdir(), style=list(sty.1, sty.2), popup=list("*", "Name"))
+
+# add layer control
+# if incl.data=TRUE a layer control is automatically added
+map <- leaflet(data=list(park, peak), dest=tempdir(), 
+  style=list(sty.1, sty.2), popup=list("*", "Name"), incl.data=TRUE)
 }
 }
 \keyword{methods}
