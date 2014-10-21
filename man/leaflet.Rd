@@ -88,6 +88,7 @@ map <- leaflet(data=dat, dest=tempdir(), base.map="mqsat", style=sty)
 # controls
 map <- leaflet(data=dat, dest=tempdir(), controls=NA)  # no controls
 map <- leaflet(data=dat, dest=tempdir(), controls="scale")  # scale only
+map <- leaflet(data=dat, dest=tempdir(), controls=c("zoom", "scale"))
 
 # more than one data set
 park <- system.file(package="leafletR", "files", "park_sk.geojson")
