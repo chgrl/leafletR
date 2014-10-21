@@ -75,6 +75,7 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, co
 		if(any(controls=="layer")) layer.ctrl <- TRUE
 		if(any(controls=="legend")) legend.ctrl <- TRUE
 	}
+	if(layer.ctrl && length(data)>1 && !incl.data) warning("To add data layers to layer control, set 'incl.data=TRUE'", call.=FALSE)
 	
 	# prepare file path
 	dir.create(file.path(dest, gsub(" ", "_", title)), showWarnings=FALSE)
