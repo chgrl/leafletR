@@ -29,13 +29,14 @@
 			lns <- readLines(con) 
 			close(con) -%>
 		addDataToMap(<%= paste(lns, collapse="\n\t\t") %>, style<%= n %>, "<%= layer.name %>");
-<%		} else {-%>
-<%			if(tolower(tail(strsplit(basename(data[[n]]), "[.]")[[1]], 1))=="geojson") { -%>
-		$.getJSON($("link[rel='dat<%= n %>']").attr("href"), function(x) {addDataToMap(x, style<%= n %>, "<%= layer.name %>")});
-<%			} else if(tolower(tail(strsplit(basename(data[[n]]), "[.]")[[1]], 1))=="json") { -%>
+<%			} -%>
+<%		} else { -%>
+<%			if(topojson[n]) { -%>
 <%				obj <- getTopologies(json[[n]], FALSE) -%>
 <%				if(length(obj)>1) warning("TopoJSON file contains more than one topology objects - only first object is used", call.=FALSE) -%>
 		$.getJSON($("link[rel='dat<%= n %>']").attr("href"), function(x) {addDataToMap(topojson.feature(x, x.objects.<%= obj[1] %>), style<%= n %>, "<%= layer.name %>")});
+<%			} else { -%>
+		$.getJSON($("link[rel='dat<%= n %>']").attr("href"), function(x) {addDataToMap(x, style<%= n %>, "<%= layer.name %>")});
 <%			} -%>
 <%		} -%>
 <%	} -%>
