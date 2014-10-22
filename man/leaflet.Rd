@@ -3,7 +3,7 @@
 \alias{leaflet}
 \alias{leaf}
 \title{Create a Leaflet web-map}
-\description{Creates a web-map of users' spatial data over open-source base maps. Output consists of a ready to use HTML file and a GeoJSON data file.}
+\description{Creates a web-map of users' spatial data over open base maps. Output consists of a ready to use HTML file (and a GeoJSON/TopoJSON data file).}
 \usage{
 leaflet(data, dest, title, size, base.map="osm", center, zoom, 
   style, popup, controls="all", incl.data=FALSE, overwrite=TRUE)
@@ -11,7 +11,7 @@ leaf(data, dest, title, size, base.map="osm", center, zoom,
   style, popup, controls="all", incl.data=FALSE, overwrite=TRUE)
 }
 \arguments{
-  \item{data}{Name(s) of data file(s) (GeoJSON format), as string or a list of strings. Plotting order follows the file sequence.}
+  \item{data}{Name(s) of data file(s) (GeoJSON/TopoJSON format), as string or a list of strings. Plotting order follows the file sequence.}
   \item{dest}{Path to the \code{data} file, as string. Optional -- if missing, the current working directory is used.}
   \item{title}{Map title, as string. Default is \code{"map"}.}
   \item{size}{Size of the map on the website in pixels, as numeric vector -- \code{c(width, height)}. Optional -- if missing, a fullscreen (browser window) map is generated.}
