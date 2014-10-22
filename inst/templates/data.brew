@@ -28,6 +28,12 @@
 			con <- file(data[[n]], "rt") 
 			lns <- readLines(con) 
 			close(con) -%>
+<%			if(topojson[n]) { -%>
+<%				obj <- getTopologies(json[[n]], FALSE) -%>
+<%				if(length(obj)>1) warning("TopoJSON file contains more than one topology objects - only first object is used", call.=FALSE) -%>
+		dat<%= n %> = <%= paste(lns, collapse="\n\t\t") %>
+		addDataToMap(topojson.feature(dat<%= n %>, dat<%= n %>.objects.<%= obj[1] %>), style<%= n %>, "<%= layer.name %>")
+<%			} else { -%>
 		addDataToMap(<%= paste(lns, collapse="\n\t\t") %>, style<%= n %>, "<%= layer.name %>");
 <%			} -%>
 <%		} else { -%>
