@@ -1,3 +1,22 @@
+leafletR 0.3-1 [2014-10-23]
+---------------------------
+
+* bug fix in getProperties/leaflet: possible popup error 
+  in case of data files without properties
+  
+* bug fixes in templates: broken legend in some cases; 
+  no base map layer control if data is missing
+
+* bug fix in addBaseMap: options now really optional
+  
+* new argument "controls" in leaflet: show/hide map controls
+
+* new in leaflet: TopoJSON support added
+
+* new map features: layer control now contain data layers;
+  scale bar support
+
+
 leafletR 0.3-0 [2014-09-12]
 ---------------------------
 
