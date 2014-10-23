@@ -5,7 +5,8 @@ addBaseMap <- function(name, title, url, options) {
   # create base map
   if(missing(title)) title <- name
   newBaseMap <- list(title=title, url=url)
-  if(!missing(options)) newBaseMap$options <- options
+  if(missing(options)) options <- NULL
+  newBaseMap$options <- options
   
   # add base map
   baseMaps[[name]] <- newBaseMap
