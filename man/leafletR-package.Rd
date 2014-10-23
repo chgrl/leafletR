@@ -9,9 +9,9 @@
 \details{
 \code{leafletR} lets you display spatial data on interactive maps in web browsers (a.k.a. slippy maps). It takes advantage of the open-source JavaScript library Leaflet.js, developed by Vladimir Agafonkin. Focusing simplicity, the package provides basic web-mapping functionality and styling options only. For map display an internet connection is required to load the Leaflet library, stylesheets and base map tiles. The ready to use html file output can be viewed locally or uploaded to a web-server.
 
-\code{leafletR} supports GeoJSON files directly. Additionally it contains conversion tools for sp spatial objects, several popular spatial vector data formats and R data frames containing point coordinates.
+\code{leafletR} supports GeoJSON and TopoJSON files directly. Additionally it contains conversion tools for sp spatial objects, several popular spatial vector data formats and R data frames containing point coordinates.
 	
-\code{leafletR} uses open base map tiles only. Map data is provided by the \href{http://www.openstreetmap.org}{OpenStreetMap} project and satellite images are provided by courtesy of NASA/ JPL-Caltech and U.S. Department of Agriculture, Farm Service Agency.
+\code{leafletR} features open base map tiles. Map data is provided by the \href{http://www.openstreetmap.org}{OpenStreetMap} project and satellite images are provided by courtesy of NASA/ JPL-Caltech and U.S. Department of Agriculture, Farm Service Agency. Other tile sources may be added manually.
 
 Try the example below to check if \code{leafletR} has been correctly installed. Any question and feedback is welcome via email to <christian.graul@gmail.com> or on \href{https://github.com/chgrl/leafletR}{GitHub}.
 
@@ -26,6 +26,8 @@ Maintainer: Christian Graul <christian.graul@gmail.com>
 }
 \references{
 \url{http://leafletjs.com}
+\url{http://geojson.org}
+\url{https://github.com/topojson/topojson-specification}
 }
 \keyword{package}
 \examples{
