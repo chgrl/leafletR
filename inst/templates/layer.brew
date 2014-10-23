@@ -3,8 +3,8 @@
 -%>
 <%	if(length(base.map)>1 || (length(data)>1 && incl.data)) { -%>
 		
-<%		if(length(base.map)>1) controls <- "baseMaps"
-		else controls <- "null"
+<%		controls <- "null"
+		if(length(base.map)>1) controls <- "baseMaps"
 		if(length(data)>1 && incl.data) controls <- paste(controls, "layers", sep=", ")
 -%>
 		
