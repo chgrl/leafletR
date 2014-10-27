@@ -54,7 +54,7 @@ function(libname, pkgname) {
 		),
 		toner = list(
 			title = "Stamen Toner",
-			url = "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.png",
+			url = "http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png",
 			options = list(
 				attribution='Tiles &copy; <a href=\"http://stamen.com\", target=\"_blank\">Stamen Design</a> (<a href=\"http://creativecommons.org/licenses/by/3.0\", target=\"_blank\">CC BY 3.0</a>), Map data &copy; <a href=\"http://openstreetmap.org\", target=\"_blank\">OpenStreetMap</a> (<a href=\"http://creativecommons.org/licenses/by-sa/3.0\", target=\"_blank\">CC BY SA</a>)'
 			)
