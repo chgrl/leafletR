@@ -4,7 +4,7 @@ function(data, class, name, dest, overwrite) {
 	path <- paste0(file.path(dest, name), ".geojson")
 	if(file.exists(path) && !overwrite) stop("Abort - file already exists")
 	
-	stopifnot(requireNamespace("sp", quietly=TRUE))
+	if(!requireNamespace("sp", quietly=TRUE)) stop("'sp' package required for spatial object conversion")
 	if(requireNamespace("rgdal", quietly=TRUE)) data <- sp::spTransform(data, sp::CRS("+proj=longlat +ellps=WGS84"))
 	
 	# heading

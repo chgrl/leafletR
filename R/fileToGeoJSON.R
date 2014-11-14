@@ -2,7 +2,7 @@ fileToGeoJSON <-
 function(data, name, dest, overwrite) {
 	if(!file.exists(data)) stop("Data file not found")
 	if(file.exists(paste0(file.path(dest, name), ".geojson")) && !overwrite) stop("Abort - file already exists")
-	stopifnot(requireNamespace("httr", quietly=TRUE))
+	if(!requireNamespace("httr", quietly=TRUE)) stop("'httr' package required for file conversion")
 	
 	# taken from rgbif package: cran.r-project.org/package=rgbif‎
 	# package import impractical, since rgbif imports several other packages
