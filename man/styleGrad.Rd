@@ -60,7 +60,7 @@ map <- leaflet(data=qks, dest=tempdir(),
 
 # additional styling parameters
 peak <- toGeoJSON(data=system.file(package="leafletR", "files", 
-  "peak_sk.kmz"), dest=tempdir())
+  "peak_sk.kmz"), dest=tempdir())  # httr package required
 sty <- styleGrad(prop="Name", breaks=seq(750, 2500, by=250), out=3, 
   style.val=terrain.colors(9), leg="Elevation", 
   col=NA, fill.alpha=1, rad=3)

@@ -52,6 +52,7 @@ map <- leaflet(data=dat, dest=tempdir(), style=sty)
 
 ## line data ##
 # prepare data
+# (httr package required)
 dat <- toGeoJSON(data=system.file(package="leafletR", "files", 
   "lynx.zip"), name="Lynx telemetry", dest=tempdir())
 

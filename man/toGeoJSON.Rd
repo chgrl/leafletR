@@ -62,11 +62,13 @@ msp <- SpatialPolygons(list(Polygons(list(Polygon(meuse.riv)),
 toGeoJSON(data=msp, dest=tempdir()) # rgdal package required
 
 # convert a shapefile (in zipped archive)
+# (httr package required)
 toGeoJSON(data=system.file(package="leafletR", "files", "lynx.zip"), 
   name="lynx_telemetry", dest=tempdir())
 
 # convert a KML/KMZ file
 # using name of data file and saving to working directory
+# (httr package required)
 toGeoJSON(system.file(package="leafletR", "files", "peak_sk.kmz"))
 }
 }

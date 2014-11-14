@@ -28,7 +28,7 @@ addBaseMap(
   )
 )
 
-map <- leaflet(base.map="myosm")
+map <- leaflet(base.map="myosm", dest=tempdir())
 }
 }
 \keyword{methods}

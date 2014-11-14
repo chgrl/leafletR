@@ -48,7 +48,7 @@ data(quakes)
 dat <- toGeoJSON(data=quakes, dest=tempdir())
 
 # create and view simple map
-map <- leaflet(dat)
+map <- leaflet(dat, dest=tempdir())
 map  # redirects to browseURL(map)
 
 # set output directory and map title
@@ -64,10 +64,10 @@ map <- leaflet(data=dat, dest=tempdir(),
   base.map="mqsat", popup="mag")
 
 # include data in HTML file
-map <- leaflet(dat, incl.data=TRUE)
+map <- leaflet(dat, dest=tempdir(), incl.data=TRUE)
 
 # preserve existing files from overwriting
-map <- leaflet(dat, overwrite=FALSE)
+map <- leaflet(dat, dest=tempdir(), overwrite=FALSE)
 
 # more than one base map
 map <- leaflet(data=dat, dest=tempdir(), 
@@ -93,7 +93,7 @@ map <- leaflet(data=dat, dest=tempdir(), controls=c("zoom", "scale"))
 # more than one data set
 park <- system.file(package="leafletR", "files", "park_sk.geojson")
 peak <- toGeoJSON(system.file(package="leafletR", "files", "peak_sk.kmz"), 
-  dest=tempdir())
+  dest=tempdir())  # httr package required
 sty.1 <- styleSingle(col="green", fill="green")
 sty.2 <- styleSingle(col="brown", fill="brown", rad=3)
 map <- leaflet(data=list(park, peak), dest=tempdir(), 
