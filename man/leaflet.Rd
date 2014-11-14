@@ -101,7 +101,7 @@ map <- leaflet(data=list(park, peak), dest=tempdir(),
 
 # names in legend
 # note: "_" and "." are replaced with blanks in the legend 
-map <- leaflet(data=list(National_Parks=park, Peaks.(>600.m)=peak), 
+map <- leaflet(data=list(National_Parks=park, Peaks.above.600.m)=peak), 
   dest=tempdir(), style=list(sty.1, sty.2), popup=list("*", "Name"))
 
 # add layer control
