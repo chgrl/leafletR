@@ -96,7 +96,9 @@
 					rd <- substr(rad, 9, nchar(rad))
 					if(length(lwd)==0) lwd <- "weight: 2"
 					lwd <- substr(lwd, 9, nchar(lwd))
-					st <- paste0("fill: ", substr(fill.col, nchar(fill.col)-7, nchar(fill.col)-1), "; stroke: ", substr(clr, nchar(clr)-7, nchar(clr)-1), "; fill-opacity: ", substr(fill.opa, 14, nchar(fill.opa)), "; stroke-opacity: ", substr(opa, 10, nchar(opa)), "; stroke-width: ", lwd, ";")
+					if(fill=="fill: false") fill.col <- "none"
+					else fill.col <- substr(fill.col, nchar(fill.col)-7, nchar(fill.col)-1)
+					st <- paste0("fill: ", fill.col, "; stroke: ", substr(clr, nchar(clr)-7, nchar(clr)-1), "; fill-opacity: ", substr(fill.opa, 14, nchar(fill.opa)), "; stroke-opacity: ", substr(opa, 10, nchar(opa)), "; stroke-width: ", lwd, ";")
 -%>
 					'<table><tr><td class="shape"><svg style="width: <%= max.width %>px; height: <%= as.numeric(rd)*2+as.numeric(lwd) %>px; xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" style="<%= st %>" cx="<%= max.width/2 %>" cy="<%= (as.numeric(rd)*2+as.numeric(lwd))/2 %>" r="<%= rd %>" /></svg></td><td class="value"><%= ttl %></td></tr></table>'					
 <%				} else if(ft=="line") {
