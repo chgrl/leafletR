@@ -7,6 +7,10 @@ function(prop, breaks, right=TRUE, out=0, style.par="col", style.val, leg, ...) 
 	if(style.par=="col") for(i in 1:length(style.val)) style.val[i] <- getHex(style.val[i])
 	if(!missing(leg)) leg <- gsub("\n", "<br>", leg)
 	
+	if(out==0 && length(breaks)!=(length(style.val)+1)) stop("Length of 'style.val' (", length(style.val), ") does not match the number of classes (", length(breaks)-1,")")
+	if((out==1 || out==2) && length(breaks)!=length(style.val)) stop("Length of 'style.val' (", length(style.val), ") does not match the number of classes (", length(breaks),")")
+	if(out==3 && length(breaks)!=(length(style.val)-1)) stop("Length of 'style.val' (", length(style.val), ") does not match the number of classes (", length(breaks)+1,")")
+	
 	if(right) op <- ">= " else op <- "> "
 	
 	stl.val <- style.val

@@ -6,6 +6,8 @@ function(prop, val, style.par="col", style.val, leg, ...) {
 	if(style.par=="col") for(i in 1:length(style.val)) style.val[i] <- getHex(style.val[i])
 	if(!missing(leg)) leg <- gsub("\n", "<br>", leg)
 	
+	if(length(val)!=length(style.val) && length(val)!=(length(style.val)-1)) stop("Length of 'val' (", length(val), ") does not match length of 'style.val' (", length(style.val),")")	
+	
 	stl.val <- style.val
 	if(style.par=="col") stl.val <- paste0("\"", style.val, "\"")
 	cat.style <- paste0("return x == \"", val[1], "\" ? ", stl.val[1], " :")
