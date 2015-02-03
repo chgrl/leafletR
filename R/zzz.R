@@ -56,7 +56,35 @@ function(libname, pkgname) {
 			title = "Stamen Toner",
 			url = "http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png",
 			options = list(
+				attribution='Tiles &copy; <a href=\"http://stamen.com\", target=\"_blank\">Stamen Design</a> (<a href=\"http://creativecommons.org/licenses/by/3.0\", target=\"_blank\">CC BY 3.0</a>), Map data &copy; <a href=\"http://openstreetmap.org/copyright\", target=\"_blank\">OpenStreetMap contributors</a>'
+			)
+		),
+		tonerbg = list(
+			title = "Stamen Toner background",
+			url = "http://{s}.tile.stamen.com/toner-background/{z}/{x}/{y}.png",
+			options = list(
 				attribution='Tiles &copy; <a href=\"http://stamen.com\", target=\"_blank\">Stamen Design</a> (<a href=\"http://creativecommons.org/licenses/by/3.0\", target=\"_blank\">CC BY 3.0</a>), Map data &copy; <a href=\"http://openstreetmap.org\", target=\"_blank\">OpenStreetMap</a> (<a href=\"http://creativecommons.org/licenses/by-sa/3.0\", target=\"_blank\">CC BY SA</a>)'
+			)
+		),
+		tonerlite = list(
+			title = "Stamen Toner lite",
+			url = "http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png",
+			options = list(
+				attribution='Tiles &copy; <a href=\"http://stamen.com\", target=\"_blank\">Stamen Design</a> (<a href=\"http://creativecommons.org/licenses/by/3.0\", target=\"_blank\">CC BY 3.0</a>), Map data &copy; <a href=\"http://openstreetmap.org\", target=\"_blank\">OpenStreetMap</a> (<a href=\"http://creativecommons.org/licenses/by-sa/3.0\", target=\"_blank\">CC BY SA</a>)'
+			)
+		),
+		positron = list(
+			title= "CartoDB Positron",
+			url = "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+			options = list(
+				attribution='Tiles &copy; <a href="http://cartodb.com/attributions", target="_blank">CartoDB</a>, Map data &copy; <a href="http://openstreetmap.org/copyright", target="_blan\">OpenStreetMap contributors</a>'
+			)
+		),
+		darkmatter = list(
+			title= "CartoDB Dark matter",
+			url = "http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
+			options = list(
+				attribution='Tiles &copy; <a href="http://cartodb.com/attributions", target="_blank">CartoDB</a>, Map data &copy; <a href="http://openstreetmap.org/copyright", target="_blan\">OpenStreetMap contributors</a>'
 			)
 		)
 	))
