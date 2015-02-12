@@ -29,19 +29,19 @@
 			return {
 <%			if(is.null(style[[2]])) {
 				if(attr(style, "style.par")=="col") { -%>
-				"color": getValue(feature.properties.<%= attr(style, "property") %>),
+				"color": getValue(feature.properties["<%= attr(style, "property") %>"]),
 <%				} else if(attr(style, "style.par")=="rad") {-%>
-				"radius": getValue(feature.properties.<%= attr(style, "property") %>),
+				"radius": getValue(feature.properties["<%= attr(style, "property") %>"]),
 <%				}
 			} else {
 				if(attr(style, "style.par")=="col") {
 					if(any(grepl("color", paste(style[[2]]), fixed=TRUE)==TRUE)) { -%>
-				"fillColor": getValue(feature.properties.<%= attr(style, "property") %>),
+				"fillColor": getValue(feature.properties["<%= attr(style, "property") %>"]),
 <%					} else { -%>
-				"color": getValue(feature.properties.<%= attr(style, "property") %>),
+				"color": getValue(feature.properties["<%= attr(style, "property") %>"]),
 <%					}
 				} else if(attr(style, "style.par")=="rad") { -%>
-				"radius": getValue(feature.properties.<%= attr(style, "property") %>),
+				"radius": getValue(feature.properties["<%= attr(style, "property") %>"]),
 <%				} %>
 				<%= paste(style[[2]], collapse=", ") %>
 <%			} -%>
@@ -62,19 +62,19 @@
 			return {
 <%			if(is.null(style[[2]])) {
 				if(attr(style, "style.par")=="col") { -%>
-				"fillColor": getValue(feature.properties.<%= attr(style, "property") %>),
+				"fillColor": getValue(feature.properties["<%= attr(style, "property") %>"]),
 <%				} else if(attr(style, "style.par")=="rad") {-%>
-				"radius": getValue(feature.properties.<%= attr(style, "property") %>),
+				"radius": getValue(feature.properties["<%= attr(style, "property") %>"]),
 <%				}
 			} else {
 				if(attr(style, "style.par")=="col") {
 					if(any(grepl("color", paste(style[[2]]), fixed=TRUE)==TRUE)) { -%>
-				"fillColor": getValue(feature.properties.<%= attr(style, "property") %>),
+				"fillColor": getValue(feature.properties["<%= attr(style, "property") %>"]),
 <%					} else { -%>
-				"color": getValue(feature.properties.<%= attr(style, "property") %>),
+				"color": getValue(feature.properties["<%= attr(style, "property") %>"]),
 <%					}
 				} else if(attr(style, "style.par")=="rad") { -%>
-				"radius": getValue(feature.properties.<%= attr(style, "property") %>),
+				"radius": getValue(feature.properties["<%= attr(style, "property") %>"]),
 <%				} -%>
 				<%= paste(style[[2]], collapse=", ") %>
 <%			} -%>
