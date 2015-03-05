@@ -111,8 +111,8 @@ leaf <- function(data, dest, title, size, base.map="osm", center, zoom, style, p
 	leaflet(data, dest, title, size, base.map, center, zoom, style, popup, controls, incl.data, overwrite)
 }
 
-singles <- function(col, lwd, alpha, fill, fill.alpha, rad) {
-	styleSingle(col, lwd, alpha, fill, fill.alpha, rad)
+singles <- function(col, lwd, alpha, fill, fill.alpha, rad, marker=FALSE) {
+	styleSingle(col, lwd, alpha, fill, fill.alpha, rad, marker)
 }
 
 tg <- function(data, name, dest, lat.lon, overwrite=TRUE) {

@@ -3,11 +3,18 @@
         var layers = {};
         var fitBounds = <%= ifelse(is.na(center) || is.na(zoom), "true", "false") %>; 		
 		function addDataToMap(data, style, layer) {
-			layers[layer] = L.geoJson(data, {
-				onEachFeature: (typeof onEachFeature == "undefined") ? undefined : onEachFeature,
-				pointToLayer: function (feature, latlng) {return L.circleMarker(latlng);},
-				style: style,
-			});
+			if(style == "marker") {
+				layers[layer] = L.geoJson(data, {
+					onEachFeature: (typeof onEachFeature == "undefined") ? undefined : onEachFeature,
+					pointToLayer: function (feature, latlng) {return L.marker(latlng);}
+				});
+			} else {
+				layers[layer] = L.geoJson(data, {
+					onEachFeature: (typeof onEachFeature == "undefined") ? undefined : onEachFeature,
+					pointToLayer: function (feature, latlng) {return L.circleMarker(latlng);},
+					style: style
+				});
+			}
 			layers[layer].addTo(map);
 			
 			if(fitBounds) {

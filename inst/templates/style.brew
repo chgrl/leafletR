@@ -5,17 +5,25 @@
 -%>
 <%	if(any(class(style)=="list")) {
 		for(n in 1:length(style)) {
-			if(any(!is.na(style[[n]]))) { -%>
+			if(any(!is.na(style[[n]]))) { 
+				if(style[[n]]=="marker") { -%>
+		var style<%= n %> = "marker";
+<%				} else { -%>
 		var style<%= n %> = {<%= paste(style[[n]], collapse = ", ") %>};
-<%			}
+<%				}
+			}
 		}
 	} else { -%>
 <%# 
     SINGLE STYLE
 -%>
-<%		if(attr(style, "style.type")=="single") { -%>
-		var style1= {<%= paste(style, collapse =", ") %>};
-<%		} -%>
+<%		if(attr(style, "style.type")=="single") { 
+			if(style[[n]]=="marker") { -%>
+		var style1 = "marker";
+<%			} else { -%>
+		var style1 = {<%= paste(style, collapse =", ") %>};
+<%			}
+		} -%>
 <%# 
     GRADUATED STYLE
 -%>
