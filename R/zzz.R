@@ -111,7 +111,7 @@ leaf <- function(data, dest, title, size, base.map="osm", center, zoom, style, p
 	leaflet(data, dest, title, size, base.map, center, zoom, style, popup, controls, incl.data, overwrite)
 }
 
-singles <- function(col, lwd, alpha, fill, fill.alpha, rad, marker=FALSE) {
+singles <- function(col, lwd, alpha, fill, fill.alpha, rad, marker) {
 	styleSingle(col, lwd, alpha, fill, fill.alpha, rad, marker)
 }
 

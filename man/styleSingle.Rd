@@ -5,8 +5,8 @@
 \title{Single symbol styling}
 \description{Creates a single symbol style.}
 \usage{
-styleSingle(col, lwd, alpha, fill, fill.alpha, rad, marker=FALSE)
-singles(col, lwd, alpha, fill, fill.alpha, rad, marker=FALSE)
+styleSingle(col, lwd, alpha, fill, fill.alpha, rad, marker)
+singles(col, lwd, alpha, fill, fill.alpha, rad, marker)
 }
 \arguments{
   \item{col}{Color used for lines, i.e. lines itself, borders of polygons and circle borders (points). Color might be given as name, number [0-8] or hexadecimal code. If \code{fill} is not specified, \code{col} is used for border and circle area. If \code{col} is \code{NA}, the border is omitted.}
@@ -15,7 +15,7 @@ singles(col, lwd, alpha, fill, fill.alpha, rad, marker=FALSE)
   \item{fill}{Fill color used for polygons and circles (points). Color might be given as name, number [0-8] or hexadecimal code. If \code{fill} is \code{NA}, the circle area is left blank.}
   \item{fill.alpha}{Opacity of a polygon or circle area, as numeric value between \code{0} (fully transparent) and \code{1} (opaque).}
   \item{rad}{Radius of circles (points), in number of pixels -- default is \code{10}.}
-  \item{marker}{If \code{TRUE}, points are displayed as markers (all other arguments are ignored) -- default is \code{FASLE}. Please note: this does not work well with legends.}
+  \item{marker}{If \code{TRUE}, points are displayed as markers (all other arguments are ignored) -- default is \code{NULL}. Please note: this does not work well with legends.}
 }
 \value{A single symbol style object.}
 \note{Points are displayed as circles.}

@@ -1,3 +1,23 @@
+leafletR 0.3-2 [2015-04-09]
+---------------------------
+
+* bug fix in leaflet: base map mix-up
+
+* styleCat, styleGrad, toGeoJSON, error messages added
+
+* bug fixes internal templates: border color/fill color mix-up;
+  invalid variable names with dot notation; fill=NA not 
+  recognized in legend
+
+* new base maps added: CartoDB Positron/Dark matter"
+
+* new in singleStyle: simple marker support
+
+* new in leaflet: map view now fits to multi layer bounds
+
+* improvements of documentation and examples
+
+
 leafletR 0.3-1 [2014-10-23]
 ---------------------------
 
