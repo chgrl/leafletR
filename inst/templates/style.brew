@@ -6,8 +6,8 @@
 <%	if(any(class(style)=="list")) {
 		for(n in 1:length(style)) {
 			if(any(!is.na(style[[n]]))) { 
-				if(style[[n]]=="marker") { -%>
-		var style<%= n %> = "marker";
+				if(!is.null(attr(style[[n]], "marker"))) { -%>
+		var style<%= n %> = L.MakiMarkers.icon({<%= style[[n]] %>});
 <%				} else { -%>
 		var style<%= n %> = {<%= paste(style[[n]], collapse = ", ") %>};
 <%				}
@@ -18,8 +18,8 @@
     SINGLE STYLE
 -%>
 <%		if(attr(style, "style.type")=="single") { 
-			if(style[[n]]=="marker") { -%>
-		var style1 = "marker";
+			if(!is.null(attr(style, "marker"))) { -%>
+		var style1 = L.MakiMarkers.icon({<%= style %>});
 <%			} else { -%>
 		var style1 = {<%= paste(style, collapse =", ") %>};
 <%			}

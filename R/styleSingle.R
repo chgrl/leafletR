@@ -5,7 +5,7 @@ function(col, lwd, alpha, fill, fill.alpha, rad, marker) {
 	style <- NULL
 	if(!missing(marker)) {
 		if(length(marker)==1) {
-			style <- append(style, paste0("icon: null, color: \"", getHex(marker[2]), "\", size: \"m\""))
+			style <- append(style, paste0("icon: null, color: \"", getHex(marker), "\", size: \"m\""))
 		} else if(length(marker)==3) {
 			if(is.na(marker[1])) marker[1] <- "null"
 			else marker[1] <- paste0("\"", marker[1], "\"")

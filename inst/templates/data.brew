@@ -5,12 +5,18 @@
         var group = new L.featureGroup;
 <%	} -%>
 		function addDataToMap(data, style, layer) {
-<%	if(all(!is.na(style))) {
-		if(any(style=="marker")) { -%>
-			if(style == "marker") {
+<%	if(any(!is.na(style))) {
+		marker <- FALSE
+		if(any(class(style)=="list")) {
+			for(n in 1:length(style)) if(any(!is.na(style[[n]]))) if(!is.null(attr(style[[n]], "marker"))) marker <- TRUE
+		} else {
+			if(!is.null(attr(style, "marker"))) marker <- TRUE
+		}
+		if(marker) { -%>
+			if(typeof style != "string") {
 				layers[layer] = L.geoJson(data, {
 					onEachFeature: (typeof onEachFeature == "undefined") ? undefined : onEachFeature,
-					pointToLayer: function (feature, latlng) {return L.marker(latlng);}
+					pointToLayer: function (feature, latlng) {return L.marker(latlng, {icon: style});}
 				});
 			} else {
 				layers[layer] = L.geoJson(data, {
