@@ -40,9 +40,9 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, co
 	# prepare style
 	if(missing(style)) style <- NA
 	if(any(!is.na(style))) {
-		if(is.list(style) & !is(style, "leafletr.style")) {
-			for(i in 1:length(style)) if(! is(style[[i]], "leafletr.style")) stop("At least one style object not recognized")
-		} else if(! is(style, "leafletr.style")) stop("Style object not recognized")
+		if(is.list(style) && !is(style, "leafletr.style")) {
+			for(i in 1:length(style)) if(!is(style[[i]], "leafletr.style")) stop("At least one style object not recognized")
+		} else if(!is(style, "leafletr.style")) stop("Style object not recognized")
 	}
 	if(length(data)>1 && !is.na(style)) if(length(style)<length(data) || !is.list(style)) stop("Number of styles must correspond to number of data files")
 	if(file.exists(file.path(dest, gsub(" ", "_", title))) && !overwrite) stop("Abort - file already exists")
@@ -78,6 +78,7 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, co
 		if(any(controls=="legend")) legend.ctrl <- TRUE
 	}
 	if(layer.ctrl && length(data)>1 && !incl.data) warning("To add data layers to layer control, set 'incl.data=TRUE'", call.=FALSE)
+	if(any(!is.na(style))) if(is(style, "leafletr.style")) if(!is(style, "graduated.style") && !is(style, "categorized.style")) legend.ctrl <- FALSE
 	
 	# prepare file path
 	dir.create(file.path(dest, gsub(" ", "_", title)), showWarnings=FALSE)
