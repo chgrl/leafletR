@@ -71,7 +71,17 @@
 			# write legend
 			for(i in 1:length(style.ra)) { %>
 			div.innerHTML +=
-<%				fill <- style.ra[[i]][grep("fill", style.ra[[i]])]
+<%				ft <- getFeatureType(dat.ra[[i]])
+				ttl <- names(dat.ra)[i]
+				if(!is.null(ttl)) ttl <- gsub("[_.]", " ", ttl)
+				if(is.null(ttl)) ttl <- gsub("_", " ", paste(head(strsplit(basename(dat.ra[[i]]), "[.]")[[1]], -1), collapse="_"))
+				else if(ttl=="") ttl <- gsub("_", " ", paste(head(strsplit(basename(dat.ra[[i]]), "[.]")[[1]], -1), collapse="_"))
+
+				if(!is.null(attr(style.ra[[i]], "marker"))) { %>
+					'<table><tr><td class="mrk'+style<%= i %>.options.size+'" style="background: transparent url('+style<%= i %>.options.iconUrl+') top center no-repeat;"></td><td class="value"><%= ttl %></td></tr></table>'
+<%				} else {
+					
+				fill <- style.ra[[i]][grep("fill", style.ra[[i]])]
 				if(length(fill)==0) fill <- "fill: true"
 				fill.col <- style.ra[[i]][grep("fillColor", style.ra[[i]])]
 				clr <- style.ra[[i]][grep("color", style.ra[[i]])]
@@ -85,12 +95,6 @@
 				opa <- style.ra[[i]][grep("opacity", style.ra[[i]])]
 				if(length(opa)==0) opa <- "opacity: 0.5"
 				lwd <- style.ra[[i]][grep("weight", style.ra[[i]])]
-				
-				ft <- getFeatureType(dat.ra[[i]])
-				ttl <- names(dat.ra)[i]
-				if(!is.null(ttl)) ttl <- gsub("[_.]", " ", ttl)
-				if(is.null(ttl)) ttl <- gsub("_", " ", paste(head(strsplit(basename(dat.ra[[i]]), "[.]")[[1]], -1), collapse="_"))
-				else if(ttl=="") ttl <- gsub("_", " ", paste(head(strsplit(basename(dat.ra[[i]]), "[.]")[[1]], -1), collapse="_"))
 									
 				if(ft=="point") {
 					rd <- substr(rad, 9, nchar(rad))
@@ -120,6 +124,7 @@
 -%>
 					'<table><tr><td class="shape"><svg style="width:<%= max.width %>px; height:<%= hght %>px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><polygon class="plgn" style="<%= st %>" points="<%= max.lwd+1-(max.lwd-as.numeric(lwd)/2) %>, <%= as.numeric(lwd)/2 %> <%= max.width-max.lwd-1+(max.lwd-as.numeric(lwd)/2) %>, <%= hght/2 %> <%= max.width-max.lwd-1+(max.lwd-as.numeric(lwd)/2) %>, <%= hght-as.numeric(lwd)/2 %> <%= max.lwd+1-(max.lwd-as.numeric(lwd)/2) %>, <%= hght-as.numeric(lwd)/2 %>" /></svg></td><td class="value"><%= ttl %></td></tr></table>'
 <%				}
+				}
 			} -%>
 			return div;
 		};
