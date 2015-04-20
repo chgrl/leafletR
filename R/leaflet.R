@@ -63,7 +63,7 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, co
 	if(missing(size)) size <- NA
 	if(missing(center)) center <- NA
 	if(missing(zoom)) zoom <- NA
-	if(any(is.na(data))) {
+	if(any(is.na(data)) && is.na(center) && is.na(zoom)) {
 		center <- c(0,0)
 		zoom <- 2
 	}
