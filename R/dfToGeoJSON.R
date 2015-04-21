@@ -26,12 +26,12 @@ function(data, name, dest, lat.lon, overwrite) {
 			cat("      \"properties\": {", file=path, append=TRUE, sep="\n")
 			dat <- data[f,-lat.lon]
 			if(!is.data.frame(dat)) names(dat) <- names(data)[-lat.lon]
-			
+				
 			if(length(dat)==1) {
 				cat(paste0("        \"", names(data)[-lat.lon], "\": \"", dat, "\"\n"), file=path, append=TRUE)
 			} else {
-				for(p in 1:length(dat)) {
-					cat(paste0("        \"", names(dat)[p], "\": \"", dat[p], "\""), file=path, append=TRUE)
+				for(p in 1:length(dat)) {	
+					cat(paste0("        \"", names(dat)[p], "\": \"", as.character(dat[p]), "\""), file=path, append=TRUE)
 					if(p==length(dat)) cat("\n", file=path, append=TRUE)
 					else cat(",", file=path, append=TRUE, sep="\n")
 				}
