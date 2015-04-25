@@ -7,7 +7,15 @@ function(data, name, dest, lat.lon, overwrite) {
 		lat.lon <- c(which(names(data)==lat.lon[1]), which(names(data)==lat.lon[2]))
 	}
 	if(is.na(data[,lat.lon[1]]) || is.na(data[,lat.lon[2]])) stop("Coordinate columns not found")
-		
+	
+	# check for factors
+	for(i in 1:ncol(data)) {
+		if(is(data[,i], "factor")) {
+			data[,i] <- as.character(data[,i])
+			message("Column '", names(data[i]), "' converted from factor to character type")
+		}
+	}
+	
 	path <- paste0(file.path(dest, name), ".geojson")
 	if(file.exists(path) && !overwrite) stop("Abort - file already exists\n")
 	
@@ -31,7 +39,7 @@ function(data, name, dest, lat.lon, overwrite) {
 				cat(paste0("        \"", names(data)[-lat.lon], "\": \"", dat, "\"\n"), file=path, append=TRUE)
 			} else {
 				for(p in 1:length(dat)) {	
-					cat(paste0("        \"", names(dat)[p], "\": \"", as.character(dat[p]), "\""), file=path, append=TRUE)
+					cat(paste0("        \"", names(dat)[p], "\": \"", dat[p], "\""), file=path, append=TRUE)
 					if(p==length(dat)) cat("\n", file=path, append=TRUE)
 					else cat(",", file=path, append=TRUE, sep="\n")
 				}
