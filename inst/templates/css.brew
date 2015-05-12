@@ -88,19 +88,16 @@
 		.mrks {
 		    padding: 0px;
 			text-align: center;
-			width:27px;
 		    height:30px;
 		}
 		.mrkm {
 			padding: 0px;
 			text-align: center;
-			width:32px;
 		    height:40px;
 		}
 		.mrkl {
 			padding: 0px;
 			text-align: center;
-			width:38px;
 		    height:52px;
 		}
 <%# STYLE LIST -%>
