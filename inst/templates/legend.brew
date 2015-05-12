@@ -69,7 +69,7 @@
 				if(l>max.lwd) max.lwd <- l
 				
 				if(!is.null(attr(style.ra[[i]], "marker"))) {
-					sz <- strsplit(style.ra[[i]], "\"", fixed=TRUE)[[1]][6]
+					sz <- tail(strsplit(style.ra[[i]], "\"", fixed=TRUE)[[1]], 1)
 					if(sz=="s") mw <- 27
 					else if(sz=="m") mw <- 32
 					else mw <- 38
