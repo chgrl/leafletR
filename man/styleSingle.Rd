@@ -15,7 +15,7 @@ singles(col, lwd, alpha, fill, fill.alpha, rad, marker)
   \item{fill}{Fill color used for polygons and circles (points). Color might be given as name, number [0-8] or hexadecimal code. If \code{fill} is \code{NA}, the circle area is left blank.}
   \item{fill.alpha}{Opacity of a polygon or circle area, as numeric value between \code{0} (fully transparent) and \code{1} (opaque).}
   \item{rad}{Radius of circles (points), in number of pixels -- default is \code{10}.}
-  \item{marker}{Color (given like \code{col}), or a vector of label (see \url{https://www.mapbox.com/maki/} for available labels), color (given like \code{col}) and size (\code{s}=small, \code{m}=medium, \code{l}=large). Points are displayed as markers (all other arguments are ignored). Please note: this does not work well with legends.}
+  \item{marker}{Color (given like \code{col}), or a vector of label (see \url{https://www.mapbox.com/maki/} for available labels), color (given like \code{col}) and size (\code{s}=small, \code{m}=medium, \code{l}=large). Points are displayed as markers (all other arguments are ignored).}
 }
 \value{A single symbol style object.}
 \note{Points are displayed as circles.}
