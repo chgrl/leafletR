@@ -67,6 +67,14 @@
 				lwd <- substr(lwd, 9, nchar(lwd))
 				l <- as.numeric(lwd)
 				if(l>max.lwd) max.lwd <- l
+				
+				if(!is.null(attr(style.ra[[i]], "marker"))) {
+					sz <- strsplit(style.ra[[i]], "\"", fixed=TRUE)[[1]][6]
+					if(sz=="s") mw <- 27
+					else if(sz=="m") mw <- 32
+					else mw <- 38
+					if(mw>max.width) max.width <- mw
+				}
 			}
 			# write legend
 			for(i in 1:length(style.ra)) { %>
