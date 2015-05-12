@@ -134,11 +134,11 @@
 					opa <- style[[2]][grep("opacity", style[[2]])]
 -%>
 		.crcl {
-			fill: <%= substr(clr, nchar(clr)-7, nchar(clr)-1) %> ;
-			fill-opacity: <%= as.numeric(gsub(".+\\s+", "", opa)) %> ;
-			stroke: <%= substr(brd, nchar(brd)-7, nchar(brd)-1) %> ;
-			stroke-width: <%= as.numeric(gsub(".+\\s+", "", wght)) %> ;
-			stroke-opacity: <%= as.numeric(gsub(".+\\s+", "", opa)) %> ;
+			fill: <%= substr(clr, nchar(clr)-7, nchar(clr)-1) %>;
+			fill-opacity: <%= as.numeric(gsub(".+\\s+", "", opa)) %>;
+			stroke: <%= substr(brd, nchar(brd)-7, nchar(brd)-1) %>;
+			stroke-width: <%= as.numeric(gsub(".+\\s+", "", wght)) %>;
+			stroke-opacity: <%= as.numeric(gsub(".+\\s+", "", opa)) %>;
 		}
 <%				}
 			}
