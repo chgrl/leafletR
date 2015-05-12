@@ -13,7 +13,7 @@
 			if(!is.null(attr(style, "marker"))) marker <- TRUE
 		}
 		if(marker) { -%>
-			if(typeof style != "string") {
+			if("options" in style) {
 				layers[layer] = L.geoJson(data, {
 					onEachFeature: (typeof onEachFeature == "undefined") ? undefined : onEachFeature,
 					pointToLayer: function (feature, latlng) {return L.marker(latlng, {icon: style});}
