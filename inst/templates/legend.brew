@@ -86,7 +86,7 @@
 				else if(ttl=="") ttl <- gsub("_", " ", paste(head(strsplit(basename(dat.ra[[i]]), "[.]")[[1]], -1), collapse="_"))
 
 				if(!is.null(attr(style.ra[[i]], "marker"))) { %>
-					'<table><tr><td class="mrk'+style<%= i %>.options.size+'" style="background: transparent url('+style<%= i %>.options.iconUrl+') top center no-repeat;"></td><td class="value"><%= ttl %></td></tr></table>'
+					'<table><tr><td class="mrk'+style<%= i %>.options.size+'" style="width: <%= max.width %>px; background: transparent url('+style<%= i %>.options.iconUrl+') top center no-repeat;"></td><td class="value"><%= ttl %></td></tr></table>'
 <%				} else {
 					
 				fill <- style.ra[[i]][grep("fill", style.ra[[i]])]
