@@ -17,8 +17,8 @@ function(x, ...) {
 	} else {
 		sty <- strsplit(x, ", ", fixed=TRUE)
 		cat("Marker\n")
-		cat("Icon:", strsplit(sty[[1]][1], "\"", fixed=TRUE)[[1]][2], "\n")
-		cat("Color:", strsplit(sty[[1]][2], "\"", fixed=TRUE)[[1]][2], "\n")
-		cat("Size:", strsplit(sty[[1]][3], "\"", fixed=TRUE)[[1]][2], "\n")
+		cat("\ticon:", strsplit(sty[[1]][1], "\"", fixed=TRUE)[[1]][2], "\n")
+		cat("\tcolor:", strsplit(sty[[1]][2], "\"", fixed=TRUE)[[1]][2], "\n")
+		cat("\tsize:", strsplit(sty[[1]][3], "\"", fixed=TRUE)[[1]][2], "\n")
 	}
 }
