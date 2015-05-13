@@ -16,6 +16,12 @@ function(data, name, dest, lat.lon, overwrite) {
 		}
 	}
 	
+	# replace line breaks
+	for(i in 1:ncol(data)) {
+		data[,i] <- gsub("\n","; ",data[,i])
+	}
+	
+	# check file and path
 	path <- paste0(file.path(dest, name), ".geojson")
 	if(file.exists(path) && !overwrite) stop("Abort - file already exists\n")
 	
