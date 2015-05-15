@@ -18,15 +18,17 @@ function(prop, breaks, right=TRUE, out=0, style.par="col", style.val, leg, ...) 
 	if(style.par=="col") def <- "\"#808080\""
 	else if(style.par=="rad") def <- "0"
 	if(out==0) { # left and right closed
-		grad.style <- paste0("return x ", op, breaks[1], " ? ", def, " :")
-		for(n in 2:length(breaks)) grad.style <- append(grad.style, paste0("       x ", op, breaks[n], " ? ", stl.val[n-1], " :"))
+		grad.style <- paste0("return x > ", breaks[1], " ? ", def, " :")
+		for(n in 2:(length(breaks)-1)) grad.style <- append(grad.style, paste0("       x ", op, breaks[n], " ? ", stl.val[n-1], " :"))
+		grad.style <- append(grad.style, paste0("       x >= ", breaks[length(breaks)], " ? ", stl.val[length(breaks)-1], " :"))
 		grad.style <- append(grad.style, paste("       ", def, ";", sep=""))
 	} else if(out==1) { # left closed right open
 		grad.style <- paste("return x ", op, breaks[1], " ? ", stl.val[1], " :", sep="")
-		for(n in 2:length(breaks)) grad.style <- append(grad.style, paste0("       x ", op, breaks[n], " ? ", stl.val[n], " :"))
+		for(n in 2:(length(breaks)-1)) grad.style <- append(grad.style, paste0("       x ", op, breaks[n], " ? ", stl.val[n], " :"))
+		grad.style <- append(grad.style, paste0("       x >= ", breaks[length(breaks)], " ? ", stl.val[length(breaks)], " :"))
 		grad.style <- append(grad.style, paste0("       ", def, ";"))
-	} else if(out==2) {
-		grad.style <- paste0("return x ", op, breaks[1], " ? ", def, " :")
+	} else if(out==2) { # left open right closed
+		grad.style <- paste0("return x > ", breaks[1], " ? ", def, " :")
 		for(n in 2:length(breaks)) grad.style <- append(grad.style, paste0("       x ", op, breaks[n], " ? ", stl.val[n-1], " :"))
 		grad.style <- append(grad.style, paste("       ", stl.val[n], ";", sep=""))
 	} else { # left and right open

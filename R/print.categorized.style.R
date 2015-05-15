@@ -22,8 +22,8 @@ function(x, ...) {
 		else sty.tbl <- rbind(sty.tbl, c(sty[[i]][1], sty[[i]][2]))
 	}
 	sty.tbl <- data.frame(sty.tbl, row.names=c(1:length(sty)))
-	if(attr(x, "style.par")=="col") names(sty.tbl) <- c("Classes", "Color")
-	if(attr(x, "style.par")=="rad") names(sty.tbl) <- c("Classes", "Radius [px]")
+	if(attr(x, "style.par")=="col") names(sty.tbl) <- c("Class", "Color")
+	if(attr(x, "style.par")=="rad") names(sty.tbl) <- c("Class", "Radius [px]")
 	print(sty.tbl, right=FALSE, row.names=FALSE)
 	
 	if(!is.null(x$add)) {
