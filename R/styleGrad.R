@@ -15,6 +15,11 @@ function(prop, breaks, closure="left", out=0, style.par="col", style.val, leg, .
 	
 	sp <- c("col", "rad")
 	style.par <- sp[pmatch(style.par, sp)]
+	
+	if(is(style.val, "character") && !is.null(attr(style.val, "palette")) && !is.null(attr(style.val, "table"))) {
+		if(style.par!="col") stop("'style.val' contains colors, but 'style.par' is set to 'rad'")
+		style.val <- attr(style.val, "palette")
+	}
 	style.val <- rev(style.val)
 	if(style.par=="col") for(i in 1:length(style.val)) style.val[i] <- getHex(style.val[i])
 	if(!missing(leg)) leg <- gsub("\n", "<br>", leg)
