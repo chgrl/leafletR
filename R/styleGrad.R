@@ -1,6 +1,18 @@
 styleGrad <-
 function(prop, breaks, closure="left", out=0, style.par="col", style.val, leg, ...) {
+	if(is(breaks, "classIntervals")) {
+		if(out!=0) {
+			out <- 0
+			warning("'classIntervals' can only be used together with 'out = 0' - out set to 0", call.=FALSE)
+		}
+		if(attr(breaks, "intervalClosure")!=closure) {
+			closure <- attr(breaks, "intervalClosure")
+			warning("Interval closure set to", paste0("'", closure, "'"), "as set in 'classIntervals'", call.=FALSE)
+		}
+		breaks <- breaks$brks
+	}
 	breaks <- rev(breaks)
+	
 	sp <- c("col", "rad")
 	style.par <- sp[pmatch(style.par, sp)]
 	style.val <- rev(style.val)
