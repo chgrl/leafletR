@@ -36,6 +36,15 @@ sty <- styleGrad(prop="mag", breaks=seq(4, 6.5, by=0.5),
 map <- leaflet(data=qks, dest=tempdir(), 
   title="Fiji Earthquakes", style=sty)
 
+# find class intervals and colors using the classInt package
+library(classInt)
+brks <- classIntervals(quakes$mag, 7)
+cols <- findColours(brks, c("yellow", "red", "darkred"))
+sty <- styleGrad(prop="mag", breaks=brks, style.val=cols, 
+  leg="Richter Magnitude")
+map <- leaflet(data=qks, dest=tempdir(), 
+   title="Fiji Earthquakes", style=sty)
+
 # intervals closed right
 # note the gray points on the map: magnitude of 4 is outside the breaks
 # (which are >4.0, >4.5, >5.0, >5.5, >6.0 and >6.5)
@@ -45,10 +54,8 @@ map <- leaflet(data=qks, dest=tempdir(),
   title="Fiji Earthquakes", style=sty)
 
 # handle outliers
-# include outliers of the upper example by left-opening the break edges 
-# and adding a sixth color
-sty <- styleGrad(prop="mag", breaks=seq(4, 6.5, by=0.5), right=FALSE, 
-  out=2, style.val=rev(heat.colors(6)), leg="Richter Magnitude")
+sty <- styleGrad(prop="mag", breaks=seq(5, 6.4, by=0.2), 
+  out=2, style.val=c("white", rev(heat.colors(7))), leg="Richter Magnitude")
 map <- leaflet(data=qks, dest=tempdir(), 
   title="Fiji Earthquakes", style=sty)
 
