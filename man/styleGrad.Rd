@@ -5,13 +5,13 @@
 \title{Graduated styling}
 \description{Creates a graduated style based on an attribute.}
 \usage{
-styleGrad(prop, breaks, right, out, style.par, style.val, leg, ...)
-grads(prop, breaks, right, out, style.par, style.val, leg, ...)
+styleGrad(prop, breaks, closure, out, style.par, style.val, leg, ...)
+grads(prop, breaks, closure, out, style.par, style.val, leg, ...)
 }
 \arguments{
   \item{prop}{Property (attribute) of the data to be styled, as string.}
   \item{breaks}{A vector giving the breakpoints between the desired classes.}
-  \item{right}{If \code{TRUE} (default) classes are right-closed (left-open) intervals (>= breakpoint). Otherwise classes are left-closed (right-open) intervals (> breakpoint).}
+  \item{closure}{Specifies whether class intervals are closed on the left, i.e. >=breakpoint (\code{"left"}, the default) or on the right, i.e. >breakpoint (\code{"right"}).}
   \item{out}{Handling of data outside the edges of \code{breaks}. One of \code{0} (left and right-closed), \code{1} (left-closed, right-open), \code{2} (left-open, right-closed) or \code{3} (left and right-open). Default is \code{0}.}
   \item{style.par}{Styling parameter as string. One of \code{"col"} (graduated color) or \code{"rad"} (graduated radius). Graduated radius can only be applied to points.}
   \item{style.val}{Styling values, a vector of colors or radii applied to the classes.}
@@ -36,10 +36,10 @@ sty <- styleGrad(prop="mag", breaks=seq(4, 6.5, by=0.5),
 map <- leaflet(data=qks, dest=tempdir(), 
   title="Fiji Earthquakes", style=sty)
 
-# left-closed intervals
+# intervals closed right
 # note the gray points on the map: magnitude of 4 is outside the breaks
 # (which are >4.0, >4.5, >5.0, >5.5, >6.0 and >6.5)
-sty <- styleGrad(prop="mag", breaks=seq(4, 6.5, by=0.5), right=FALSE, 
+sty <- styleGrad(prop="mag", breaks=seq(4, 6.5, by=0.5), closure="right", 
   style.val=rev(heat.colors(5)), leg="Richter Magnitude")
 map <- leaflet(data=qks, dest=tempdir(), 
   title="Fiji Earthquakes", style=sty)

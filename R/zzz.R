@@ -103,8 +103,8 @@ cats <- function(prop, val, style.par, style.val, leg, ...) {
 	styleCat(prop, val, style.par, style.val, leg, ...)
 }
 
-grads <- function(prop, breaks, right=TRUE, out=0, style.par, style.val, leg, ...) {
-	styleGrad(prop, breaks, right, out, style.par, style.val, leg, ...)
+grads <- function(prop, breaks, closure="left", out=0, style.par, style.val, leg, ...) {
+	styleGrad(prop, breaks, closure, out, style.par, style.val, leg, ...)
 }
 
 leaf <- function(data, dest, title, size, base.map="osm", center, zoom, style, popup, controls="all", incl.data=FALSE, overwrite=TRUE) {

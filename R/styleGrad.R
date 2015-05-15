@@ -1,5 +1,5 @@
 styleGrad <-
-function(prop, breaks, right=TRUE, out=0, style.par="col", style.val, leg, ...) {
+function(prop, breaks, closure="left", out=0, style.par="col", style.val, leg, ...) {
 	breaks <- rev(breaks)
 	sp <- c("col", "rad")
 	style.par <- sp[pmatch(style.par, sp)]
@@ -11,7 +11,9 @@ function(prop, breaks, right=TRUE, out=0, style.par="col", style.val, leg, ...) 
 	if((out==1 || out==2) && length(breaks)!=length(style.val)) stop("Length of 'style.val' (", length(style.val), ") does not match the number of classes (", length(breaks),")")
 	if(out==3 && length(breaks)!=(length(style.val)-1)) stop("Length of 'style.val' (", length(style.val), ") does not match the number of classes (", length(breaks)+1,")")
 	
-	if(right) op <- ">= " else op <- "> "
+	clsr <- c("left", "right")
+	closure <- clsr[pmatch(closure, clsr)]
+	if(closure=="left") op <- ">= " else op <- "> "
 	
 	stl.val <- style.val
 	if(style.par=="col") stl.val <- paste0("\"", style.val, "\"")
@@ -69,7 +71,7 @@ function(prop, breaks, right=TRUE, out=0, style.par="col", style.val, leg, ...) 
 	attr(grad.style, "style.type") <- "graduated"
 	attr(grad.style, "property") <- prop
 	attr(grad.style, "breaks") <- rev(breaks)
-	attr(grad.style, "right") <- right
+	attr(grad.style, "closure") <- closure
 	attr(grad.style, "out") <- out
 	attr(grad.style, "style.par") <- style.par
 	if(!missing(leg)) attr(grad.style, "leg") <- leg

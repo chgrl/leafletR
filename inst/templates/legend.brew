@@ -164,7 +164,7 @@
 -%>
 					for (var i = 0; i < grades.length-1; i++) { 
 						div.innerHTML +=
-						        <% if(attr(style, "right")) {%>'<i style="background:' + getValue(grades[i]) + '"></i> ' +
+						        <% if(attr(style, "closure")=="left") {%>'<i style="background:' + getValue(grades[i]) + '"></i> ' +
 						        <% } else { %>'<i style="background:' + getValue(grades[i]+(grades[1]-grades[0])*0.01) + '"></i> ' + <% } -%>
 								grades[i] + '&ndash;' + grades[i + 1] + '<br>';
 					}
@@ -173,7 +173,7 @@
 -%>
 					for (var i = 0; i < grades.length; i++) {
 						div.innerHTML +=
-<%					if(attr(style, "right")) { -%>
+<%					if(attr(style, "closure")=="left") { -%>
 							'<i style="background:' + getValue(grades[i]) + '"></i> ' +
 						    (grades[i + 1] ? grades[i] + '&ndash;' + grades[i + 1] + '<br>' : '&ge;' + grades[i]);
 <%					} else { -%>
@@ -184,14 +184,14 @@
 <%				} else if(attr(style, "out")==2) { # left open and right closed 
 -%>
 					div.innerHTML +=
-<%					if(attr(style, "right")) { %>
+<%					if(attr(style, "closure")=="left") { %>
 						'<i style="background:' + getValue(grades[0]-(grades[1]-grades[0])*0.01) + '"></i> &lt;' + grades[0] + '<br>';
 <%					} else { %>
 						'<i style="background:' + getValue(grades[0]-(grades[1]-grades[0])*0.01) + '"></i> &le;' + grades[0] + '<br>';
 <%					} %>
 					for (var i = 0; i < grades.length-1; i++) {
 						div.innerHTML +=
-<%					if(attr(style, "right")) { %>
+<%					if(attr(style, "closure")=="left") { %>
 							'<i style="background:' + getValue(grades[i]) + '"></i> ' +
 <%					}else { %>
 							'<i style="background:' + getValue(grades[i]+(grades[1]-grades[0])*0.01) + '"></i> ' + 
@@ -201,14 +201,14 @@
 <%				} else { # left and right open 
 -%>
 					div.innerHTML +=
-<%					if(attr(style, "right")) { %>
+<%					if(attr(style, "closure")=="left") { %>
 						'<i style="background:' + getValue(grades[0]-(grades[1]-grades[0])*0.01) + '"></i> &lt;' + grades[0] + '<br>';
 <%					} else { %>
 						'<i style="background:' + getValue(grades[0]-(grades[1]-grades[0])*0.01) + '"></i> &le;' + grades[0] + '<br>'; 
 <%					} %>
 					for (var i = 0; i < grades.length; i++) {
 						div.innerHTML +=
-<%					if(attr(style, "right")) { -%>
+<%					if(attr(style, "closure")=="left") { -%>
 						    '<i style="background:' + getValue(grades[i]) + '"></i> ' +
 						    (i<grades.length-1 ? grades[i] + '&ndash;' + grades[i+1] + '<br>' : '&ge;' + grades[i]);
 <%					} else { -%>
@@ -246,7 +246,7 @@
 					'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-2])*2+<%= cont %>) + 'px;"><svg style="width: ' + (getValue(grades[i])*2+<%= cont %>) + 'px; height: ' + (getValue(grades[i])*2+<%= cont %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[i])+<%= xy %>) + '" cy="' + (getValue(grades[i])+<%= xy %>) + '" r="' + getValue(grades[i]) + '" /></svg></td><td class="value">' + grades[i] + '&ndash;' + grades[i+1] + '</td></tr></table>'
 			}
 <%				} else if(attr(style, "out")==1) { # left closed and right open
-					if(attr(style, "right")) { -%>
+					if(attr(style, "closure")=="left") { -%>
 			for (var i = 0; i < grades.length-1; i++) {
 				div.innerHTML +=
 					'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1])*2+<%= cont %>) + 'px;"><svg style="width: ' + (getValue(grades[i])*2+<%= cont %>) + 'px; height: ' + (getValue(grades[i])*2+<%= cont %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[i])+<%= xy %>) + '" cy="' + (getValue(grades[i])+<%= xy %>) + '" r="' + getValue(grades[i]) + '" /></svg></td><td class="value">' + grades[i] + '&ndash;' + grades[i+1] + '</td></tr></table>'
@@ -262,7 +262,7 @@
 				'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1]+1)*2+<%= cont %>) + 'px;"><svg style="width: ' + (getValue(grades[grades.length-1]+1)*2+<%= cont %>) + 'px; height: ' + (getValue(grades[grades.length-1]+1)*2+<%= cont %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[grades.length-1]+1)+<%= xy %>) + '" cy="' + (getValue(grades[grades.length-1]+1)+<%= xy %>) + '" r="' + getValue(grades[grades.length-1]+1) + '" /></svg></td><td class="value">' + '&gt;' + grades[grades.length-1] + '</td></tr></table>'
 <%					} -%>
 <%				} else if(attr(style, "out")==2) { # left open and right closed
-					if(attr(style, "right")) { -%>
+					if(attr(style, "closure")=="left") { -%>
 			div.innerHTML +=
 				'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-2])*2+<%= cont %>) + 'px;"><svg style="width: ' + (getValue(grades[0]-1)*2+<%= cont %>) + 'px; height: ' + (getValue(grades[0]-1)*2+<%= cont %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[0]-1)+<%= xy %>) + '" cy="' + (getValue(grades[0]-1)+<%= xy %>) + '" r="' + getValue(grades[0]-1) + '" /></svg></td><td class="value">' + '&lt;' + grades[0] + '</td></tr></table>'
 			for (var i = 1; i < grades.length; i++) {
@@ -278,7 +278,7 @@
 				}
 <%					} -%>
 <%				} else { # left and right open
-					if(attr(style, "right")) { -%>
+					if(attr(style, "closure")=="left") { -%>
 			div.innerHTML +=
 				'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1])*2+<%= cont %>) + 'px;"><svg style="width: ' + (getValue(grades[0]-1)*2+<%= cont %>) + 'px; height: ' + (getValue(grades[0]-1)*2+<%= cont %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[0]-1)+<%= xy %>) + '" cy="' + (getValue(grades[0]-1)+<%= xy %>) + '" r="' + getValue(grades[0]-1) + '" /></svg></td><td class="value">' + '&lt;' + grades[0] + '</td></tr></table>'
 			for (var i = 1; i < grades.length; i++) {
