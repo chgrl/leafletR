@@ -67,6 +67,10 @@ map <- leaflet(data=dat, dest=tempdir(),
 map <- leaflet(data=dat, dest=tempdir(), 
   base.map="mqsat", popup="mag")
 
+# minimalist? - no base map
+map <- leaflet(data=dat, dest=tempdir(), 
+  base.map=NA, popup="mag")
+
 # include data in HTML file
 map <- leaflet(dat, dest=tempdir(), incl.data=TRUE)
 

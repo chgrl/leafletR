@@ -35,7 +35,6 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, co
 	basemaps <- getOption("leafletBaseMaps")
 	bm <- names(basemaps)
 	base.map <- bm[pmatch(base.map, bm)]
-	if(any(is.na(base.map))) stop("Invalid base.map")
 	
 	# prepare style
 	if(missing(style)) style <- NA

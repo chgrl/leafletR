@@ -18,7 +18,7 @@ singles(col, lwd, alpha, fill, fill.alpha, rad, marker)
   \item{marker}{Color (given like \code{col}), or a vector of label (see \url{https://www.mapbox.com/maki/} for available labels), color (given like \code{col}) and size (\code{s}=small, \code{m}=medium, \code{l}=large). Points are displayed as markers (all other arguments are ignored).}
 }
 \value{A single symbol style object.}
-\note{Points are displayed as circles.}
+\note{There is a known issue with Safari browser: maps with four or more marker layers may cause problems with popups.}
 \author{Christian Graul}
 \seealso{\code{\link{styleGrad}}, \code{\link{styleCat}}, \code{\link{leaflet}}}
 \examples{
