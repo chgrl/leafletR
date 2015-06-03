@@ -1,3 +1,5 @@
 .travis.yml
 README.md
 leafletR_logo.png
+^.*\.Rproj$
+^\.Rproj\.user$
