@@ -1,7 +1,7 @@
 <%# 
     LAYER CONTROL
 -%>
-<%	if(length(base.map)>1 || (length(data)>1 && incl.data)) { -%>
+<%	if(length(base.map)>1 || (length(data)>1)) { -%>
 		
 <%		controls <- "null"
 		if(length(base.map)>1) controls <- "baseMaps"
@@ -9,5 +9,7 @@
 -%>
 		
 		// layer control
-		L.control.layers(<%= controls %>).addTo(map);
+    if (lc != undefined) {
+		  L.control.layers(<%= controls %>).addTo(map);
+    };
 <%	} -%>

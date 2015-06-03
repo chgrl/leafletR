@@ -44,11 +44,9 @@
         	group.addLayer(layers[layer])
 			map.fitBounds(group.getBounds());
 <%	} -%>
-<%  if(layer.ctrl & !incl.data) { -%>
-      if(lc != undefined) {
-        L.control.layers(baseMaps,layers).addTo(map);
-      };
-<%	} -%>
+<%  if(layer.ctrl) { 
+      brew(system.file("templates/layer.brew", package = "leafletR")) 
+	} -%>
 		};
 		
 <%	for(n in 1:length(data)) {
