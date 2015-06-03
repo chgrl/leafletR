@@ -76,7 +76,7 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, co
 		if(any(controls=="layer")) layer.ctrl <- TRUE
 		if(any(controls=="legend")) legend.ctrl <- TRUE
 	}
-	if(layer.ctrl && length(data)>1 && !incl.data) warning("To add data layers to layer control, set 'incl.data=TRUE'", call.=FALSE)
+	#if(layer.ctrl && length(data)>1 && !incl.data) warning("To add data layers to layer control, set 'incl.data=TRUE'", call.=FALSE)
 	if(any(!is.na(style))) if(is(style, "leafletr.style")) if(!is(style, "graduated.style") && !is(style, "categorized.style")) legend.ctrl <- FALSE
 	
 	# prepare file path
