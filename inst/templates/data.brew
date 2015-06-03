@@ -44,7 +44,7 @@
         	group.addLayer(layers[layer])
 			map.fitBounds(group.getBounds());
 <%	} -%>
-<%  if(legend.ctrl & !incl.data) { -%>
+<%  if(layer.ctrl & !incl.data) { -%>
       if(lc != undefined) {
         L.control.layers(baseMaps,layers).addTo(map);
       };
