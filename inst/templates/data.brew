@@ -46,7 +46,7 @@
 <%	} -%>
 <%  if(legend.ctrl & !incl.data) { -%>
       if(lc != undefined) {
-        L.control.layers(baseMap,layers).addTo(map);
+        L.control.layers(baseMaps,layers).addTo(map);
       };
 <%	} -%>
 		};
