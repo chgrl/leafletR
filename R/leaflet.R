@@ -71,12 +71,13 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, co
 	zoom.ctrl <- scale.ctrl <- layer.ctrl <- legend.ctrl <- FALSE
 	if(length(controls)==1 && !is.na(controls)) if(controls=="all") controls <- list("zoom", "scale", "layer", "legend")
 	if(!any(is.na(controls))) {
+    browse()
 		if(any(controls=="zoom")) zoom.ctrl <- TRUE
 		if(any(controls=="scale")) scale.ctrl <- TRUE
 		if(any(controls=="layer")) layer.ctrl <- TRUE
 		if(any(controls=="legend")) legend.ctrl <- TRUE
 	}
-	#if(layer.ctrl && length(data)>1 && !incl.data) warning("To add data layers to layer control, set 'incl.data=TRUE'", call.=FALSE)
+	
 	if(any(!is.na(style))) if(is(style, "leafletr.style")) if(!is(style, "graduated.style") && !is(style, "categorized.style")) legend.ctrl <- FALSE
 	
 	# prepare file path

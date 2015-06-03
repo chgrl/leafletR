@@ -44,8 +44,7 @@
 		# legend
 		if(legend.ctrl) if(!any(is.na(style))) brew(system.file("templates/legend.brew", package = "leafletR"))
 	}
-	# layer control
-	#if(layer.ctrl) brew(system.file("templates/layer.brew", package = "leafletR"))
+	
 -%>
 	</script>
 </body>
