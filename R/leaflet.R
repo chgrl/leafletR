@@ -71,7 +71,6 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, co
 	zoom.ctrl <- scale.ctrl <- layer.ctrl <- legend.ctrl <- FALSE
 	if(length(controls)==1 && !is.na(controls)) if(controls=="all") controls <- list("zoom", "scale", "layer", "legend")
 	if(!any(is.na(controls))) {
-    browser()
 		if(any(controls=="zoom")) zoom.ctrl <- TRUE
 		if(any(controls=="scale")) scale.ctrl <- TRUE
 		if(any(controls=="layer")) layer.ctrl <- TRUE
