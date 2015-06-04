@@ -1,13 +1,14 @@
 <%# 
     LAYER CONTROL
 -%>
-<%	if(length(base.map)>1 || (length(data)>1 && incl.data)) { -%>
-		
-<%		controls <- "null"
-		if(length(base.map)>1) controls <- "baseMaps"
-		if(length(data)>1 && incl.data) controls <- paste(controls, "layers", sep=", ")
+<%	if(length(base.map)>1 || (length(data)>1)) {
+		  controls <- "null"
+		  if(length(base.map)>1) controls <- "baseMaps"
+		  if(length(data)>1) controls <- paste(controls, "layers", sep=", ")
 -%>
 		
 		// layer control
-		L.control.layers(<%= controls %>).addTo(map);
+    if (lc != undefined) {
+		  L.control.layers(<%= controls %>).addTo(map);
+    };
 <%	} -%>

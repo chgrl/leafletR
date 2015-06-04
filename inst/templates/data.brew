@@ -4,7 +4,7 @@
 <%	if(is.na(center) && is.na(zoom)) { -%>
         var group = new L.featureGroup;
 <%	} -%>
-		function addDataToMap(data, style, layer) {
+		function addDataToMap(data, style, layer, lc) {
 <%	if(any(!is.na(style))) {
 		marker <- FALSE
 		if(any(class(style)=="list")) {
@@ -44,6 +44,9 @@
         	group.addLayer(layers[layer])
 			map.fitBounds(group.getBounds());
 <%	} -%>
+<%  if(layer.ctrl) { 
+      brew(system.file("templates/layer.brew", package = "leafletR")) 
+	} -%>
 		};
 		
 <%	for(n in 1:length(data)) {
@@ -63,6 +66,8 @@
 <%				if(length(obj)>1) warning("TopoJSON file contains more than one topology objects - only first object is used", call.=FALSE) -%>
 		dat<%= n %> = <%= paste(lns, collapse="\n\t\t") %>
 		addDataToMap(topojson.feature(dat<%= n %>, dat<%= n %>.objects.<%= obj[1] %>), style<%= n %>, "<%= layer.name %>")
+<%  		} else if(layer.ctrl & n == length(data)) { -%>
+    $.getJSON($("link[rel='dat<%= n %>']").attr("href"), function(x) {addDataToMap(x, style<%= n %>, "<%= layer.name %>", "add")});
 <%			} else { -%>
 		addDataToMap(<%= paste(lns, collapse="\n\t\t") %>, style<%= n %>, "<%= layer.name %>");
 <%			} -%>
@@ -71,7 +76,9 @@
 <%				obj <- getTopologies(json[[n]], FALSE) -%>
 <%				if(length(obj)>1) warning("TopoJSON file contains more than one topology objects - only first object is used", call.=FALSE) -%>
 		$.getJSON($("link[rel='dat<%= n %>']").attr("href"), function(x) {addDataToMap(topojson.feature(x, x.objects.<%= obj[1] %>), style<%= n %>, "<%= layer.name %>")});
-<%			} else { -%>
+<%			} else if(layer.ctrl & n == length(data)) { -%>
+    $.getJSON($("link[rel='dat<%= n %>']").attr("href"), function(x) {addDataToMap(x, style<%= n %>, "<%= layer.name %>", "add")});
+<%      } else { -%>
 		$.getJSON($("link[rel='dat<%= n %>']").attr("href"), function(x) {addDataToMap(x, style<%= n %>, "<%= layer.name %>")});
 <%			} -%>
 <%		} -%>
