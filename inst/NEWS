@@ -1,15 +1,38 @@
+leafletR 0.3-3 [2015-05-30]
+---------------------------
+
+* bug fix in leaflet: arguments "zoom" + "center" not working 
+  in case of unused "data" argument
+
+* bug fix in styleSingle: marker support
+
+* new in styleSingle: marker styling using maki markers; 
+  marker legend support
+
+* new in leaflet: maps without a base map 
+
+* new in toGeoJSON: line breaks replacement in data frames; 
+  factor-to-character conversion
+
+* new in styleGrad: argument "right" changed to "closure"; 
+  classInterval objects support ("breaks" argument);
+  findColours objects support ("style.val" argument)
+
+* removal of unnecessary CSS from resulting html
+
+
 leafletR 0.3-2 [2015-04-09]
 ---------------------------
 
 * bug fix in leaflet: base map mix-up
 
-* styleCat, styleGrad, toGeoJSON, error messages added
+* styleCat, styleGrad, toGeoJSON: error messages added
 
 * bug fixes internal templates: border color/fill color mix-up;
   invalid variable names with dot notation; fill=NA not 
   recognized in legend
 
-* new base maps added: CartoDB Positron/Dark matter"
+* new base maps added: CartoDB Positron/Dark matter
 
 * new in singleStyle: simple marker support
 
