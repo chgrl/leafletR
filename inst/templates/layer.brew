@@ -7,8 +7,8 @@
 		  if(length(data)>1) controls <- paste(controls, "layers", sep=", ")
 -%>
 		
-		// layer control
-    if (lc != undefined) {
-		  L.control.layers(<%= controls %>).addTo(map);
-    };
+			// layer control
+    	if (lc != undefined) {
+			  L.control.layers(<%= controls %>).addTo(map);
+    	};
 <%	} -%>

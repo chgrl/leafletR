@@ -1,8 +1,8 @@
 
 		// data layers
-        var layers = {};
+		var layers = {};
 <%	if(is.na(center) && is.na(zoom)) { -%>
-        var group = new L.featureGroup;
+		var group = new L.featureGroup;
 <%	} -%>
 		function addDataToMap(data, style, layer, lc) {
 <%	if(any(!is.na(style))) {
@@ -41,7 +41,7 @@
 <%	} -%>
 			layers[layer].addTo(map);	
 <%	if(is.na(center) && is.na(zoom)) { -%>
-        	group.addLayer(layers[layer])
+			group.addLayer(layers[layer])
 			map.fitBounds(group.getBounds());
 <%	} -%>
 <%  if(layer.ctrl) { 
