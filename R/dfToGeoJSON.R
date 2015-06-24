@@ -1,5 +1,20 @@
 dfToGeoJSON <-
 function(data, name, dest, lat.lon, overwrite) {
+	# check data
+	if(is(data, "tbl_df")) data <- as.data.frame(data)
+	
+	# assign and check lat/lon
+	if(is.null(lat.lon)) {
+		lat <- which(names(data)==intersect(names(data), c("lat", "Lat", "LAT", "latitude", "Latitude", "LATITUDE"))[1])
+		lon <- which(names(data)==intersect(names(data), c("lon", "Lon", "LON", "long", "Long", "LONG", "longitude", "Longitude", "LONGITUDE"))[1])
+		if(length(lat)==0 || length(lon)==0) {
+			lat.lon <- c(1,2)
+			message("Latitude and longitude not found - columns 1 (", names(data)[1], ") and 2 (", names(data)[2], ") taken instead")
+		} else {
+			lat.lon <- c(lat, lon)
+			message("Columns ", lat, " (", names(data)[lat], ") and ", lon, " (", names(data)[lon], ") detected as latitude and longitude")
+		}
+	}
 	if(length(lat.lon)!=2) stop("'lat.lon' must be a vector of two: c(latitude, longitude)")
 	if(any(!is.numeric(lat.lon))) {
 		if(!any(names(data)==lat.lon[1])) stop("Longitude column not found")
@@ -12,7 +27,7 @@ function(data, name, dest, lat.lon, overwrite) {
 	for(i in 1:ncol(data)) {
 		if(is(data[,i], "factor")) {
 			data[,i] <- as.character(data[,i])
-			message("Column '", names(data[i]), "' converted from factor to character type")
+			message("Column \'", names(data[i]), "\' converted from factor to character type")
 		}
 	}
 	

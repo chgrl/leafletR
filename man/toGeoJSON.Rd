@@ -9,14 +9,18 @@ toGeoJSON(data, name, dest, lat.lon, overwrite=TRUE)
 tg(data, name, dest, lat.lon, overwrite=TRUE)
 }
 \arguments{
-  \item{data}{Spatial data: \code{data.frame} with at least two columns, representing the point coordinates, \code{Spatial} object (\code{sp} package) or path to external spatial data file as string. See below for details.}
+  \item{data}{Spatial data: \code{data.frame} (or \code{dplyr:tbl_df}) with at least two columns, representing the point coordinates, \code{Spatial} object (\code{sp} package) or path to external spatial data file as string. See below for details.}
   \item{name}{Name of the resulting GeoJSON file, as string. Optional -- if missing, the name of the data frame or data file is used.}
   \item{dest}{Directory the file shall be saved to, as string. Optional -- if missing, the current working directory is used.}
-  \item{lat.lon}{For data frame conversion only. Names or indices of the columns in \code{data} containing the coordinates, as vector of two: \code{c(latitude, longitude)}. Optional -- if missing, the first two columns are used.}
+  \item{lat.lon}{For data frame conversion only. Names or indices of the columns in \code{data} containing the coordinates, as vector of two: \code{c(latitude, longitude)}. Optional -- if missing, \code{toGeoJSON} tries to detect them by name or takes the first two columns.}
   \item{overwrite}{\code{TRUE} (which is the default) overwrites existing files with the same name.}
 }
 \details{
-\code{toGeoJSON} can handle three types of spatial data: a simple \code{data.frame} containing point coordinates and optional data columns, \code{Spatial} objects and external spatial data files.
+\code{toGeoJSON} can handle three types of spatial data: a simple \code{data.frame}, \code{Spatial} objects and external spatial data files.
+
+\emph{\code{data.frame} objects}
+
+Point data might be available as simple \code{data.frame} or \code{tbl_df} (see \code{dplyr} package) objects. The \code{data.frame} must contain latitudes and longitudes in two separate columns and optionally may contain data columns.
 
 \emph{\code{Spatial} objects}
 
