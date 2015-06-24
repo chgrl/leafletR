@@ -5,8 +5,8 @@ function(data, name, dest, lat.lon, overwrite) {
 	
 	# assign and check lat/lon
 	if(is.null(lat.lon)) {
-		lat <- which(names(data)==intersect(names(data), c("lat", "Lat", "LAT", "latitude", "Latitude", "LATITUDE"))[1])
-		lon <- which(names(data)==intersect(names(data), c("lon", "Lon", "LON", "long", "Long", "LONG", "longitude", "Longitude", "LONGITUDE"))[1])
+		lat <- which(names(data)==intersect(names(data), c("y", "Y", "lat", "Lat", "LAT", "latitude", "Latitude", "LATITUDE"))[1])
+		lon <- which(names(data)==intersect(names(data), c("x", "X", "lon", "Lon", "LON", "long", "Long", "LONG", "longitude", "Longitude", "LONGITUDE"))[1])
 		if(length(lat)==0 || length(lon)==0) {
 			lat.lon <- c(1,2)
 			message("Latitude and longitude not found - columns 1 (", names(data)[1], ") and 2 (", names(data)[2], ") taken instead")
