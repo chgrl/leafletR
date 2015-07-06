@@ -7,14 +7,14 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, co
 	json <- list()
 	if(length(data)>1) for(n in 1:length(data)) {
 		if(!is.na(data[[n]])) {
-			json[[n]] <- jsonlite::fromJSON(data[[n]])
+			json[[n]] <- fromJSON(data[[n]])
 			if(is.null(json[[n]]$type)) stop("'data' requires GeoJSON or TopoJSON files")
 			if(tolower(json[[n]]$type)=="topology") topojson <- append(topojson, TRUE)
 			else topojson <- append(topojson, FALSE)
 		}
 	} else {
 		if(!is.na(data)) {
-			json[[1]] <- jsonlite::fromJSON(data)
+			json[[1]] <- fromJSON(data)
 			if(is.null(json[[1]]$type)) stop("'data' requires GeoJSON or TopoJSON files")
 			if(tolower(json[[1]]$type)=="topology") topojson <- TRUE
 			else topojson <- FALSE

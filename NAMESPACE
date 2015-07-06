@@ -20,10 +20,11 @@ export(
 )
 
 ## Imports
-import(
-  brew,
-  jsonlite
-)
+importFrom("brew", "brew")
+importFrom("grDevices", "col2rgb", "colors", "rgb")
+importFrom("jsonlite", "fromJSON")
+importFrom("methods", "is", "slot")
+importFrom("utils", "browseURL", "head", "tail")
 
 ## S3 methods
 S3method(print, leaflet)

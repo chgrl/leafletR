@@ -5,7 +5,7 @@ function(data, print=TRUE) {
 	if(is.character(data)) {
 		# check if file exists and convert JSON
 		if(!file.exists(data)) stop("Data file not found")
-		data <- jsonlite::fromJSON(data)
+		data <- fromJSON(data)
 		if(is.null(data$type)) stop("'data' requires TopoJSON file")
 		if(tolower(data$type)!="topology") stop("'data' requires TopoJSON file")
 	}
