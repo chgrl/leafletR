@@ -3,6 +3,8 @@
 An R package to create interactive web-maps based on the Leaflet JavaScript library
 
 [![Build Status](https://api.travis-ci.org/chgrl/leafletR.png)](https://travis-ci.org/chgrl/leafletR)
+R CMD check fails with: `Package suggested but not available: ‘rgdal’` 
+
 ![downloads](http://cranlogs.r-pkg.org/badges/grand-total/leafletR)
 
 Display your spatial data on interactive web-maps using the open-source JavaScript library https://github.com/Leaflet/Leaflet. The package provides basic web-mapping functionality to combine vector data files and online map tiles from different sources.
