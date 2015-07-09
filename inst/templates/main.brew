@@ -7,8 +7,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
 	<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
-<%	if(any(!is.na(data))) { -%>
-<%		if(!incl.data || layer.ctrl) -%>
+<%	if(any(!is.na(data))) {
+			if(!incl.data || layer.ctrl) -%>
 	<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 <%		if(any(topojson==TRUE)) -%>
 	<script src="http://d3js.org/topojson.v1.min.js"></script>
@@ -22,10 +22,12 @@
 		}
 		if(maki) -%>
 	<script src="https://rawgit.com/jseppi/Leaflet.MakiMarkers/master/Leaflet.MakiMarkers.js"></script>
-<%		for(n in 1:length(data)) { -%>
+<%		if(!incl.data) {
+				for(n in 1:length(data)) { -%>
 	<link rel="dat<%= n %>" type="application/json" href="<%= basename(data[[n]]) %>" />
-<%		} -%>
-<%	} -%>
+<%			}
+			}
+		} -%>
 <%	brew(system.file("templates/css.brew", package = "leafletR")) -%>
 </head>
 <body>
@@ -43,9 +45,7 @@
 		brew(system.file("templates/data.brew", package = "leafletR"))
 		# legend
 		if(legend.ctrl) if(!any(is.na(style))) brew(system.file("templates/legend.brew", package = "leafletR"))
-	}
-	
--%>
+	}	-%>
 	</script>
 </body>
 </html>
