@@ -4,6 +4,12 @@ r_github_packages:
   - jimhester/covr
 
 before_install:
+  - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
+  - chmod 755 ./travis-tool.sh
+  - chmod 755 ./travis-tool.sh
+  - sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
+  - sudo apt-get update -qq
+  - ./travis-tool.sh bootstrap
   - ./travis-tool.sh aptget_install gdal-bin
 
 after_success:
