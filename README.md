@@ -15,8 +15,10 @@ Feel free to flattr, if you like leafletR: <a href="https://flattr.com/submit/au
 
 #### Install from GitHub
 ```
-if(!require(devtools)) { install.packages('devtools'); require(devtools) }
-devtools::install_github('leafletR', 'chgrl')
+if(packageVersion("devtools") < 1.6) {
+  install.packages("devtools")
+}
+devtools::install_github("chgrl/leafletR")
 ```
 
 #### Make a map
