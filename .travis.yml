@@ -1,4 +1,4 @@
-language: r
+language: c
 sudo: required
 
 r_github_packages:
