@@ -3,9 +3,11 @@ language: r
 r_github_packages:
   - jimhester/covr
 
+before_install:
+  - ./travis-tool.sh aptget_install gdal-bin
+
 after_success:
   - Rscript -e 'library(covr);coveralls()'
 
 env:
   - warnings_are_errors: true
-  
