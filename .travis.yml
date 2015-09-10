@@ -1,19 +1,15 @@
 language: r
-sudo: required
+warnings_are_errors: true
+env:
+  global:
+    - NOT_CRAN=true
+before_install: echo "options(repos = c(CRAN='http://cran.rstudio.com'))" > ~/.Rprofile
 
-apt_packages:
-  - gdal-bin
-  - libgdal-dev
-  - libgdal1-dev
-  - netcdf-bin
-  - libproj-dev
-  - libgdal1h
+r_binary_packages:
+  - rgdal
 
 r_github_packages:
   - jimhester/covr
 
 after_success:
   - Rscript -e 'library(covr);coveralls()'
-
-env:
-  - warnings_are_errors: true
