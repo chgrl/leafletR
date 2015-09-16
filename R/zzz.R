@@ -99,8 +99,8 @@ function(pkg="leafletR") {
 
 ### short name wrapper functions
 
-cats <- function(prop, val, style.par, style.val, leg, ...) {
-	styleCat(prop, val, style.par, style.val, leg, ...)
+cats <- function(prop, val, style.val, leg, ...) {
+	styleCat(prop, val, style.val, leg, ...)
 }
 
 grads <- function(prop, breaks, closure="left", out=0, style.par, style.val, leg, ...) {

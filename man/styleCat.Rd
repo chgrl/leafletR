@@ -5,13 +5,12 @@
 \title{Categorized styling}
 \description{Creates a categorized style based on an attribute}
 \usage{
-styleCat(prop, val, style.par, style.val, leg, ...)
-cats(prop, val, style.par, style.val, leg, ...)
+styleCat(prop, val, style.val, leg, ...)
+cats(prop, val, style.val, leg, ...)
 }
 \arguments{
   \item{prop}{Property (attribute) of the data to be styled, as string.}
   \item{val}{A vector giving the data values to be used as categories.}
-  \item{style.par}{Styling parameter as string. One of \code{"col"} (categorized color) or \code{"rad"} (categorized radius). Categorized radius can only be applied to points.}
   \item{style.val}{Styling values, a vector of colors or radii applied to the categories given by \code{val}. See details for unspecified data values.}
   \item{leg}{Legend title as string. The line break sequence \code{\\n} may be used for line splitting.}
   \item{\dots}{Additional styling parameters, see \code{\link{styleSingle}} for details.}
