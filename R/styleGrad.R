@@ -91,6 +91,7 @@ function(prop, breaks, closure="left", out=0, style.par="col", style.val, leg, .
 	attr(grad.style, "closure") <- closure
 	attr(grad.style, "out") <- out
 	attr(grad.style, "style.par") <- style.par
+	attr(grad.style, "style.val") <- rev(style.val)
 	if(!missing(leg)) attr(grad.style, "leg") <- leg
 	class(grad.style) <- c("leafletr.style", "graduated.style")
 	return(grad.style)

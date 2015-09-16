@@ -42,12 +42,12 @@
 			background: rgba(255,255,255,0.8);
 			box-shadow: 0 0 15px rgba(0,0,0,0.2);
 			border-radius: 5px;
-			line-height: 18px;
+			line-height: 17px;
 			color: #555;
 		}
 		.legend i {
-			width: 18px;
-			height: 18px;
+			width: 17px;
+			height: 17px;
 			float: left;
 			margin-right: 8px;
 		}
@@ -105,8 +105,7 @@
 			sty <- NULL
 			if(all(class(style)=="list")) {
 				for(i in 1:length(style)) sty <- append(sty, attr(style[[i]], "style.type"))
-				if(all(sty=="single")) {
--%>
+				if(all(sty=="single")) { -%>
 		.crcl {
 			fill: #0033ff;
 			fill-opacity: 0.5;
@@ -118,8 +117,7 @@
 <%				}
 			} else if(attr(style, "style.type")=="graduated" || attr(style, "style.type")=="categorized") {
 				if(attr(style, "style.par")=="col") { 
-					opa <- style[[2]][grep("fillOpacity", style[[2]])]
--%>
+					opa <- style[[2]][grep("fillOpacity", style[[2]])] -%>
 		.legend i {
 			opacity: <%= as.numeric(gsub(".+\\s+", "", opa)) %>;
 		}
@@ -128,8 +126,7 @@
 					opa <- style[[2]][grep("fillOpacity", style[[2]])]
 					brd <- style[[2]][grep("color", style[[2]])]
 					wght <- style[[2]][grep("weight", style[[2]])]
-					opa <- style[[2]][grep("opacity", style[[2]])]
--%>
+					opa <- style[[2]][grep("opacity", style[[2]])] -%>
 		.crcl {
 			fill: <%= substr(clr, nchar(clr)-7, nchar(clr)-1) %>;
 			fill-opacity: <%= as.numeric(gsub(".+\\s+", "", opa)) %>;
@@ -137,9 +134,14 @@
 			stroke-width: <%= as.numeric(gsub(".+\\s+", "", wght)) %>;
 			stroke-opacity: <%= as.numeric(gsub(".+\\s+", "", opa)) %>;
 		}
+		.crclrad {
+			fill: none;
+			stroke: #222222;
+			stroke-opacity: 0.9;
+			stroke-width: 1;
+		}
 <%				}
 			}
 		}
-	}
--%>
+	} -%>
 	</style>

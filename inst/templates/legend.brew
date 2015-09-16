@@ -1,26 +1,41 @@
 
 		// legend
-<%#
- 
-    MULTI SINGLE STYLE
-
--%>
-<%	if(all(class(style)=="list") && !is(style, "leafletr.style")) {
-		sty <- NULL
-		for(i in 1:length(style)) sty <- append(sty, attr(style[[i]], "style.type"))
-		if(all(sty=="single")) { 
--%>
-		var legend = L.control({position: 'bottomright'});
-		legend.onAdd = function(map) {
-			var div = L.DomUtil.create('div', 'legend');
-<%			if(!is.null(attr(style, "leg"))) { %>
-			div.innerHTML += '<%= attr(style, "leg") %><br>'
-<%			}
-		# rearrange layers for legend (point > line > polygon)
-		n.dat <- 0
-			dat.ra <- style.ra <- style.name<- list()
+<%
+	
+	### INIT
+	
+	# single or multi layer
+	if(is(style, "leafletr.style")) {
+		single.layer <- TRUE
+	} else {
+		single.layer <- FALSE
+	}
+	
+	# style type(s)
+	if(single.layer) {
+		style.type <- class(style)[2]
+	} else {
+		style.type <- NULL
+		for(i in 1:length(style)) style.type <- append(style.type, class(style[[i]])[2])
+	}
+	
+	# rearrange layers for legend by style type (single > graduated > categorized)
+	n.dat <- n.single <- n.grad <- n.cat <- 0
+	if(!single.layer) {
+		dat.ra <- style.ra <- style.name <- list()
+		for(i in 1:length(data)) {
+			if(style.type[[i]]=="single.style") {
+				dat.ra[[n.dat+1]] <- data[[i]]
+				style.ra[[n.dat+1]] <- style[[i]]
+				style.name[[n.dat+1]] <- paste0("style", i)
+				if(!is.null(names(data)[i])) names(dat.ra)[n.dat+1] <- names(data)[i]
+				n.dat <- n.dat+1
+			}
+		}
+		n.single <- n.dat
+		if(n.dat<length(data)) {
 			for(i in 1:length(data)) {
-				if(getFeatureType(json[[i]])=="point") {
+				if(style.type[[i]]=="graduated.style") {
 					dat.ra[[n.dat+1]] <- data[[i]]
 					style.ra[[n.dat+1]] <- style[[i]]
 					style.name[[n.dat+1]] <- paste0("style", i)
@@ -28,85 +43,133 @@
 					n.dat <- n.dat+1
 				}
 			}
-			if(n.dat<length(data)) {
-				for(i in 1:length(data)) {
-					if(getFeatureType(json[[i]])=="line") {
-						dat.ra[[n.dat+1]] <- data[[i]]
-						style.ra[[n.dat+1]] <- style[[i]]
-						style.name[[n.dat+1]] <- paste0("style", i)
-						if(!is.null(names(data)[i])) names(dat.ra)[n.dat+1] <- names(data)[i]
-						n.dat <- n.dat+1
-					}
+		}
+		n.grad <- n.dat - n.single
+		if(n.dat<length(data)) {
+			for(i in 1:length(data)) {
+				if(style.type[[i]]=="categorized.style") {
+					dat.ra[[n.dat+1]] <- data[[i]]
+					style.ra[[n.dat+1]] <- style[[i]]
+					style.name[[n.dat+1]] <- paste0("style", i)
+					if(!is.null(names(data)[i])) names(dat.ra)[n.dat+1] <- names(data)[i]
+					n.dat <- n.dat+1
 				}
 			}
-			if(n.dat<length(data)) {
-				for(i in 1:length(data)) {
-					if(getFeatureType(json[[i]])=="polygon") {
-						dat.ra[[n.dat+1]] <- data[[i]]
-						style.ra[[n.dat+1]] <- style[[i]]
-						style.name[[n.dat+1]] <- paste0("style", i)
-						if(!is.null(names(data)[i])) names(dat.ra)[n.dat+1] <- names(data)[i]
-						n.dat <- n.dat+1
-					}
-				}
-			}
-			
-			# get max column width/height
-			max.width <- 24
-			max.lwd <- 2
-			for(i in 1:length(style.ra)) {
-				rad <- style.ra[[i]][grep("rad", style.ra[[i]])]
-				if(length(rad)==0) rad <- "radius: 10"
-				lwd <- style.ra[[i]][grep("weight", style.ra[[i]])]
-				if(length(lwd)==0) lwd <- "weight: 2"
-				rad <- substr(rad, 9, nchar(rad))
-				lwd <- substr(lwd, 9, nchar(lwd))
-				width <- as.numeric(rad)*2+as.numeric(lwd)
-				if(getFeatureType(dat.ra[[i]])=="polygon") width <- as.numeric(lwd)*2
-				if(width>max.width) max.width <- width
-				
-				lwd <- style.ra[[i]][grep("weight", style.ra[[i]])]
-				if(length(lwd)==0) lwd <- "weight: 5"
-				lwd <- substr(lwd, 9, nchar(lwd))
-				l <- as.numeric(lwd)
-				if(l>max.lwd) max.lwd <- l
-				
-				if(!is.null(attr(style.ra[[i]], "marker"))) {
-					sz <- tail(strsplit(style.ra[[i]], "\"", fixed=TRUE)[[1]], 1)
-					if(sz=="s") mw <- 27
-					else if(sz=="m") mw <- 32
-					else mw <- 38
-					if(mw>max.width) max.width <- mw
-				}
-			}
-			# write legend
-			for(i in 1:length(style.ra)) { %>
-			div.innerHTML +=
-<%				ft <- getFeatureType(dat.ra[[i]])
-				ttl <- names(dat.ra)[i]
-				if(!is.null(ttl)) ttl <- gsub("[_.]", " ", ttl)
-				if(is.null(ttl)) ttl <- gsub("_", " ", paste(head(strsplit(basename(dat.ra[[i]]), "[.]")[[1]], -1), collapse="_"))
-				else if(ttl=="") ttl <- gsub("_", " ", paste(head(strsplit(basename(dat.ra[[i]]), "[.]")[[1]], -1), collapse="_"))
+		}
+	} else {
+		n.dat <- 1
+		if(style.type=="single.style") n.single <- 1
+		else if(style.type=="graduated.style") n.grad <- 1
+		else if(style.type=="categorized.style") n.cat <- 1
+		dat.ra <- list(data)
+		style.ra <- list(style)
+		style.name <- list("style1")
+	}
+	n.cat <- n.dat - n.single - n.grad
+	
+	# initialise legend -%>
+		var legend = L.control({position: 'bottomright'});
+		legend.onAdd = function(map) {
+			var div = L.DomUtil.create('div', 'legend');
+<%
 
-				if(!is.null(attr(style.ra[[i]], "marker"))) { %>
-					'<table><tr><td class="mrk'+<%= style.name[[i]] %>.options.size+'" style="width: <%= max.width %>px; background: transparent url('+<%= style.name[[i]] %>.options.iconUrl+') top center no-repeat;"></td><td class="value"><%= ttl %></td></tr></table>'
-<%				} else {
-					
-				fill <- style.ra[[i]][grep("fill", style.ra[[i]])]
+	### SINGLE STYLE
+	
+	if(n.single > 0) {
+		
+		# rearrange single style layers for legend by feature type (point > line > polygon)
+		n.dat <- 0
+		dat.ra.ft <- style.ra.ft <- style.name.ra.ft<- list()
+		for(i in 1:n.single) {
+			if(getFeatureType(json[[i]])=="point") {
+				dat.ra.ft[[n.dat+1]] <- dat.ra[[i]]
+				style.ra.ft[[n.dat+1]] <- style.ra[[i]]
+				style.name.ra.ft[[n.dat+1]] <- style.name[[i]]
+				if(!is.null(names(dat.ra)[i])) names(dat.ra.ft)[n.dat+1] <- names(dat.ra)[i]
+				n.dat <- n.dat+1
+			}
+		}
+		if(n.dat<n.single) {
+			for(i in 1:n.single) {
+				if(getFeatureType(json[[i]])=="line") {
+					dat.ra.ft[[n.dat+1]] <- dat.ra[[i]]
+					style.ra.ft[[n.dat+1]] <- style.ra[[i]]
+					style.name.ra.ft[[n.dat+1]] <- style.name[[i]]
+					if(!is.null(names(dat.ra)[i])) names(dat.ra.ft)[n.dat+1] <- names(dat.ra)[i]
+					n.dat <- n.dat+1
+				}
+			}
+		}
+		if(n.dat<n.single) {
+			for(i in 1:n.single) {
+				if(getFeatureType(json[[i]])=="polygon") {
+					dat.ra.ft[[n.dat+1]] <- dat.ra[[i]]
+					style.ra.ft[[n.dat+1]] <- style.ra[[i]]
+					style.name.ra.ft[[n.dat+1]] <- style.name[[i]]
+					if(!is.null(names(dat.ra)[i])) names(dat.ra.ft)[n.dat+1] <- names(dat.ra)[i]
+					n.dat <- n.dat+1
+				}
+			}
+		}
+		
+		# get max column width/height
+		max.width <- 24
+		max.lwd <- 2
+		for(i in 1:length(style.ra.ft)) {
+			rad <- style.ra.ft[[i]][grep("rad", style.ra.ft[[i]])]
+			if(length(rad)==0) rad <- "radius: 10"
+			lwd <- style.ra.ft[[i]][grep("weight", style.ra.ft[[i]])]
+			if(length(lwd)==0) lwd <- "weight: 2"
+			rad <- substr(rad, 9, nchar(rad))
+			lwd <- substr(lwd, 9, nchar(lwd))
+			width <- as.numeric(rad)*2+as.numeric(lwd)
+			if(getFeatureType(dat.ra.ft[[i]])=="polygon") width <- as.numeric(lwd)*2
+			if(width>max.width) max.width <- width
+			
+			lwd <- style.ra.ft[[i]][grep("weight", style.ra.ft[[i]])]
+			if(length(lwd)==0) lwd <- "weight: 5"
+			lwd <- substr(lwd, 9, nchar(lwd))
+			l <- as.numeric(lwd)
+			if(l>max.lwd) max.lwd <- l
+			
+			if(!is.null(attr(style.ra.ft[[i]], "marker"))) {
+				sz <- tail(strsplit(style.ra.ft[[i]], "\"", fixed=TRUE)[[1]], 1)
+				if(sz=="s") mw <- 27
+				else if(sz=="m") mw <- 32
+				else mw <- 38
+				if(mw>max.width) max.width <- mw
+			}
+		} 
+		
+		# create legend
+		leg.code <- "\'<table>"
+
+		for(i in 1:length(style.ra.ft)) {
+			ttl <- names(dat.ra.ft)[i]
+			if(!is.null(ttl)) ttl <- gsub("[_.]", " ", ttl)
+			if(is.null(ttl)) ttl <- gsub("_", " ", paste(head(strsplit(basename(dat.ra.ft[[i]]), "[.]")[[1]], -1), collapse="_"))
+			else if(ttl=="") ttl <- gsub("_", " ", paste(head(strsplit(basename(dat.ra.ft[[i]]), "[.]")[[1]], -1), collapse="_"))
+			
+			if(!is.null(attr(style.ra.ft[[i]], "marker"))) {
+				leg.code <- paste0(leg.code, "<tr><td class=\"mrk\'+", style.name.ra.ft[[i]], ".options.size+\'\" style=\"width: ", max.width, "px; background: transparent url('+", style.name.ra.ft[[i]], ".options.iconUrl+\') top center no-repeat;\"></td><td class=\"value\">", ttl, "</td></tr>")
+			} else {
+				fill <- style.ra.ft[[i]][grep("fill", style.ra.ft[[i]])]
 				if(length(fill)==0) fill <- "fill: true"
-				fill.col <- style.ra[[i]][grep("fillColor", style.ra[[i]])]
-				clr <- style.ra[[i]][grep("color", style.ra[[i]])]
+				fill.col <- style.ra.ft[[i]][grep("fillColor", style.ra.ft[[i]])]
+				clr <- style.ra.ft[[i]][grep("color", style.ra.ft[[i]])]
 				if(length(fill.col)==0) fill.col <- clr
 				if(length(fill.col)==0) fill.col <- "color: \"#0033ff\""
 				if(length(clr)==0) clr <- "color: \"#0033ff\""
-				rad <- style.ra[[i]][grep("rad", style.ra[[i]])]
+				rad <- style.ra.ft[[i]][grep("rad", style.ra.ft[[i]])]
 				if(length(rad)==0) rad <- "radius: 10"
-				fill.opa <- style.ra[[i]][grep("fillOpacity", style.ra[[i]])]
+				fill.opa <- style.ra.ft[[i]][grep("fillOpacity", style.ra.ft[[i]])]
 				if(length(fill.opa)==0) fill.opa <- "fillOpacity: 0.2"
-				opa <- style.ra[[i]][grep("opacity", style.ra[[i]])]
+				opa <- style.ra.ft[[i]][grep("opacity", style.ra.ft[[i]])]
 				if(length(opa)==0) opa <- "opacity: 0.5"
-				lwd <- style.ra[[i]][grep("weight", style.ra[[i]])]
-									
+				lwd <- style.ra.ft[[i]][grep("weight", style.ra.ft[[i]])]
+				
+				ft <- getFeatureType(dat.ra.ft[[i]])
+				
 				if(ft=="point") {
 					rd <- substr(rad, 9, nchar(rad))
 					if(length(lwd)==0) lwd <- "weight: 2"
@@ -114,206 +177,178 @@
 					if(fill=="fill: false") fill.col <- "none"
 					else fill.col <- substr(fill.col, nchar(fill.col)-7, nchar(fill.col)-1)
 					st <- paste0("fill: ", fill.col, "; stroke: ", substr(clr, nchar(clr)-7, nchar(clr)-1), "; fill-opacity: ", substr(fill.opa, 14, nchar(fill.opa)), "; stroke-opacity: ", substr(opa, 10, nchar(opa)), "; stroke-width: ", lwd, ";")
--%>
-					'<table><tr><td class="shape"><svg style="width: <%= max.width %>px; height: <%= as.numeric(rd)*2+as.numeric(lwd) %>px; xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" style="<%= st %>" cx="<%= max.width/2 %>" cy="<%= (as.numeric(rd)*2+as.numeric(lwd))/2 %>" r="<%= rd %>" /></svg></td><td class="value"><%= ttl %></td></tr></table>'					
-<%				} else if(ft=="line") {
+					leg.code <- paste0(leg.code, "<tr><td class=\"shape\"><svg style=\"width: ", max.width, "px; height: ", as.numeric(rd)*2+as.numeric(lwd), "px; xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\"><circle class=\"crcl\" style=\"", st, "\" cx=\"", max.width/2, "\" cy=\"", (as.numeric(rd)*2+as.numeric(lwd))/2, "\" r=\"", rd, "\" /></svg></td><td class=\"value\">", ttl, "</td></tr>")
+				
+				} else if(ft=="line") {
 					if(length(lwd)==0) lwd <- "weight: 5"
 					lwd <- substr(lwd, 9, nchar(lwd))
 					st <- paste0("stroke: ", substr(clr, nchar(clr)-7, nchar(clr)-1), "; stroke-opacity: ", substr(opa, 10, nchar(opa)), "; stroke-width: ", lwd, ";")
 					if(as.numeric(lwd)<18) hght <- 18
-					else hght <- as.numeric(lwd) 
--%>				
-					'<table><tr><td class="shape"><svg style="width:<%= max.width %>px; height:<%= hght %>px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><line class="ln" style="<%= st %>" x1="<%= max.lwd+1-(max.lwd-as.numeric(lwd)/2) %>" y1="<%= hght/2 %>" x2="<%= max.width-max.lwd-1+(max.lwd-as.numeric(lwd)/2) %>" y2="<%= hght/2 %>" /></svg></td><td class="value"><%= ttl %></td></tr></table>'				
-<%				} else if(ft=="polygon") {
+					else hght <- as.numeric(lwd)
+					leg.code <- paste0(leg.code, "<tr><td class=\"shape\"><svg style=\"width: ", max.width, "px; height: ", hght, "px;\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\"><line class=\"ln\" style=\"", st, "\" x1=\"", max.lwd+1-(max.lwd-as.numeric(lwd)/2), "\" y1=\"", hght/2, "\" x2=\"", max.width-max.lwd-1+(max.lwd-as.numeric(lwd)/2), "\" y2=\"", hght/2, "\" /></svg></td><td class=\"value\">", ttl, "</td></tr>")
+				
+				} else if(ft=="polygon") {
 					if(length(lwd)==0) lwd <- "weight: 5"
 					lwd <- substr(lwd, 9, nchar(lwd))
 					if(fill=="fill: false") fill.col <- "none"
 					else fill.col <- substr(fill.col, nchar(fill.col)-7, nchar(fill.col)-1)
 					st <- paste0("fill: ", fill.col, "; stroke: ", substr(clr, nchar(clr)-7, nchar(clr)-1), "; fill-opacity: ", substr(fill.opa, 14, nchar(fill.opa)), "; stroke-opacity: ", substr(opa, 10, nchar(opa)), "; stroke-width: ", lwd, ";")
 					if(as.numeric(lwd)<11) hght <- 22
-					else hght <- as.numeric(lwd)*2 
--%>
-					'<table><tr><td class="shape"><svg style="width:<%= max.width %>px; height:<%= hght %>px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><polygon class="plgn" style="<%= st %>" points="<%= max.lwd+1-(max.lwd-as.numeric(lwd)/2) %>, <%= as.numeric(lwd)/2 %> <%= max.width-max.lwd-1+(max.lwd-as.numeric(lwd)/2) %>, <%= hght/2 %> <%= max.width-max.lwd-1+(max.lwd-as.numeric(lwd)/2) %>, <%= hght-as.numeric(lwd)/2 %> <%= max.lwd+1-(max.lwd-as.numeric(lwd)/2) %>, <%= hght-as.numeric(lwd)/2 %>" /></svg></td><td class="value"><%= ttl %></td></tr></table>'
-<%				}
+					else hght <- as.numeric(lwd)*2
+					leg.code <- paste0(leg.code, "<tr><td class=\"shape\"><svg style=\"width: ", max.width, "px; height: ", hght, "px;\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\"><polygon class=\"plgn\" style=\"", st, "\" points=\"", max.lwd+1-(max.lwd-as.numeric(lwd)/2), ", ", as.numeric(lwd)/2, " ", max.width-max.lwd-1+(max.lwd-as.numeric(lwd)/2), ", ", hght/2, " ", max.width-max.lwd-1+(max.lwd-as.numeric(lwd)/2), ", ", hght-as.numeric(lwd)/2, " ", max.lwd+1-(max.lwd-as.numeric(lwd)/2), ", ", hght-as.numeric(lwd)/2, "\" /></svg></td><td class=\"value\">", ttl, "</td></tr>")
 				}
-			} -%>
-			return div;
-		};
-		legend.addTo(map);
-<%		} %>
-<%#
- 
-    GRADUATED OR CATEGORIZED STYLE
+			}
+		}
+		if(length(data) > n.single) leg.code <- paste0(leg.code, "</table><br>\'") 
+		else leg.code <- paste0(leg.code, "</table>\'") -%>
+			div.innerHTML += <%= leg.code %>
+<%
+	}
 
+	### GRADUATED STYLE
+		
+	if(n.grad > 0) {
+		for(n in (n.single + 1):(n.single + n.grad)) {-%>
+			var labels<%= n %> = [];
+			var grades<%= n %> = [<%= paste(attr(style.ra[[n]], "breaks"), collapse=", ") %>];
+<%		if(!is.null(attr(style.ra[[n]], "leg"))) { -%>
+			div.innerHTML += '<%= attr(style.ra[[n]], "leg") %><br>'
+<%		}
+		
+	## GRADUATED COLOR STYLE
+		
+			if(attr(style.ra[[n]], "style.par")=="col") {
+				if(attr(style.ra[[n]], "out")==0) { # left and right closed 
 -%>
-<%	} else if(is(style, "leafletr.style")) { -%>
-<%#
- 
-    GRADUATED STYLE
-
+			for (var i = 0; i < grades<%= n %>.length-1; i++) { 
+				div.innerHTML +=
+<% 				if(attr(style.ra[[n]], "closure")=="left") {%>'<i style="background:' + getValue<%= substr(style.name[[n]], 6, nchar(style.name[[n]])) %>(grades<%= n %>[i]) + '"></i> ' +
+<% 				} else { %>'<i style="background:' + getValue<%= substr(style.name[[n]], 6, nchar(style.name[[n]])) %>(grades<%= n %>[i]+(grades<%= n %>[1]-grades<%= n %>[0])*0.01) + '"></i> ' + <% } -%>
+					grades<%= n %>[i] + '&ndash;' + grades<%= n %>[i + 1] + '<br>';
+			}
+<%			} else if(attr(style.ra[[n]], "out")==1) { # left closed and right open 
 -%>
-<%		if(attr(style, "style.type")=="graduated") {
+			for (var i = 0; i < grades<%= n %>.length; i++) {
+				div.innerHTML +=
+<% 				if(attr(style.ra[[n]], "closure")=="left") { -%>
+					'<i style="background:' + getValue<%= substr(style.name[[n]], 6, nchar(style.name[[n]])) %>(grades<%= n %>[i]) + '"></i> ' +
+					(grades<%= n %>[i + 1] ? grades<%= n %>[i] + '&ndash;' + grades<%= n %>[i + 1] + '<br>' : '&ge;' + grades<%= n %>[i]);
+<%				} else { -%>
+					'<i style="background:' + getValue<%= substr(style.name[[n]], 6, nchar(style.name[[n]])) %>(grades<%= n %>[i]+(grades<%= n %>[1]-grades<%= n %>[0])*0.01) + '"></i> ' +
+					(grades<%= n %>[i + 1] ? grades<%= n %>[i] + '&ndash;' + grades<%= n %>[i + 1] + '<br>' : '&gt;' + grades<%= n %>[i]);
+<%				} -%>
+			}
+<%			} else if(attr(style.ra[[n]], "out")==2) { # left open and right closed 
 -%>
-				var legend = L.control({position: 'bottomright'});
-				legend.onAdd = function(map) {
-					var div = L.DomUtil.create('div', 'legend');
-				    var labels = [];
-				    var grades = [<%= paste(attr(style, "breaks"), collapse=", ") %>];
-<%			if(!is.null(attr(style, "leg"))) { %>
-					div.innerHTML += '<%= attr(style, "leg") %><br>'
+			div.innerHTML +=
+<%				if(attr(style.ra[[n]], "closure")=="left") { %>
+				'<i style="background:' + getValue<%= substr(style.name[[n]], 6, nchar(style.name[[n]])) %>(grades<%= n %>[0]-(grades<%= n %>[1]-grades<%= n %>[0])*0.01) + '"></i> &lt;' + grades<%= n %>[0] + '<br>';
+<%				} else { %>
+				'<i style="background:' + getValue<%= substr(style.name[[n]], 6, nchar(style.name[[n]])) %>(grades<%= n %>[0]-(grades<%= n %>[1]-grades<%= n %>[0])*0.01) + '"></i> &le;' + grades<%= n %>[0] + '<br>';
+<%				} %>
+			for (var i = 0; i < grades<%= n %>.length-1; i++) {
+				div.innerHTML +=
+<%				if(attr(style.ra[[n]], "closure")=="left") { %>
+					'<i style="background:' + getValue<%= substr(style.name[[n]], 6, nchar(style.name[[n]])) %>(grades<%= n %>[i]) + '"></i> ' +
+<%				} else { %>
+					'<i style="background:' + getValue<%= substr(style.name[[n]], 6, nchar(style.name[[n]])) %>(grades<%= n %>[i]+(grades<%= n %>[1]-grades<%= n %>[0])*0.01) + '"></i> ' + 
+<%				} %>
+					(i<grades<%= n %>.length-1 ? grades<%= n %>[i] + '&ndash;' + grades<%= n %>[i+1] + '<br>' : grades<%= n %>[i] + '&ndash;' + grades<%= n %>[i+1]);
+				}
+<%			} else { # left and right open 
+-%>
+			div.innerHTML +=
+<%				if(attr(style.ra[[n]], "closure")=="left") { %>
+				'<i style="background:' + getValue<%= substr(style.name[[n]], 6, nchar(style.name[[n]])) %>(grades<%= n %>[0]-(grades<%= n %>[1]-grades<%= n %>[0])*0.01) + '"></i> &lt;' + grades<%= n %>[0] + '<br>';
+<%				} else { %>
+				'<i style="background:' + getValue<%= substr(style.name[[n]], 6, nchar(style.name[[n]])) %>(grades<%= n %>[0]-(grades<%= n %>[1]-grades<%= n %>[0])*0.01) + '"></i> &le;' + grades<%= n %>[0] + '<br>'; 
+<%				} %>
+			for (var i = 0; i < grades<%= n %>.length; i++) {
+				div.innerHTML +=
+<%				if(attr(style.ra[[n]], "closure")=="left") { -%>
+					'<i style="background:' + getValue<%= substr(style.name[[n]], 6, nchar(style.name[[n]])) %>(grades<%= n %>[i]) + '"></i> ' +
+					(i<grades<%= n %>.length-1 ? grades<%= n %>[i] + '&ndash;' + grades<%= n %>[i+1] + '<br>' : '&ge;' + grades<%= n %>[i]);
+<%				} else { -%>
+					'<i style="background:' + getValue<%= substr(style.name[[n]], 6, nchar(style.name[[n]])) %>(grades<%= n %>[i]+(grades<%= n %>[1]-grades<%= n %>[0])*0.01) + '"></i> ' +
+					(i<grades<%= n %>.length-1 ? grades<%= n %>[i] + '&ndash;' + grades<%= n %>[i+1] + '<br>' : '&gt;' + grades<%= n %>[i]);
+<%				} -%>
+			}	
 <%			}
-			if(attr(style, "style.par")=="col") { # color scale		
-				if(attr(style, "out")==0) { # left and right closed 
--%>
-					for (var i = 0; i < grades.length-1; i++) { 
-						div.innerHTML +=
-						        <% if(attr(style, "closure")=="left") {%>'<i style="background:' + getValue(grades[i]) + '"></i> ' +
-						        <% } else { %>'<i style="background:' + getValue(grades[i]+(grades[1]-grades[0])*0.01) + '"></i> ' + <% } -%>
-								grades[i] + '&ndash;' + grades[i + 1] + '<br>';
-					}
 					
-<%				} else if(attr(style, "out")==1) { # left closed and right open 
--%>
-					for (var i = 0; i < grades.length; i++) {
-						div.innerHTML +=
-<%					if(attr(style, "closure")=="left") { -%>
-							'<i style="background:' + getValue(grades[i]) + '"></i> ' +
-						    (grades[i + 1] ? grades[i] + '&ndash;' + grades[i + 1] + '<br>' : '&ge;' + grades[i]);
-<%					} else { -%>
-						    '<i style="background:' + getValue(grades[i]+(grades[1]-grades[0])*0.01) + '"></i> ' +
-						    (grades[i + 1] ? grades[i] + '&ndash;' + grades[i + 1] + '<br>' : '&gt;' + grades[i]);
-<%					} -%>
-					}
-<%				} else if(attr(style, "out")==2) { # left open and right closed 
--%>
-					div.innerHTML +=
-<%					if(attr(style, "closure")=="left") { %>
-						'<i style="background:' + getValue(grades[0]-(grades[1]-grades[0])*0.01) + '"></i> &lt;' + grades[0] + '<br>';
-<%					} else { %>
-						'<i style="background:' + getValue(grades[0]-(grades[1]-grades[0])*0.01) + '"></i> &le;' + grades[0] + '<br>';
-<%					} %>
-					for (var i = 0; i < grades.length-1; i++) {
-						div.innerHTML +=
-<%					if(attr(style, "closure")=="left") { %>
-							'<i style="background:' + getValue(grades[i]) + '"></i> ' +
-<%					}else { %>
-							'<i style="background:' + getValue(grades[i]+(grades[1]-grades[0])*0.01) + '"></i> ' + 
-<%					} %>
-							(i<grades.length-1 ? grades[i] + '&ndash;' + grades[i+1] + '<br>' : grades[i] + '&ndash;' + grades[i+1]);
-					}
-<%				} else { # left and right open 
--%>
-					div.innerHTML +=
-<%					if(attr(style, "closure")=="left") { %>
-						'<i style="background:' + getValue(grades[0]-(grades[1]-grades[0])*0.01) + '"></i> &lt;' + grades[0] + '<br>';
-<%					} else { %>
-						'<i style="background:' + getValue(grades[0]-(grades[1]-grades[0])*0.01) + '"></i> &le;' + grades[0] + '<br>'; 
-<%					} %>
-					for (var i = 0; i < grades.length; i++) {
-						div.innerHTML +=
-<%					if(attr(style, "closure")=="left") { -%>
-						    '<i style="background:' + getValue(grades[i]) + '"></i> ' +
-						    (i<grades.length-1 ? grades[i] + '&ndash;' + grades[i+1] + '<br>' : '&ge;' + grades[i]);
-<%					} else { -%>
-						    '<i style="background:' + getValue(grades[i]+(grades[1]-grades[0])*0.01) + '"></i> ' +
-							(i<grades.length-1 ? grades[i] + '&ndash;' + grades[i+1] + '<br>' : '&gt;' + grades[i]);
-<%					} -%>
-					}	
-			//return div;
-			//};
-<%				} # end out
-			} else if(attr(style, "style.par")=="rad") { # radius scale 
-				wght <- style[[2]][grep("weight", style[[2]])]
-				wght <- as.numeric(gsub(".+\\s+", "", wght))*2
-				if(length(wght)==0) wght <- 4
-				if(wght==0) {
-					xy <- wght+1
-					cont <- wght+1
-				} else if(wght<=1) {
-					xy <- wght+2
-					cont <- wght+2
-				} else if(wght<=3) {
-					xy <- wght
-					cont <- wght+2
-				} else if(wght<=8) {
-					xy <- wght-1
-					cont <- wght+2
-				} else {
-					xy <- wght-3
-					cont <- wght+3
+	## GRADUATED RADIUS STYLE
+			
+			} else if(attr(style.ra[[n]], "style.par")=="rad") { # radius scale
+				# circles
+				rad <- attr(style.ra[[n]], "style.val")
+				rad.max <- max(rad)
+				val <- rev(attr(style.ra[[n]], "breaks"))
+				leg.code <- paste0("\'<table style=\"border: none;\"><tr><td class=\"circle\" style=\"width: ", rad.max*2+2, "px;\"><svg style=\"width: ", rad.max*2+2, "px; height: ", rad.max*2+2, "px;\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">")
+				for(r in 1:length(rad)) {
+					leg.code <- paste0(leg.code, "<circle class=\"crclrad\" cx=\"", rad.max+1, "\" cy=\"", rad.max*2-rad[r]+1, "\" r=\"", rad[r], "\" />")
 				}
-				if(attr(style, "out")==0) { # left and right closed
--%>
-			for (var i = 0; i < grades.length-1; i++) {
-				div.innerHTML +=
-					'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-2])*2+<%= cont %>) + 'px;"><svg style="width: ' + (getValue(grades[i])*2+<%= cont %>) + 'px; height: ' + (getValue(grades[i])*2+<%= cont %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[i])+<%= xy %>) + '" cy="' + (getValue(grades[i])+<%= xy %>) + '" r="' + getValue(grades[i]) + '" /></svg></td><td class="value">' + grades[i] + '&ndash;' + grades[i+1] + '</td></tr></table>'
-			}
-<%				} else if(attr(style, "out")==1) { # left closed and right open
-					if(attr(style, "closure")=="left") { -%>
-			for (var i = 0; i < grades.length-1; i++) {
-				div.innerHTML +=
-					'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1])*2+<%= cont %>) + 'px;"><svg style="width: ' + (getValue(grades[i])*2+<%= cont %>) + 'px; height: ' + (getValue(grades[i])*2+<%= cont %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[i])+<%= xy %>) + '" cy="' + (getValue(grades[i])+<%= xy %>) + '" r="' + getValue(grades[i]) + '" /></svg></td><td class="value">' + grades[i] + '&ndash;' + grades[i+1] + '</td></tr></table>'
-			}
-			div.innerHTML +=
-				'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1])*2+<%= cont %>) + 'px;"><svg style="width: ' + (getValue(grades[grades.length-1])*2+<%= cont %>) + 'px; height: ' + (getValue(grades[grades.length-1])*2+<%= cont %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[grades.length-1])+<%= xy %>) + '" cy="' + (getValue(grades[grades.length-1])+<%= xy %>) + '" r="' + getValue(grades[grades.length-1]) + '" /></svg></td><td class="value">' + '&ge;' + grades[grades.length-1] + '</td></tr></table>'
-<%					} else { -%>
-			for (var i = 1; i < grades.length; i++) {
-				div.innerHTML +=
-					'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1]+1)*2+<%= cont %>) + 'px;"><svg style="width: ' + (getValue(grades[i])*2+<%= cont %>) + 'px; height: ' + (getValue(grades[i])*2+<%= cont %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[i])+<%= xy %>) + '" cy="' + (getValue(grades[i])+<%= xy %>) + '" r="' + getValue(grades[i]) + '" /></svg></td><td class="value">' + grades[i-1] + '&ndash;' + grades[i] + '</td></tr></table>'
-			}
-			div.innerHTML +=
-				'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1]+1)*2+<%= cont %>) + 'px;"><svg style="width: ' + (getValue(grades[grades.length-1]+1)*2+<%= cont %>) + 'px; height: ' + (getValue(grades[grades.length-1]+1)*2+<%= cont %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[grades.length-1]+1)+<%= xy %>) + '" cy="' + (getValue(grades[grades.length-1]+1)+<%= xy %>) + '" r="' + getValue(grades[grades.length-1]+1) + '" /></svg></td><td class="value">' + '&gt;' + grades[grades.length-1] + '</td></tr></table>'
-<%					} -%>
-<%				} else if(attr(style, "out")==2) { # left open and right closed
-					if(attr(style, "closure")=="left") { -%>
-			div.innerHTML +=
-				'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-2])*2+<%= cont %>) + 'px;"><svg style="width: ' + (getValue(grades[0]-1)*2+<%= cont %>) + 'px; height: ' + (getValue(grades[0]-1)*2+<%= cont %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[0]-1)+<%= xy %>) + '" cy="' + (getValue(grades[0]-1)+<%= xy %>) + '" r="' + getValue(grades[0]-1) + '" /></svg></td><td class="value">' + '&lt;' + grades[0] + '</td></tr></table>'
-			for (var i = 1; i < grades.length; i++) {
-				div.innerHTML +=
-					 '<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-2])*2+<%= cont %>) + 'px;"><svg style="width: ' + (getValue(grades[i-1])*2+<%= cont %>) + 'px; height: ' + (getValue(grades[i-1])*2+<%= cont %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[i-1])+<%= xy %>) + '" cy="' + (getValue(grades[i-1])+<%= xy %>) + '" r="' + getValue(grades[i-1]) + '" /></svg></td><td class="value">' + grades[i-1] + '&ndash;' + grades[i] + '</td></tr></table>'
-			}
-<%					} else { -%>
-				div.innerHTML +=
-					'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1])*2+<%= cont %>) + 'px;"><svg style="width: ' + (getValue(grades[0])*2+<%= cont %>) + 'px; height: ' + (getValue(grades[0])*2+<%= cont %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[0])+<%= xy %>) + '" cy="' + (getValue(grades[0])+<%= xy %>) + '" r="' + getValue(grades[0]) + '" /></svg></td><td class="value">' + '&le;' + grades[0] + '</td></tr></table>'
-				for (var i = 1; i < grades.length; i++) {
-					div.innerHTML +=
-					 	'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1])*2+<%= cont %>) + 'px;"><svg style="width: ' + (getValue(grades[i])*2+<%= cont %>) + 'px; height: ' + (getValue(grades[i])*2+<%= cont %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[i])+<%= xy %>) + '" cy="' + (getValue(grades[i])+<%= xy %>) + '" r="' + getValue(grades[i]) + '" /></svg></td><td class="value">' + grades[i-1] + '&ndash;' + grades[i] + '</td></tr></table>'
-				}
-<%					} -%>
-<%				} else { # left and right open
-					if(attr(style, "closure")=="left") { -%>
-			div.innerHTML +=
-				'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1])*2+<%= cont %>) + 'px;"><svg style="width: ' + (getValue(grades[0]-1)*2+<%= cont %>) + 'px; height: ' + (getValue(grades[0]-1)*2+<%= cont %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[0]-1)+<%= xy %>) + '" cy="' + (getValue(grades[0]-1)+<%= xy %>) + '" r="' + getValue(grades[0]-1) + '" /></svg></td><td class="value">' + '&lt;' + grades[0] + '</td></tr></table>'
-			for (var i = 1; i < grades.length; i++) {
-				div.innerHTML +=
-					'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1])*2+<%= cont %>) + 'px;"><svg style="width: ' + (getValue(grades[i-1])*2+<%= cont %>) + 'px; height: ' + (getValue(grades[i-1])*2+<%= cont %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[i-1])+<%= xy %>) + '" cy="' + (getValue(grades[i-1])+<%= xy %>) + '" r="' + getValue(grades[i-1]) + '" /></svg></td><td class="value">' + grades[i-1] + '&ndash;' + grades[i] + '</td></tr></table>'
-			}
-			div.innerHTML +=
-				'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1])*2+<%= cont %>) + 'px;"><svg style="width: ' + (getValue(grades[grades.length-1])*2+<%= cont %>) + 'px; height: ' + (getValue(grades[grades.length-1])*2+<%= cont %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[grades.length-1])+<%= xy %>) + '" cy="' + (getValue(grades[grades.length-1])+<%= xy %>) + '" r="' + getValue(grades[grades.length-1]) + '" /></svg></td><td class="value">' + '&ge;' + grades[grades.length-1] + '</td></tr></table>'
-<%					} else { -%>
-			div.innerHTML +=
-				'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1])*2+<%= cont %>) + 'px;"><svg style="width: ' + (getValue(grades[0])*2+<%= cont %>) + 'px; height: ' + (getValue(grades[0])*2+<%= cont %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[0])+<%= xy %>) + '" cy="' + (getValue(grades[0])+<%= xy %>) + '" r="' + getValue(grades[0]) + '" /></svg></td><td class="value">' + '&le;' + grades[0] + '</td></tr></table>'
-			for (var i = 1; i < grades.length; i++) {
-				div.innerHTML +=
-					'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1])*2+<%= cont %>) + 'px;"><svg style="width: ' + (getValue(grades[i])*2+<%= cont %>) + 'px; height: ' + (getValue(grades[i])*2+<%= cont %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[i])+<%= xy %>) + '" cy="' + (getValue(grades[i])+<%= xy %>) + '" r="' + getValue(grades[i]) + '" /></svg></td><td class="value">' + grades[i-1] + '&ndash;' + grades[i] + '</td></tr></table>'
-			}
-			div.innerHTML +=
-				'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(grades[grades.length-1]+1)*2+<%= cont %>) + 'px;"><svg style="width: ' + (getValue(grades[grades.length-1]+1)*2+<%= cont %>) + 'px; height: ' + (getValue(grades[grades.length-1]+1)*2+<%= cont %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(grades[grades.length-1]-2+1)+<%= wght %>) + '" cy="' + (getValue(grades[grades.length-1]+1)+<%= xy %>) + '" r="' + getValue(grades[grades.length-1]+1) + '" /></svg></td><td class="value">' + '&gt;' + grades[grades.length-1] + '</td></tr></table>'
-<%					}
-				}
-			} -%>
+				leg.code <- paste0(leg.code, "</svg></td><td class=\"value\">")
 				
-			return div;
-		};
-		legend.addTo(map);
-				
-<%# 
-
-    CATEGORIZED STYLE
-
+				# values
+				if(attr(style.ra[[n]], "out")==0) { # left and right closed
+					for(v in 1:(length(val)-2)) {
+						leg.code <- paste0(leg.code, val[v+1], "&ndash;", val[v], "<br>")
+					}
+					leg.code <- paste0(leg.code, val[length(val)], "&ndash;", val[length(val)-1]) 
+				} else if(attr(style.ra[[n]], "out")==1) { # left closed and right open
+					if(attr(style.ra[[n]], "closure")=="left") {
+						leg.code <- paste0(leg.code, "&ge;", val[1], "<br>") 
+						for(v in 1:(length(val)-2)) {
+							leg.code <- paste0(leg.code, val[v+1], "&ndash;", val[v], "<br>")
+						}
+						leg.code <- paste0(leg.code, val[length(val)], "&ndash;", val[length(val)-1]) 
+					} else {
+						for(v in 1:(length(val)-1)) {
+							leg.code <- paste0(leg.code, val[v+1], "&ndash;", val[v], "<br>")
+						}
+						leg.code <- paste0(leg.code, "&lt;", val[length(val)]) 
+					}
+				} else if(attr(style.ra[[n]], "out")==2) { # left open and right closed
+					if(attr(style.ra[[n]], "closure")=="left") {
+						for(v in 1:(length(val)-1)) {
+							leg.code <- paste0(leg.code, val[v+1], "&ndash;", val[v], "<br>")
+						}
+						leg.code <- paste0(leg.code, "&lt;", val[length(val)])  
+					} else {
+						for(v in 1:(length(val)-1)) {
+							leg.code <- paste0(leg.code, val[v+1], "&ndash;", val[v], "<br>")
+						}
+						leg.code <- paste0(leg.code, "&le;", val[length(val)]) 
+					}
+				} else { # left and right open
+					if(attr(style.ra[[n]], "closure")=="left") {
+						leg.code <- paste0(leg.code, "&ge;", val[1], "<br>") 
+						for(v in 1:(length(val)-1)) {
+							leg.code <- paste0(leg.code, val[v+1], "&ndash;", val[v], "<br>")
+						}
+						leg.code <- paste0(leg.code, "&lt;", val[length(val)]) 
+					} else {
+						leg.code <- paste0(leg.code, "&gt;", val[1], "<br>") 
+						for(v in 1:(length(val)-1)) {
+							leg.code <- paste0(leg.code, val[v+1], "&ndash;", val[v], "<br>")
+						}
+						leg.code <- paste0(leg.code, "&le;", val[length(val)])
+					}
+				}
+				leg.code <- paste0(leg.code, "</td></tr></table>\'")
 -%>
-<%		} else if(attr(style, "style.type")=="categorized") { 
-			wght <- style[[2]][grep("weight", style[[2]])]
+				div.innerHTML += <%= leg.code %>
+<%			}
+			
+			if(length(data) > n) -%>
+			div.innerHTML += '<br>'
+<%	}
+	}
+	
+		### CATEGORIZED STYLE
+		
+	if(n.cat > 0) {
+		for(n in (n.single + n.grad + 1):(n.single + n.grad + n.cat)) {
+			wght <- style.ra[[n]][grep("weight", style.ra[[n]])]
 			wght <- as.numeric(gsub(".+\\s+", "", wght))*2
 			if(length(wght)==0) wght <- 4
 			if(wght==0) {
@@ -331,39 +366,23 @@
 			} else {
 				xy <- wght-3
 				cont <- wght+3
-			}
--%>
-		var legend = L.control({position: 'bottomright'});
-		legend.onAdd = function(map) {
-			var div = L.DomUtil.create('div', 'legend');
-		    var labels = [];
-		    var cats = [<%= paste( paste0("'", attr(style, "values"), "'"), collapse=",") %>];
-<%			if(!is.null(attr(style, "leg"))) { %>
-			div.innerHTML += '<%= attr(style, "leg") %><br>';
-<%			}
-			if(attr(style, "style.par")=="col") { # color scale
--%>
-			for (var i = 0; i < cats.length; i++) {
-				div.innerHTML +=
-				    '<i style="background:' + getValue(cats[i]) + '"></i> ' +
-					cats[i] + '<br>';
-			}
-<%				if(!is.null(attr(style, "na", T))) { -%>
-			div.innerHTML += '<i style="background:' + getValue() + '"></i> <%= attr(style, "na") %>'
-<%				}
-			} else if(attr(style, "style.par")=="rad") { # radius scale 
--%>
-			for (var i = 0; i < cats.length; i++) {
-				div.innerHTML +=
-				    '<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(cats[cats.length-1])*2+<%= cont %>) + 'px;"><svg style="width: ' + (getValue(cats[i])*2+<%= cont %>) + 'px; height: ' + (getValue(cats[i])*2+<%= cont %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue(cats[i])+<%= xy %>) + '" cy="' + (getValue(cats[i])+<%= xy %>) + '" r="' + getValue(cats[i]) + '" /></svg></td><td class="value">' + cats[i] + '</td></tr></table>'
-			}
-<%				if(!is.null(attr(style, "na", T))) { -%>
-			div.innerHTML +=
-				'<table style="border: none;"><tr><td class="circle" style="width: ' + (getValue(cats[cats.length-1])*2+1+<%= wght %>) + 'px;"><svg style="width: ' + (getValue()*2+1+<%= wght %>) + 'px; height: ' + (getValue()*2+1+<%= wght %>) + 'px;" xmlns="http://www.w3.org/2000/svg" version="1.1"><circle class="crcl" cx="' + (getValue()+<%= xy %>) + '" cy="' + (getValue()+<%= xy %>) + '" r="' + getValue() + '" /></svg></td><td class="value">' + '", attr(style, "na"), "' + '</td></tr></table>'
-<%				} 
 			} -%>
+			var labels<%= n %> = [];
+		  var cats<%= n %> = [<%= paste( paste0("'", attr(style.ra[[n]], "values"), "'"), collapse=",") %>];
+<%		if(!is.null(attr(style.ra[[n]], "leg"))) { %>
+			div.innerHTML += '<%= attr(style.ra[[n]], "leg") %><br>';
+<%		} -%>
+			for (var i = 0; i < cats<%= n %>.length; i++) {
+				div.innerHTML += '<i style="background:' + getValue<%= substr(style.name[[n]], 6, nchar(style.name[[n]])) %>(cats<%= n %>[i]) + '"></i> ' + cats<%= n %>[i] + '<br>';
+			}
+<%		if(!is.null(attr(style.ra[[n]], "na", TRUE))) { -%>
+			div.innerHTML += '<i style="background:' + getValue<%= substr(style.name[[n]], 6, nchar(style.name[[n]])) %>() + '"></i> <%= attr(style.ra[[n]], "na") %>';
+<%		}
+			
+			if(length(data) > n) -%>
+			div.innerHTML += '<br>'
+<%	}
+	} -%>
 			return div;
 		};
 		legend.addTo(map);
-<%		} 
-	}-%>
