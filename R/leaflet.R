@@ -29,6 +29,8 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, co
 		else {
 			if(length(data)==1) title <- gsub("_", " ", paste(head(strsplit(basename(data), "[.]")[[1]], -1), collapse="_")) else title <- "map"
 		}
+	} else {
+		title <- gsub("/", "", title)
 	}
 	
 	# prepare base map
@@ -44,7 +46,7 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, co
 		} else if(!is(style, "leafletr.style")) stop("Style object not recognized")
 	}
 	if(length(data)>1 && !is.na(style)) if(length(style)<length(data) || !is.list(style)) stop("Number of styles must correspond to number of data files")
-	if(file.exists(file.path(dest, gsub(" ", "_", title))) && !overwrite) stop("Abort - file already exists")
+	if(file.exists(file.path(dest, gsub("[^[:alnum:]!@#&,=+-_()]", "_", title))) && !overwrite) stop("Abort - file already exists")
 	
 	# prepare popup
 	if(!missing(popup)) {
@@ -80,12 +82,11 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, co
 	if(any(!is.na(style))) if(is(style, "leafletr.style")) if(!is(style, "graduated.style") && !is(style, "categorized.style")) legend.ctrl <- FALSE
 	
 	# prepare file path
-	dir.create(file.path(dest, gsub(" ", "_", title)), showWarnings=FALSE)
+	dir.create(file.path(dest, gsub("[^[:alnum:]!@#&,=+-_()]", "_", title)), showWarnings=FALSE)
 	if(any(!is.na(data)) && !incl.data) {
-		for(n in 1:length(data)) file.copy(data[[n]], file.path(dest, gsub(" ", "_", title)), overwrite=overwrite)
+		for(n in 1:length(data)) file.copy(data[[n]], file.path(dest, gsub("[^[:alnum:]!@#&,=+-_()]", "_", title)), overwrite=overwrite)
 	}
-	filePath <- file.path(dest, gsub(" ", "_", title), paste0(gsub(" ", "_", title), ".html"))
-	
+	filePath <- file.path(dest, gsub("[^[:alnum:]!@#&,=+-_()]", "_", title), paste0(gsub("[^[:alnum:]!@#&,=+-_()]", "_", title), ".html"))
 	# brew
 	brew(system.file("templates/main.brew", package="leafletR"), filePath) 
 	
