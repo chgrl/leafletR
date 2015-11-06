@@ -6,9 +6,9 @@
 \description{Creates a web-map of users' spatial data over open base maps. Output consists of a ready to use HTML file (and a GeoJSON/TopoJSON data file).}
 \usage{
 leaflet(data, dest, title, size, base.map="osm", center, zoom, 
-  style, popup, controls="all", incl.data=FALSE, overwrite=TRUE)
+  style, popup, label, controls="all", incl.data=FALSE, overwrite=TRUE)
 leaf(data, dest, title, size, base.map="osm", center, zoom, 
-  style, popup, controls="all", incl.data=FALSE, overwrite=TRUE)
+  style, popup, label, controls="all", incl.data=FALSE, overwrite=TRUE)
 }
 \arguments{
   \item{data}{Name(s) of data file(s) (GeoJSON/TopoJSON format), as string or a list of strings. Plotting order follows the file sequence.}
@@ -20,6 +20,7 @@ leaf(data, dest, title, size, base.map="osm", center, zoom,
   \item{zoom}{Map zoom level, as integer value. Usually a value between \code{0} (global small scale) and \code{18} (detailed large scale). The MapQuest Open Aerial map (\code{base.map="mqsat"}) provides only 12 zoom levels [0-11]. Optional -- if missing, the zoom level is calculated for the bounding box of the data layer. \code{center} has to be specified to use \code{zoom}.}
   \item{style}{Style(s) of the data layer(s). One or a list of style object(s), created by \code{\link{styleSingle}}, \code{\link{styleGrad}} or \code{\link{styleCat}}. Optional -- if missing, a default style is applied.}
   \item{popup}{Properties (attributes) of the data to be shown in a popup when a map object is clicked. String or a vector of strings. \code{"*"} adds all available properties to the popup. A \code{list} of (vectors of) strings specifies properties for multiple \code{data} layers. Per default no popups are shown.}
+  \item{label}{Property (attribute) of the data to be shown in a dynamic label, as string. A \code{list} of strings specifies properties for multiple \code{data} layers. Per default no labels are shown. Only point data is supported and markers do not work very well.}
   \item{controls}{List of controls to be added to the map. Available controls are \code{"zoom"}, \code{"scale"}, \code{"layer"} and \code{"legend"}. \code{"all"} (the default) adds all controls. Controls are only added if necessary, e.g. in case of one data layer there is no legend. \code{NA} omits all controls. Note: data layer controls only appear if \code{incl.data} is set to \code{TRUE}.}
   \item{incl.data}{If \code{TRUE}, \code{data} is included in the HTML file itself. Per default (\code{incl.data=FALSE}) the data is saved in a separate file. Including data in the HTML file allows for viewing the map locally on some browsers (e.g. Chrome and Opera).}
   \item{overwrite}{\code{TRUE} (which is the default) overwrites existing files with the same name.}
@@ -62,11 +63,11 @@ map <- leaflet(data=dat, dest=tempdir(), title="Fiji Earthquakes")
 map <- leaflet(data=dat, dest=tempdir(), 
   size=c(800,600), center=c(-18.35, 179.75), zoom=6)
 
-# set base map and popup
+# set base map and popup/label
 # magnitude is used as popup (type names(quakes) for available properties)
 map <- leaflet(data=dat, dest=tempdir(), 
-  base.map="mqsat", popup="mag")
-
+  base.map="mqsat", popup="stations", label="mag")
+  
 # minimalist? - no base map
 map <- leaflet(data=dat, dest=tempdir(), 
   base.map=NA, popup="mag")

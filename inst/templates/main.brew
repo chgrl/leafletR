@@ -5,13 +5,16 @@
 	<meta charset="utf-8">
 	<meta name="generator" content="leafletR">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
-	<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
+	<script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
 <%	if(any(!is.na(data))) {
 			if(!incl.data || layer.ctrl) -%>
 	<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 <%		if(any(topojson==TRUE)) -%>
 	<script src="http://d3js.org/topojson.v1.min.js"></script>
+<%		if(!missing(label)) -%>
+	<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-label/v0.2.1/leaflet.label.js'></script>
+	<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-label/v0.2.1/leaflet.label.css' rel='stylesheet' />
 <%		maki <- FALSE
 		if(any(!is.na(style))) {
 			if(any(class(style)=="list")) {
@@ -38,7 +41,9 @@
 	
 	if (!any(is.na(data))) { # if there is at least one data layer
 		# popup
-		if(!missing(popup)) brew(system.file("templates/popup.brew", package = "leafletR")) 
+		if(!missing(popup)) brew(system.file("templates/popup.brew", package = "leafletR"))
+		# label
+		if(!missing(label)) brew(system.file("templates/label.brew", package = "leafletR")) 
 		# styling
 		if(any(!is.na(style))) brew(system.file("templates/style.brew", package = "leafletR"))
 		# data layers

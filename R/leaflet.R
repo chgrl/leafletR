@@ -1,5 +1,5 @@
 leaflet <-
-function(data, dest, title, size, base.map="osm", center, zoom, style, popup, controls="all", incl.data=FALSE, overwrite=TRUE) {	
+function(data, dest, title, size, base.map="osm", center, zoom, style, popup, label, controls="all", incl.data=FALSE, overwrite=TRUE) {	
   
 	# prepare data
 	if(missing(data)) data <- NA
@@ -58,6 +58,12 @@ function(data, dest, title, size, base.map="osm", center, zoom, style, popup, co
 		}
 		if(length(popup)==length(unlist(popup))) multi.prop <- FALSE
 		else multi.prop <- TRUE
+	}
+	
+	# prepare label
+	if(!is.na(data) && !missing(label)) {
+		if(length(data)!=length(label)) stop("Number of labels must correspond to number of data files")
+		label <- lapply(label, function(x) ifelse(x=="", NA, x))
 	}
 	
 	# prepare map parameter

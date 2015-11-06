@@ -4,7 +4,7 @@
 <%	if(is.na(center) && is.na(zoom)) { -%>
 		var group = new L.featureGroup;
 <%	} -%>
-		function addDataToMap(data, style, layer, lc) {
+		function addDataToMap(data, style, label, layer, lc) {
 <%	if(any(!is.na(style))) {
 		marker <- FALSE
 		if(any(class(style)=="list")) {
@@ -16,26 +16,26 @@
 			if("options" in style) {
 				layers[layer] = L.geoJson(data, {
 					onEachFeature: (typeof onEachFeature == "undefined") ? undefined : onEachFeature,
-					pointToLayer: function (feature, latlng) {return L.marker(latlng, {icon: style});}
+					pointToLayer: (typeof label == "undefined") ? (function (feature, latlng) {return L.marker(latlng, {icon: style});}) : (function (feature, latlng) {return L.marker(latlng, {icon: style}).bindLabel(feature.properties[label], {direction: 'right'});})
 				});
 			} else {
 				layers[layer] = L.geoJson(data, {
 					onEachFeature: (typeof onEachFeature == "undefined") ? undefined : onEachFeature,
-					pointToLayer: function (feature, latlng) {return L.circleMarker(latlng);},
+					pointToLayer: (typeof label == "undefined") ? (function (feature, latlng) {return L.circleMarker(latlng);}) : (function (feature, latlng) {return L.circleMarker(latlng).bindLabel(feature.properties[label], {direction: 'right'});}),
 					style: style
 				});
 			}
 <%		} else { -%>
 			layers[layer] = L.geoJson(data, {
 				onEachFeature: (typeof onEachFeature == "undefined") ? undefined : onEachFeature,
-				pointToLayer: function (feature, latlng) {return L.circleMarker(latlng);},
+				pointToLayer: (typeof label == "undefined") ? (function (feature, latlng) {return L.circleMarker(latlng);}) : (function (feature, latlng) {return L.circleMarker(latlng).bindLabel(feature.properties[label], {direction: 'right'});}),
 				style: style
 			});
 <%		}
 	} else { -%>
 			layers[layer] = L.geoJson(data, {
 				onEachFeature: (typeof onEachFeature == "undefined") ? undefined : onEachFeature,
-				pointToLayer: function (feature, latlng) {return L.circleMarker(latlng);},
+				pointToLayer: (typeof label == "undefined") ? (function (feature, latlng) {return L.circleMarker(latlng);}) : (function (feature, latlng) {return L.circleMarker(latlng).bindLabel(feature.properties[label], {direction: 'right'});}),
 				style: style
 			});
 <%	} -%>
@@ -44,8 +44,8 @@
 			group.addLayer(layers[layer])
 			map.fitBounds(group.getBounds());
 <%	}
-	  if(layer.ctrl) { 
-      brew(system.file("templates/layer.brew", package = "leafletR")) 
+		if(layer.ctrl) { 
+			brew(system.file("templates/layer.brew", package = "leafletR")) 
 		} -%>
 		};
 		
@@ -54,7 +54,8 @@
 			if(!is.null(layer.name)) layer.name <- gsub("[_.]", " ", layer.name)
 			if(is.null(layer.name)) layer.name <- gsub("_", " ", paste(head(strsplit(basename(data[[n]]), "[.]")[[1]], -1), collapse="_"))
 			else if(layer.name=="") layer.name <- gsub("_", " ", paste(head(strsplit(basename(data[[n]]), "[.]")[[1]], -1), collapse="_")) -%>
-			if(typeof style<%= n %> == "undefined") style<%= n %> = undefined;
+		if(typeof style<%= n %> == "undefined") style<%= n %> = undefined;
+		if(typeof label<%= n %> == "undefined") label<%= n %> = undefined;
 <%		if(incl.data) {	
 				if(!file.exists(data[[n]])) stop("data file not found")
 				con <- file(data[[n]], "rt") 
@@ -64,21 +65,21 @@
 					obj <- getTopologies(json[[n]], FALSE)
 					if(length(obj)>1) warning("TopoJSON file contains more than one topology objects - only first object is used", call.=FALSE) -%>
 		dat<%= n %> = <%= paste(lns, collapse="\n\t\t") %>
-		addDataToMap(topojson.feature(dat<%= n %>, dat<%= n %>.objects.<%= obj[1] %>), style<%= n %>, "<%= layer.name %>")
+		addDataToMap(topojson.feature(dat<%= n %>, dat<%= n %>.objects.<%= obj[1] %>), style<%= n %>, label<%= n %>, "<%= layer.name %>")
 <%  		} else if(layer.ctrl && n == length(data)) { -%>
-    addDataToMap(<%= paste(lns, collapse="\n\t\t") %>, style<%= n %>, "<%= layer.name %>", "add");
+    addDataToMap(<%= paste(lns, collapse="\n\t\t") %>, style<%= n %>, label<%= n %>, "<%= layer.name %>", "add");
 <%			} else { -%>
-		addDataToMap(<%= paste(lns, collapse="\n\t\t") %>, style<%= n %>, "<%= layer.name %>");
+		addDataToMap(<%= paste(lns, collapse="\n\t\t") %>, style<%= n %>, label<%= n %>, "<%= layer.name %>");
 <%			}
 			} else {
 				if(topojson[n]) {
 					obj <- getTopologies(json[[n]], FALSE)
 					if(length(obj)>1) warning("TopoJSON file contains more than one topology objects - only first object is used", call.=FALSE) -%>
-		$.getJSON($("link[rel='dat<%= n %>']").attr("href"), function(x) {addDataToMap(topojson.feature(x, x.objects.<%= obj[1] %>), style<%= n %>, "<%= layer.name %>")});
+		$.getJSON($("link[rel='dat<%= n %>']").attr("href"), function(x) {addDataToMap(topojson.feature(x, x.objects.<%= obj[1] %>), style<%= n %>, label<%= n %>, "<%= layer.name %>")});
 <%			} else if(layer.ctrl && n == length(data)) { -%>
-    $.getJSON($("link[rel='dat<%= n %>']").attr("href"), function(x) {addDataToMap(x, style<%= n %>, "<%= layer.name %>", "add")});
+		$.getJSON($("link[rel='dat<%= n %>']").attr("href"), function(x) {addDataToMap(x, style<%= n %>, label<%= n %>, "<%= layer.name %>", "add")});
 <%    	} else { -%>
-		$.getJSON($("link[rel='dat<%= n %>']").attr("href"), function(x) {addDataToMap(x, style<%= n %>, "<%= layer.name %>")});
+		$.getJSON($("link[rel='dat<%= n %>']").attr("href"), function(x) {addDataToMap(x, style<%= n %>, label<%= n %>, "<%= layer.name %>")});
 <%			}
 			}
 		} -%>

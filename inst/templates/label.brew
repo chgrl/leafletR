@@ -1,0 +1,7 @@
+
+		// label
+<%	for(n in 1:length(label)) { 
+			if(!is.na(label[[n]])) { -%>
+		var label<%= n %> = "<%= label[[n]] %>"
+<%		}
+		} -%>
