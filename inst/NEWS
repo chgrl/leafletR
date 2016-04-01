@@ -1,3 +1,28 @@
+leafletR 0.4-0 [2016-04-01]
+---------------------------
+
+* bug fixes in leaflet: broken legend in case of multi-layer maps
+  including markers; 
+  incl.data ignored for last layer added to map (or if only one 
+  data layer is added);
+  error if title contains certain non alphanumeric characters
+
+* new in leaflet: argument "label" added for basic label support
+  (only working with point data)
+
+* new in styleCat: style.par parameter dropped
+
+* new in styleGrad: multi-style support including legend - all 
+  three style types can be combined on a map now
+
+* new in toGeoJSON: tbl_df support; lat/lon detection 
+  by variable name
+
+* update to Leaflet version 0.7.7
+
+* several improvements of code and documentation
+
+
 leafletR 0.3-3 [2015-05-30]
 ---------------------------
 
