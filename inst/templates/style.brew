@@ -29,6 +29,7 @@
 	
 		if(attr(style[[n]], "style.type")=="single") {
 			if(!is.null(attr(style[[n]], "marker"))) { -%>
+		L.MakiMarkers.accessToken = "pk.eyJ1IjoibGVhZmxldHIiLCJhIjoiY2lwMDc3eHkyMDAxeDlkbHdyYnBhbHUybCJ9.2n32xZYFw0tzhFO9z7_x7g";
 		var style<%= n %> = L.MakiMarkers.icon({<%= style[[n]] %>});
 <%		} else { -%>
 		var style<%= n %> = {<%= paste(style[[n]], collapse = ", ") %>};
