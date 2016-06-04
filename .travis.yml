@@ -1,4 +1,6 @@
 language: r
 cache: packages
 warnings_are_errors: false
-before_install: echo "options(repos = c(CRAN='http://cran.rstudio.com'))" > ~/.Rprofile
+before_install: 
+  - echo "options(repos = c(CRAN='http://cran.rstudio.com'))" > ~/.Rprofile
+  - sudo apt-get install libgdal1-dev libproj-dev
