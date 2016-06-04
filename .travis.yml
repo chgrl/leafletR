@@ -4,4 +4,4 @@ warnings_are_errors: false
 before_install: 
   - echo "options(repos = c(CRAN='http://cran.rstudio.com'))" > ~/.Rprofile
   - sudo apt-get --yes --force-yes update -qq
-  - sudo apt-get install -y gdal-bin
+  - sudo apt-get install -y gdal-bin libgdal-dev
