@@ -4,4 +4,4 @@ warnings_are_errors: false
 before_install: 
   - echo "options(repos = c(CRAN='http://cran.rstudio.com'))" > ~/.Rprofile
   - sudo apt-get --yes --force-yes update -qq
-  - sudo apt-get install -y gdal-bin libhdf5-serial-dev libgdal-dev libgdal1-dev netcdf-bin libproj-dev libv8-dev
+  - sudo apt-get install -y gdal-bin libhdf5-dev libhdf5-serial-dev libgdal-dev libgdal1-dev netcdf-bin libproj-dev libv8-dev
