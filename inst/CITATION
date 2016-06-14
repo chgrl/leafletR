@@ -4,7 +4,7 @@ citEntry(entry = "Manual",
          title = "leafletR: Interactive Web-Maps Based on the Leaflet JavaScript Library",
          author = "Christian Graul",
          year = "2016",
-         url = "http://cran.r-project.org/package=leafletR",
+         url = "https://cran.r-project.org/package=leafletR",
          note = "R package version 0.4-0",
          textVersion = "Graul, Christian (2016): leafletR: Interactive Web-Maps Based on the Leaflet JavaScript Library. R package version 0.4-0, http://cran.r-project.org/package=leafletR.")
 
