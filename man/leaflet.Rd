@@ -26,7 +26,9 @@ leaf(data, dest, title, size, base.map="osm", center, zoom,
   \item{overwrite}{\code{TRUE} (which is the default) overwrites existing files with the same name.}
 }
 \note{
-Please note: \code{data} only accepts GeoJSON/TopoJSON files with one geometry type and geographical coordinates (longlat, WGS84). 
+\code{data} only accepts GeoJSON/TopoJSON files with one geometry type and geographical coordinates (longlat, WGS84).
+
+Due to the security restrictions of some browsers (namely Chrome and Opera) it might be necessary to save the data inside the html file using \code{incl.data = TRUE}.
 }
 \references{
 Base map tiles are provided by 
