@@ -7,72 +7,74 @@ function(data, class, name, dest, overwrite) {
 	if(!requireNamespace("sp", quietly=TRUE)) stop("'sp' package required for spatial object conversion")
 	if(requireNamespace("rgdal", quietly=TRUE)) data <- sp::spTransform(data, sp::CRS("+proj=longlat +ellps=WGS84"))
 	
+	connect <- file(path, "w", encoding="utf8")
+
 	# heading
-	cat("{", file=path, sep="\n")
-	cat("  \"type\": \"FeatureCollection\",", file=path, append=TRUE, sep="\n")
-	cat("  \"features\": [", file=path, append=TRUE, sep="\n")
+	cat("{", file=connect, sep="\n")
+	cat("  \"type\": \"FeatureCollection\",", file=connect, append=TRUE, sep="\n")
+	cat("  \"features\": [", file=connect, append=TRUE, sep="\n")
 	
 	if(class(data)[1]=="SpatialPoints" || class(data)[1]=="SpatialPointsDataFrame") {	# Points
 		# features
 		coord <- data@coords
 		for(f in 1:nrow(coord)) {
-			cat("    {", file=path, append=TRUE, sep="\n")
-			cat("      \"type\": \"Feature\",", file=path, append=TRUE, sep="\n")
+			cat("    {", file=connect, append=TRUE, sep="\n")
+			cat("      \"type\": \"Feature\",", file=connect, append=TRUE, sep="\n")
 			
 			# properties
 			if(class(data)[1]=="SpatialPointsDataFrame") { 
 				dat <- data@data
 				if(!is.null(dat)) {
-					cat("      \"properties\": {", file=path, append=TRUE, sep="\n")
+					cat("      \"properties\": {", file=connect, append=TRUE, sep="\n")
 					for(p in 1:length(dat)) {
-						cat(paste0("        \"", names(dat)[p], "\": \"", dat[f,p], "\""), file=path, append=TRUE)
-						if(p==length(dat)) cat("\n", file=path, append=TRUE)
-						else cat(",", file=path, append=TRUE, sep="\n")
+						cat(paste0("        \"", names(dat)[p], "\": \"", dat[f,p], "\""), file=connect, append=TRUE)
+						if(p==length(dat)) cat("\n", file=connect, append=TRUE)
+						else cat(",", file=connect, append=TRUE, sep="\n")
 					}
-					cat("      },", file=path, append=TRUE, sep="\n")
+					cat("      },", file=connect, append=TRUE, sep="\n")
 				}
 			}
 			
 			# geometry
-			cat("      \"geometry\": {", file=path, append=TRUE, sep="\n")
-			cat("        \"type\": \"Point\",", file=path, append=TRUE, sep="\n")
-			cat(paste0("        \"coordinates\": [", coord[f,1], ",", coord[f,2], "]"), file=path, append=TRUE, sep="\n")
-			cat("      }", file=path, append=TRUE, sep="\n")
+			cat("      \"geometry\": {", file=connect, append=TRUE, sep="\n")
+			cat("        \"type\": \"Point\",", file=connect, append=TRUE, sep="\n")
+			cat(paste0("        \"coordinates\": [", coord[f,1], ",", coord[f,2], "]"), file=connect, append=TRUE, sep="\n")
+			cat("      }", file=connect, append=TRUE, sep="\n")
 			
-			if(f==nrow(data)) cat("    }", file=path, append=TRUE, sep="\n")
-			else cat("    },", file=path, append=TRUE, sep="\n")
+			if(f==nrow(data)) cat("    }", file=connect, append=TRUE, sep="\n")
+			else cat("    },", file=connect, append=TRUE, sep="\n")
 		}
 	} else if(class(data)[1]=="SpatialLines" || class(data)[1]=="SpatialLinesDataFrame") {	# Lines
 		# features
 		num.f <- length(data@lines)
 		f.len <- sapply(slot(data, "lines"), function(x) length(slot(x, "Lines")))
 		for(f in 1:num.f) {
-			cat("    {", file=path, append=TRUE, sep="\n")
-			cat("      \"type\": \"Feature\",", file=path, append=TRUE, sep="\n")
+			cat("    {", file=connect, append=TRUE, sep="\n")
+			cat("      \"type\": \"Feature\",", file=connect, append=TRUE, sep="\n")
 			
 			# properties
-			cat("      \"properties\": {", file=path, append=TRUE, sep="\n")
+			cat("      \"properties\": {", file=connect, append=TRUE, sep="\n")
 			if(class(data)[1]=="SpatialLinesDataFrame") {
 				dat <- data@data
 				if(!is.null(dat)) {	
 					for(p in 1:length(dat)) {
-						cat(paste0("        \"", names(dat)[p], "\": \"", dat[f,p], "\""), file=path, append=TRUE)
-						cat(",", file=path, append=TRUE, sep="\n")
+						cat(paste0("        \"", names(dat)[p], "\": \"", dat[f,p], "\""), file=connect, append=TRUE)
+						cat(",", file=connect, append=TRUE, sep="\n")
 					}
 				}
 			}
-			cat(paste0("        \"ID\": \"", slot(slot(data, "lines")[[f]], "ID"), "\""), file=path, append=TRUE)
-			cat("\n      },", file=path, append=TRUE, sep="\n")
+			cat(paste0("        \"ID\": \"", slot(slot(data, "lines")[[f]], "ID"), "\""), file=connect, append=TRUE)
+			cat("\n      },", file=connect, append=TRUE, sep="\n")
 			
 			# geometry
-			cat("      \"geometry\": {", file=path, append=TRUE, sep="\n")
+			cat("      \"geometry\": {", file=connect, append=TRUE, sep="\n")
 			if(f.len[f]==1) {	# SingleLines
-				cat("        \"type\": \"LineString\",", file=path, append=TRUE, sep="\n")
+				cat("        \"type\": \"LineString\",", file=connect, append=TRUE, sep="\n")
 				coord <- paste0("[", sp::coordinates(data@lines[[f]])[[1]][1,1], ",", sp::coordinates(data@lines[[f]])[[1]][1,2], "]")
 				for(i in 2:length(sp::coordinates(data@lines[[f]])[[1]][,1])) coord <- append(coord, paste0("[", sp::coordinates(data@lines[[f]])[[1]][i,1], ",", sp::coordinates(data@lines[[f]])[[1]][i,2], "]"))
 				coord <- paste(coord, collapse=", ")
 			} else {	# MultiLines
-				cat("        \"type\": \"MultiLineString\",", file=path, append=TRUE, sep="\n")
+				cat("        \"type\": \"MultiLineString\",", file=connect, append=TRUE, sep="\n")
 				coord <- NULL
 				for(l in 1:f.len[f]) {
 					ln <- paste0("[", sp::coordinates(data@lines[[f]])[[l]][1,1], ",", sp::coordinates(data@lines[[f]])[[l]][1,2], "]")
@@ -83,38 +85,38 @@ function(data, class, name, dest, overwrite) {
 				}
 				coord <- paste(coord, collapse=", \n          ")
 			}
-			cat(paste("        \"coordinates\": [", coord, "]"), file=path, append=TRUE, sep="\n")
-			cat("      }", file=path, append=TRUE, sep="\n")
+			cat(paste("        \"coordinates\": [", coord, "]"), file=connect, append=TRUE, sep="\n")
+			cat("      }", file=connect, append=TRUE, sep="\n")
 			
-			if(f==num.f) cat("    }", file=path, append=TRUE, sep="\n")
-			else cat("    },", file=path, append=TRUE, sep="\n")
+			if(f==num.f) cat("    }", file=connect, append=TRUE, sep="\n")
+			else cat("    },", file=connect, append=TRUE, sep="\n")
 		}	
 	} else if(class(data)[1]=="SpatialPolygons" || class(data)[1]=="SpatialPolygonsDataFrame") {	# Polygons
 		# features
 		num.f <- length(data@polygons)
 		f.len <- sapply(slot(data, "polygons"), function(x) length(slot(x, "Polygons")))
 		for(f in 1:num.f) {
-			cat("    {", file=path, append=TRUE, sep="\n")
-			cat("      \"type\": \"Feature\",", file=path, append=TRUE, sep="\n")
+			cat("    {", file=connect, append=TRUE, sep="\n")
+			cat("      \"type\": \"Feature\",", file=connect, append=TRUE, sep="\n")
 			
 			# properties
-			cat("      \"properties\": {", file=path, append=TRUE, sep="\n")
+			cat("      \"properties\": {", file=connect, append=TRUE, sep="\n")
 			if(class(data)[1]=="SpatialPolygonsDataFrame") {
 				dat <- data@data
 				if(!is.null(dat)) {	
 					for(p in 1:length(dat)) {
-						cat(paste0("        \"", names(dat)[p], "\": \"", dat[f,p], "\""), file=path, append=TRUE)
-						cat(",", file=path, append=TRUE, sep="\n")
+						cat(paste0("        \"", names(dat)[p], "\": \"", dat[f,p], "\""), file=connect, append=TRUE)
+						cat(",", file=connect, append=TRUE, sep="\n")
 					}
 				}
 			}
-			cat(paste0("        \"ID\": \"", slot(slot(data, "polygons")[[f]], "ID"), "\""), file=path, append=TRUE)
-			cat("\n      },", file=path, append=TRUE, sep="\n")
+			cat(paste0("        \"ID\": \"", slot(slot(data, "polygons")[[f]], "ID"), "\""), file=connect, append=TRUE)
+			cat("\n      },", file=connect, append=TRUE, sep="\n")
 			
 			# geometry
-			cat("      \"geometry\": {", file=path, append=TRUE, sep="\n")
+			cat("      \"geometry\": {", file=connect, append=TRUE, sep="\n")
 			if(f.len[f]==1) {	# SinglePolygon without holes
-				cat("        \"type\": \"Polygon\",", file=path, append=TRUE, sep="\n")
+				cat("        \"type\": \"Polygon\",", file=connect, append=TRUE, sep="\n")
 				coord.raw <- slot(slot(slot(data, "polygons")[[f]], "Polygons")[[1]], "coords")
 				coord <- paste0("[", coord.raw[1,1], ",", coord.raw[1,2], "]")
 				for(i in 2:length(coord.raw[,1])) coord <- append(coord, paste0("[", coord.raw[i,1], ",", coord.raw[i,2], "]"))
@@ -122,7 +124,7 @@ function(data, class, name, dest, overwrite) {
 			} else {
 				hole <- sapply(slot(slot(data, "polygons")[[f]], "Polygons"), function(x) slot(x, "hole"))
 				if(length(hole[hole==TRUE])==0) {	# MultiPolygon without holes
-					cat("        \"type\": \"MultiPolygon\",", file=path, append=TRUE, sep="\n")
+					cat("        \"type\": \"MultiPolygon\",", file=connect, append=TRUE, sep="\n")
 					coord.raw <- lapply(slot(slot(data, "polygons")[[f]], "Polygons"), function(x) slot(x, "coords"))
 					coord <- NULL
 					for(p in 1:length(coord.raw)) {
@@ -135,7 +137,7 @@ function(data, class, name, dest, overwrite) {
 					coord <- paste("[", paste(coord, collapse=", \n          "), "]")
 				} else { 
 					if(length(hole[hole==FALSE])==1) {	# SinglePolygon with hole(s)
-						cat("        \"type\": \"Polygon\",", file=path, append=TRUE, sep="\n")
+						cat("        \"type\": \"Polygon\",", file=connect, append=TRUE, sep="\n")
 						coord.raw <- lapply(slot(slot(data, "polygons")[[f]], "Polygons"), function(x) slot(x, "coords"))
 						pol <- which(hole==FALSE)
 						coord <- paste0("[", coord.raw[[pol]][1,1], ",", coord.raw[[pol]][1,2], "]")
@@ -150,7 +152,7 @@ function(data, class, name, dest, overwrite) {
 						}
 						coord <- paste(coord, collapse=", \n          ")
 					} else {	# MultiPolygon with hole(s)
-						cat("        \"type\": \"MultiPolygon\",", file=path, append=TRUE, sep="\n")
+						cat("        \"type\": \"MultiPolygon\",", file=connect, append=TRUE, sep="\n")
 						coord.raw <- lapply(slot(slot(data, "polygons")[[f]], "Polygons"), function(x) slot(x, "coords"))
 						pol <- which(hole==FALSE)
 						hol <- which(hole==TRUE)
@@ -190,17 +192,17 @@ function(data, class, name, dest, overwrite) {
 					}
 				}
 			}
-			cat(paste("        \"coordinates\": [", coord, "]"), file=path, append=TRUE, sep="\n")
-			cat("      }", file=path, append=TRUE, sep="\n")
+			cat(paste("        \"coordinates\": [", coord, "]"), file=connect, append=TRUE, sep="\n")
+			cat("      }", file=connect, append=TRUE, sep="\n")
 			
-			if(f==num.f) cat("    }", file=path, append=TRUE, sep="\n")
-			else cat("    },", file=path, append=TRUE, sep="\n")
+			if(f==num.f) cat("    }", file=connect, append=TRUE, sep="\n")
+			else cat("    },", file=connect, append=TRUE, sep="\n")
 		}
 	}
 	
 	# close
-	cat("  ]", file=path, append=TRUE, sep="\n")
-	cat("}", file=path, append=TRUE, sep="\n")
+	cat("  ]", file=connect, append=TRUE, sep="\n")
+	cat("}", file=connect, append=TRUE, sep="\n")
 	
 	return(path)
 }
