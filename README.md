@@ -9,13 +9,8 @@ Display your spatial data on interactive web-maps using the open-source JavaScri
 
 Official release on CRAN: http://cran.r-project.org/package=leafletR
 
-Feel free to flattr, if you like leafletR: <a href="https://flattr.com/submit/auto?user_id=chgrl&amp;url=https%3A%2F%2Fgithub.com/chgrl/leafletR" target="_blank"><img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a>
-
 #### Install from GitHub
 ```
-if(packageVersion("devtools") < 1.6) {
-  install.packages("devtools")
-}
 devtools::install_github("chgrl/leafletR")
 ```
 
@@ -36,7 +31,7 @@ q.style <- styleGrad(prop="mag", breaks=seq(4, 6.5, by=0.5),
 
 # create map
 q.map <- leaflet(data=q.dat, dest=tempdir(), title="Fiji Earthquakes", 
-  base.map="mqsat", style=q.style, popup="mag")
+  base.map="osm", style=q.style, popup="mag")
 
 # view map in browser
 q.map
