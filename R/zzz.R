@@ -26,25 +26,6 @@ function(libname, pkgname) {
 				attribution='Tiles &copy; <a href="http://thunderforest.com", target="_blank">Thunderforest</a>, Map data &copy; <a href="http://openstreetmap.org/copyright", target="_blan\">OpenStreetMap contributors</a>'
 			)
 		),
-		mqosm = list(
-			title = "MapQuest OSM",
-			url = "http://otile{s}.mqcdn.com/tiles/1.0.0/{type}/{z}/{x}/{y}.png",
-			options = list(
-				subdomains= '1234',
-				type= 'osm',
-				attribution='Tiles &copy; <a href=\"http://www.mapquest.com\", target=\"_blank\">MapQuest</a>, Map data &copy; <a href=\"http://openstreetmap.org/copyright\", target=\"_blank\">OpenStreetMap contributors</a>'
-			)
-		),
-		mqsat = list(
-			title = "MapQuest Open Aerial",
-			url = "http://otile{s}.mqcdn.com/tiles/1.0.0/{type}/{z}/{x}/{y}.png",
-			options = list(
-				subdomains= '1234',
-				type= 'sat',
-				maxZoom= 11,
-				attribution='Tiles &copy; <a href=\"http://www.mapquest.com\", target=\"_blank\">MapQuest</a>, Imagery &copy; NASA/JPL-Caltech and USDA Farm Service Agency'
-			)
-		),
 		water = list(
 			title = "Stamen Watercolor",
 			url = "http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.png",
