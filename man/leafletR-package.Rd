@@ -14,10 +14,6 @@
 \code{leafletR} features open base map tiles. Map data is provided by the \href{http://www.openstreetmap.org}{OpenStreetMap} project and satellite images are provided by courtesy of NASA/ JPL-Caltech and U.S. Department of Agriculture, Farm Service Agency. Other tile sources may be added manually.
 
 Try the example below to check if \code{leafletR} has been correctly installed. Any question and feedback is welcome via email to <christian.graul@gmail.com> or on \href{https://github.com/chgrl/leafletR}{GitHub}.
-
-Example output:
-
-\figure{quakes.png}{options: width=350}
 }
 \author{
 Christian Graul, with contributions from Francois Guillem
