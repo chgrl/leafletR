@@ -1,3 +1,11 @@
+leafletR 0.4-1 [2022-02-17]
+---------------------------
+
+* update to Leaflet version 1.7.1
+
+* fix documentation to match current HTML standard
+
+
 leafletR 0.4-0 [2016-04-01]
 ---------------------------
 
