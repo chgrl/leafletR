@@ -21,7 +21,7 @@ function(data, name, dest, lat.lon, overwrite) {
 		if(!any(names(data)==lat.lon[2])) stop("Latitude column not found")
 		lat.lon <- c(which(names(data)==lat.lon[1]), which(names(data)==lat.lon[2]))
 	}
-	if(is.na(data[,lat.lon[1]]) || is.na(data[,lat.lon[2]])) stop("Coordinate columns not found")
+	if(any(is.na(data[,lat.lon[1]])) || any(is.na(data[,lat.lon[2]]))) stop("Coordinate columns not found")
 	
 	# check for factors
 	for(i in 1:ncol(data)) {
