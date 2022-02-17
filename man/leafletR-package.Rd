@@ -17,7 +17,7 @@ Try the example below to check if \code{leafletR} has been correctly installed. 
 
 Example output:
 
-\figure{quakes.png}{options: width=350px}
+\figure{quakes.png}{options: width=350}
 }
 \author{
 Christian Graul, with contributions from Francois Guillem
