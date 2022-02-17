@@ -3,10 +3,10 @@ citHeader("To cite package 'leafletR' in publications use:")
 citEntry(entry = "Manual",
          title = "leafletR: Interactive Web-Maps Based on the Leaflet JavaScript Library",
          author = "Christian Graul",
-         year = "2016",
+         year = "2022",
          url = "https://cran.r-project.org/package=leafletR",
-         note = "R package version 0.4-0",
-         textVersion = "Graul, Christian (2016): leafletR: Interactive Web-Maps Based on the Leaflet JavaScript Library. R package version 0.4-0, http://cran.r-project.org/package=leafletR.")
+         note = "R package version 0.4-1",
+         textVersion = "Graul, Christian (2022): leafletR: Interactive Web-Maps Based on the Leaflet JavaScript Library. R package version 0.4-1, http://cran.r-project.org/package=leafletR.")
 
 citFooter("Please cite both 'leafletR' and R when using 'leafletR'.",
           "For R citation, see ", sQuote("citation()"))
