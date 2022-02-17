@@ -5,6 +5,8 @@ leafletR 0.4-1 [2022-02-17]
 
 * fix documentation to match current HTML standard
 
+* bug fix: creation of GeoJSON
+
 
 leafletR 0.4-0 [2016-04-01]
 ---------------------------
